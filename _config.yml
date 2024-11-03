@@ -1,0 +1,27 @@
+# 只保留这些基本配置
+title: 0kr's Blog
+subtitle: ''
+description: ''
+keywords:
+author: Chn_0kr
+language: zh-CN
+timezone: ''
+url: http://example.com
+theme: butterfly
+
+# URL 配置
+permalink: :year/:month/:day/:title/
+post_asset_folder: true
+
+# 部署配置
+deploy:
+  type: git
+  repo: git@github.com:Cn-0kr/.blogvercel.git
+  branch: master  # 注意这里用 master，因为你的默认分支是 master
+  message: "Site updated: {{ now('YYYY-MM-DD HH:mm:ss') }}"
+
+# Include / Exclude file(s)
+## include:/exclude: options only apply to the 'source/' folder
+include:
+exclude:
+ignore:
