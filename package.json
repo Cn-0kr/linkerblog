@@ -27,7 +27,7 @@
     "hexo-server": "^3.0.0",
     "hexo-site": "file:",
     "hexo-tag-aplayer": "^3.0.4",
-    "hexo-theme-butterfly": "^5.1.0",
+    "hexo-theme-butterfly": "^5.2.1",
     "hexo-theme-landscape": "^1.0.0",
     "hexo-wordcount": "^6.0.1"
   }
