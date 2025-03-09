@@ -1,0 +1,305 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>JavaTutorial01 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="本篇介绍Java基础知识，主要涉及面向对象、语言特性、数据类型、常见类等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaTutorial01">
+<meta property="og:url" content="https://0krblog.yqbirdmp.com/2025/02/02/JavaTutorial01/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="本篇介绍Java基础知识，主要涉及面向对象、语言特性、数据类型、常见类等。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0krblog.yqbirdmp.com/statics/landscape003.jpg">
+<meta property="article:published_time" content="2025-02-02T07:02:14.000Z">
+<meta property="article:modified_time" content="2025-02-02T14:47:56.179Z">
+<meta property="article:author" content="Chn_0kr">
+<meta property="article:tag" content="Tutorial">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0krblog.yqbirdmp.com/statics/landscape003.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0krblog.yqbirdmp.com/2025/02/02/JavaTutorial01/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'JavaTutorial01',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-02-02 22:47:56'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape003.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">JavaTutorial01</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">JavaTutorial01</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-02-02T07:02:14.000Z" title="发表于 2025-02-02 15:02:14">2025-02-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-02-02T14:47:56.179Z" title="更新于 2025-02-02 22:47:56">2025-02-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Java/">Java</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h1><h2 id="封装"><a href="#封装" class="headerlink" title="封装"></a>封装</h2><p>封装：<strong>利用抽象将数据和基于数据的操作封装在一起，使其构成一个不可分割的独立实体</strong>。</p>
+<p>数据被保护在类的内部，尽可能地隐藏内部的实现细节，只保留一些对外接口使之与外部发生联系。</p>
+<p>使用封装有 4 大好处：</p>
+<ul>
+<li>1、良好的封装能够减少耦合。</li>
+<li>2、类内部的结构可以自由修改。&#x3D;&#x3D;<strong>封装可以使我们更容易地修改类的内部实现，而无需修改使用了该类的代码</strong></li>
+<li>3、可以对成员进行更精确的控制。&#x3D;&#x3D;对setter或getter中写入条件判断可以防止调用时的错误</li>
+<li>4、隐藏信息，实现细节。</li>
+</ul>
+<h2 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h2><p>继承：<strong>子类继承父类的属性和方法，使得子类对象（实例）具有父类的属性和方法，或子类从父类继承方法，使得子类具有父类相同的方法。</strong></p>
+<p>优点：使得代码结构更加清晰可见。</p>
+<h3 id="继承的分类"><a href="#继承的分类" class="headerlink" title="继承的分类"></a>继承的分类</h3><p>继承分为单继承和多继承，Java 语言只支持类的单继承，但可以通过实现接口的方式达到多继承的目的。</p>
+<img src="/2025/02/02/JavaTutorial01/image-20250202153226035.png" class title="如何进行接口继承">
+
+<p>Java是一个面向对象的语言，一个对象肯定有身份和行为，那么继承则是一个类表明自己身份，接口则提供了行为，一个身份可以有多个行为。所以说，大多数时候你并不需要多个继承，你只是需要继承类中的某个方法。</p>
+<h3 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h3><blockquote>
+<p>参考链接： <a target="_blank" rel="noopener" href="https://javabetter.cn/oo/construct.html">https://javabetter.cn/oo/construct.html</a></p>
+</blockquote>
+<p>构造方法必须符合以下规则：</p>
+<ul>
+<li>构造方法的名字必须和类名一样；</li>
+<li>构造方法没有返回类型，包括 void；</li>
+<li><strong>构造方法不能是抽象的（abstract）、静态的（static）、最终的（final）、同步的（synchronized）。</strong></li>
+</ul>
+<p>简单解析一下最后一条规则。</p>
+<ul>
+<li>由于构造方法不能被子类继承，所以用 final 和 abstract 关键字修饰没有意义；</li>
+<li>构造方法用于初始化一个对象，所以用 static 关键字修饰没有意义；</li>
+<li>多个线程不会同时创建内存地址相同的同一个对象，所以用 synchronized 关键字修饰没有必要。</li>
+</ul>
+<p><strong>默认构造方法的目的主要是为对象的字段提供默认值</strong></p>
+<img src="/2025/02/02/JavaTutorial01/image-20250202154018397.png" class>
+
+
+
+<p><strong>构造函数可以被重载</strong></p>
+<p><strong>复制一个对象</strong>可以通过下面三种方式完成：</p>
+<ul>
+<li>通过构造方法</li>
+<li>通过对象的值</li>
+<li>通过 Object 类的 <code>clone()</code> 方法</li>
+</ul>
+<p><strong>构造方法虽然没有返回值，但返回的是类的对象。</strong></p>
+<hr>
+<p><strong>父类的构造方法不能被继承</strong>，因为构造方法语法是<strong>与类同名</strong>，而继承则不更改方法名。</p>
+<p><strong>子类的构造过程必须调用其父类的构造方法：</strong></p>
+<p>Java 虚拟机**构造子类对象前会先构造父类对象，父类对象构造完成之后再来构造子类特有的属性，**这被称为**内存叠加**。而 Java 虚拟机构造父类对象会执行父类的构造方法，所以子类构造方法必须调用 super()即父类的构造方法。</p>
+<p><strong>如果子类的构造方法中没有显示地调用父类构造方法，则系统默认调用父类无参数的构造方法。</strong></p>
+<h3 id="继承与修饰符"><a href="#继承与修饰符" class="headerlink" title="继承与修饰符"></a>继承与修饰符</h3><p>Java 子类重写继承的方法时，<strong>不可以降低方法的访问权限</strong>，<strong>子类继承父类的访问修饰符作用域不能比父类小</strong>，<strong>继承当中子类抛出的异常必须是父类抛出的异常或父类抛出异常的子异常</strong></p>
+<p>非访问修饰符：</p>
+<p>本质上是对类常量的说明。</p>
+<img src="/2025/02/02/JavaTutorial01/image-20250202155822282.png" class title="static修饰符">
+
+<p>final 变量：</p>
+<ul>
+<li>final 表示”最后的、最终的”含义，<strong>变量一旦赋值后，不能被重新赋值</strong>。被 final 修饰的实例变量必须显式指定初始值(即不能只声明)。final 修饰符通常和 static 修饰符一起使用来创建类常量。</li>
+</ul>
+<p>final 方法：</p>
+<ul>
+<li><strong>父类中的 final 方法可以被子类继承，但是不能被子类重写</strong>。声明 final 方法的主要目的是防止该方法的内容被修改。</li>
+</ul>
+<p>final 类：</p>
+<ul>
+<li><strong>final 类不能被继承</strong>，没有类能够继承 final 类的任何特性。</li>
+</ul>
+<p>所以无论是变量、方法还是类被 final 修饰之后，都有代表最终、最后的意思。内容无法被修改。</p>
+<h3 id="Object类和转型"><a href="#Object类和转型" class="headerlink" title="Object类和转型"></a>Object类和转型</h3><p>首先声明，要实例化（赋值）的对象都放在等号左侧。</p>
+<p><strong>向上转型</strong> : 通过子类对象(小范围)实例化父类对象(大范围)，这种属于自动转换。</p>
+<p><strong>向下转型</strong> : 通过父类对象(大范围)实例化子类对象(小范围)，在书写上父类对象需要加括号<code>()</code>强制转换为子类类型。但父类引用变量实际引用必须是子类对象才能成功转型。</p>
+<p>例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Object object=<span class="keyword">new</span> <span class="title class_">Integer</span>(<span class="number">666</span>);<span class="comment">//向上转型</span></span><br><span class="line"></span><br><span class="line">Integer i=(Integer)object;<span class="comment">//向下转型Object-&gt;Integer，object的实质还是指向Integer</span></span><br><span class="line"></span><br><span class="line">String str=(String)object;<span class="comment">//错误的向下转型，虽然编译器不会报错但是运行会报错</span></span><br></pre></td></tr></table></figure>
+
+<p>这里的object的引用类型是Object，但是实际类型已经变成Integer</p>
+<p>object变量指向的是Integer对象，而不是String对象.</p>
+<p>虽然编译时不报错（因为String确实是Object的子类），但运行时会抛出ClassCastException. 此时可以用<code>instanceof</code>作条件判断确保程序正常运行。</p>
+<h3 id="子父类初始化顺序"><a href="#子父类初始化顺序" class="headerlink" title="子父类初始化顺序"></a>子父类初始化顺序</h3><p>在 Java 继承中，父子类初始化先后顺序为：</p>
+<ol>
+<li>父类中静态成员变量和静态代码块</li>
+<li>子类中静态成员变量和静态代码块</li>
+<li>父类中普通成员变量和代码块，父类的构造方法</li>
+<li>子类中普通成员变量和代码块，子类的构造方法</li>
+</ol>
+<p>总的来说，就是<strong>静态&gt;非静态，父类&gt;子类，非构造方法&gt;构造方法</strong>。同一类别（例如普通变量和普通代码块）成员变量和代码块执行从前到后，需要注意逻辑。调用构造方法的时候，是对成员变量进行一些初始化操作，所以普通成员变量和代码块优于构造方法执行。</p>
+<h2 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h2><p>Java 的多态是指在面向对象编程中，同一个类的对象在不同情况下表现出来的不同行为和状态。</p>
+<ul>
+<li>子类可以继承父类的字段和方法，子类对象可以直接使用父类中的方法和字段（私有的不行）。</li>
+<li>子类可以重写从父类继承来的方法，使得子类对象调用这个方法时表现出不同的行为。</li>
+<li>可以将子类对象赋给父类类型的引用，这样就可以通过父类类型的引用调用子类中重写的方法，实现多态。</li>
+</ul>
+<p><strong>多态的目的是为了提高代码的灵活性和可扩展性，使得代码更容易维护和扩展。</strong>比如说，通过允许子类继承父类的方法并重写，增强了代码的复用性。</p>
+<p>再比如说多态可以实现动态绑定，这意味着程序在运行时再确定对象的方法调用也不迟。</p>
+<p><strong>多态的前提条件有三个</strong>：</p>
+<ul>
+<li>子类继承父类</li>
+<li>子类重写父类的方法</li>
+<li>父类引用指向子类的对象</li>
+</ul>
+<p>举例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//子类继承父类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Wangxiaoer</span> <span class="keyword">extends</span> <span class="title class_">Wanger</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">write</span><span class="params">()</span> &#123; <span class="comment">// 子类重写父类方法</span></span><br><span class="line">        System.out.println(<span class="string">&quot;记住仇恨，表明我们要奋发图强的心智&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 父类引用指向子类对象</span></span><br><span class="line">        Wanger[] wangers = &#123; <span class="keyword">new</span> <span class="title class_">Wanger</span>(), <span class="keyword">new</span> <span class="title class_">Wangxiaoer</span>() &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (Wanger wanger : wangers) &#123;</span><br><span class="line">            <span class="comment">// 对象是王二的时候输出：勿忘国耻</span></span><br><span class="line">            <span class="comment">// 对象是王小二的时候输出：记住仇恨，表明我们要奋发图强的心智</span></span><br><span class="line">            wanger.write();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Wanger</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">write</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;勿忘国耻&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="多态与向下转型"><a href="#多态与向下转型" class="headerlink" title="多态与向下转型"></a>多态与向下转型</h3><p>（其实向下转型就是你不能强迫把父类转换为子类，这样理解最佳）</p>
+<p>举例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Wangxiaosi</span> <span class="keyword">extends</span> <span class="title class_">Wangsi</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">write</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;记住仇恨，表明我们要奋发图强的心智&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">eat</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;我不喜欢读书，我就喜欢吃&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        Wangsi[] wangsis = &#123; <span class="keyword">new</span> <span class="title class_">Wangsi</span>(), <span class="keyword">new</span> <span class="title class_">Wangxiaosi</span>() &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// wangsis[1]能够向下转型</span></span><br><span class="line">        ((Wangxiaosi) wangsis[<span class="number">1</span>]).write();</span><br><span class="line">        <span class="comment">// wangsis[0]不能向下转型</span></span><br><span class="line">        ((Wangxiaosi)wangsis[<span class="number">0</span>]).write();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Wangsi</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">write</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;勿忘国耻&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">read</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;每周读一本好书&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0krblog.yqbirdmp.com">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0krblog.yqbirdmp.com/2025/02/02/JavaTutorial01/">https://0krblog.yqbirdmp.com/2025/02/02/JavaTutorial01/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0krblog.yqbirdmp.com" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Tutorial/">Tutorial</a><a class="post-meta__tags" href="/tags/Java/">Java</a></div><div class="post-share"><div class="social-share" data-image="/statics/landscape003.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/02/02/JavaTutorial02/" title="JavaTutorial02"><img class="cover" src="/statics/landscape001.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">JavaTutorial02</div></div><div class="info-2"><div class="info-item-1">本篇将以面试问答的形式讲解语言特性、数据类型、常见类相关的知识点。</div></div></div></a><a class="pagination-related" href="/2025/01/24/2025%E7%BE%8E%E8%B5%9B%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1B%E9%A2%98/" title=""><img class="cover" src="/statics/landscape002.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2"></div></div><div class="info-2"><div class="info-item-1">2025美赛数学建模B题    对于问题二的解答，我们决定在第一问建立的模型基础上进行优化。首先，由于需要对其他受旅游影响过度的城市做出评价，我们决定调整与环境模型建立中相关的参数a,b,c。其次，为了区分每个城市受旅游影响的程度，我们决定优化成本函数c(t)，利用多层次分析法（AHP），从水资源成本、垃圾处理成本、交通设施成本、物价影响成本四个方面进行建模。 A. 主要模型框架  游客流量容量模型(日常&#x2F;季节性动态) 经济投入产出模型(收入和成本) 环境影响评估模型 社会承载力模型 系统整合层   组成模型详情  A. 游客流量容量模型  关键变量： 每日邮轮到达量 游客高峰数量 基础设施容量限制 季节性模式   约束条件： 港口容量 交通基础设施 景点容量   建议方法：排队论 + 整数规划  B. 经济模型  关键变量： 直接旅游收入 基础设施维护成本 环境治理支出 本地商业影响   约束条件： 基础设施投资需求 环境保护成本 本地经济稳定性指标   建议方法：动态投入产出模型  C....</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/02/02/JavaTutorial02/" title="JavaTutorial02"><img class="cover" src="/statics/landscape001.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-02</div><div class="info-item-2">JavaTutorial02</div></div><div class="info-2"><div class="info-item-1">本篇将以面试问答的形式讲解语言特性、数据类型、常见类相关的知识点。</div></div></div></a><a class="pagination-related" href="/2025/02/05/JavaTutorial04/" title="JavaTutorial04"><img class="cover" src="/statics/landscape003.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-05</div><div class="info-item-2">JavaTutorial04</div></div><div class="info-2"><div class="info-item-1">本篇将以面试问答的形式讲解设计模式与JAVA8新特性相关的知识点。</div></div></div></a><a class="pagination-related" href="/2025/02/03/JavaTutorial03/" title="JavaTutorial03"><img class="cover" src="/statics/landscape004.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-03</div><div class="info-item-2">JavaTutorial03</div></div><div class="info-2"><div class="info-item-1">本篇将以面试问答的形式讲解异常、泛型、反射、注解、SPI、I/O相关的知识点。</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.</span> <span class="toc-text">面向对象</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%81%E8%A3%85"><span class="toc-number">1.1.</span> <span class="toc-text">封装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%A7%E6%89%BF"><span class="toc-number">1.2.</span> <span class="toc-text">继承</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%A7%E6%89%BF%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-number">1.2.1.</span> <span class="toc-text">继承的分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.2.</span> <span class="toc-text">构造方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%A7%E6%89%BF%E4%B8%8E%E4%BF%AE%E9%A5%B0%E7%AC%A6"><span class="toc-number">1.2.3.</span> <span class="toc-text">继承与修饰符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Object%E7%B1%BB%E5%92%8C%E8%BD%AC%E5%9E%8B"><span class="toc-number">1.2.4.</span> <span class="toc-text">Object类和转型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%90%E7%88%B6%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%BA%E5%BA%8F"><span class="toc-number">1.2.5.</span> <span class="toc-text">子父类初始化顺序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E6%80%81"><span class="toc-number">1.3.</span> <span class="toc-text">多态</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E6%80%81%E4%B8%8E%E5%90%91%E4%B8%8B%E8%BD%AC%E5%9E%8B"><span class="toc-number">1.3.1.</span> <span class="toc-text">多态与向下转型</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/03/09/GameTheroy/" title="GameTheroy"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="GameTheroy"/></a><div class="content"><a class="title" href="/2025/03/09/GameTheroy/" title="GameTheroy">GameTheroy</a><time datetime="2025-03-09T08:45:50.000Z" title="发表于 2025-03-09 16:45:50">2025-03-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/06/MCUTuTorial01/" title="MCUTuTorial01"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MCUTuTorial01"/></a><div class="content"><a class="title" href="/2025/03/06/MCUTuTorial01/" title="MCUTuTorial01">MCUTuTorial01</a><time datetime="2025-03-06T05:46:58.000Z" title="发表于 2025-03-06 13:46:58">2025-03-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial14/" title="JavaTutorial14"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial14"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial14/" title="JavaTutorial14">JavaTutorial14</a><time datetime="2025-03-02T08:16:48.000Z" title="发表于 2025-03-02 16:16:48">2025-03-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial13/" title="JavaTutorial13"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial13"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial13/" title="JavaTutorial13">JavaTutorial13</a><time datetime="2025-03-02T08:16:41.000Z" title="发表于 2025-03-02 16:16:41">2025-03-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial12/" title="JavaTutorial12"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial12"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial12/" title="JavaTutorial12">JavaTutorial12</a><time datetime="2025-03-02T08:16:35.000Z" title="发表于 2025-03-02 16:16:35">2025-03-02</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

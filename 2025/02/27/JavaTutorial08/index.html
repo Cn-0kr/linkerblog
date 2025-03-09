@@ -1,0 +1,294 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>JavaTutorial08 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="Lock接口锁主要是能用来控制多个线程访问共享变量的方式，在Lock接口出现之前，Java主要是靠我们前面介绍的synchronized关键字来实现锁功能的，在Java SE 5之后，开始提供Lock接口来实现锁的功能。他有与synchronized关键字类似的同步功能，只是说有一些差别，Lock需要显式的进行加锁和解锁操作。虽然损失了一些隐式加解锁的便捷性，但是增强了可操作性。另外Lock还">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaTutorial08">
+<meta property="og:url" content="https://0krblog.yqbirdmp.com/2025/02/27/JavaTutorial08/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="Lock接口锁主要是能用来控制多个线程访问共享变量的方式，在Lock接口出现之前，Java主要是靠我们前面介绍的synchronized关键字来实现锁功能的，在Java SE 5之后，开始提供Lock接口来实现锁的功能。他有与synchronized关键字类似的同步功能，只是说有一些差别，Lock需要显式的进行加锁和解锁操作。虽然损失了一些隐式加解锁的便捷性，但是增强了可操作性。另外Lock还">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0krblog.yqbirdmp.com/statics/landscape004.jpg">
+<meta property="article:published_time" content="2025-02-27T09:29:37.000Z">
+<meta property="article:modified_time" content="2025-03-01T12:03:35.785Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0krblog.yqbirdmp.com/statics/landscape004.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0krblog.yqbirdmp.com/2025/02/27/JavaTutorial08/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'JavaTutorial08',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-03-01 20:03:35'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape004.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">JavaTutorial08</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">JavaTutorial08</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-02-27T09:29:37.000Z" title="发表于 2025-02-27 17:29:37">2025-02-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-03-01T12:03:35.785Z" title="更新于 2025-03-01 20:03:35">2025-03-01</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>11分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><img src="/2025/02/27/JavaTutorial08/image-20250301092050778.png" class>
+
+<h1 id="Lock接口"><a href="#Lock接口" class="headerlink" title="Lock接口"></a>Lock接口</h1><p>锁主要是能用来控制多个线程访问共享变量的方式，在Lock接口出现之前，Java主要是靠我们前面介绍的synchronized关键字来实现锁功能的，在Java SE 5之后，开始提供Lock接口来实现锁的功能。他有与synchronized关键字类似的同步功能，只是说有一些差别，<strong>Lock需要显式的进行加锁和解锁操作。虽然损失了一些隐式加解锁的便捷性，但是增强了可操作性。</strong>另外Lock还提供了一些特有的可中断获取锁。超时获取锁等同步特性。</p>
+<h2 id="Lock使用与api接口"><a href="#Lock使用与api接口" class="headerlink" title="Lock使用与api接口"></a>Lock使用与api接口</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Lock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>();</span><br><span class="line">	lock.lock();</span><br><span class="line">	<span class="keyword">try</span>&#123;</span><br><span class="line">    &#125;<span class="keyword">finally</span>&#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>·解锁过程放入finally块，确保锁能够被释放<br>·加锁过程不要写在try里面，因为加锁过程如果发生异常，也会进入finally块导致锁无故释放</p>
+<blockquote>
+<p>假设lock 方法放在内部，正常获取锁，finally 就会正常释放锁;但一旦异常，并没有真正拿到锁，此时执行 finally 中的释放锁，就会发生IllegalMonitorStateException 异常。如果 lock 方法放在外部，正常获取锁，finally 就会正常释放锁;但一旦异常，就会立即跳出线程不会执行try-finally代码块，也就不会再次进入到finally 中再次引发其他异常。</p>
+</blockquote>
+<p>Lock接口提供的api，底层几乎都是由AQS实现的，可以先留一个印象：</p>
+<img src="/2025/02/27/JavaTutorial08/image-20250301100837026.png" class>
+
+
+
+<h2 id="Lock与Synchronized对比"><a href="#Lock与Synchronized对比" class="headerlink" title="Lock与Synchronized对比"></a>Lock与Synchronized对比</h2><p>可以从加锁解锁的原理、实现方法、对象、目的和效果从头到尾对比一下：</p>
+<p>相同点:<br>·synchronized 和 Lock 都是用来保护资源线程安全的。<br>·都可以保证可见性。<br>·synchronized 和 ReentrantLock 都拥有可重入的特点。</p>
+<p>不同点：</p>
+<p>1.加解锁控制差别: synchronized的加锁和解锁是由]vm实现的(内置锁)，而Lock的加解锁需要手动控制，通过lock()和 unlock()，一般会把unlock操作放入finally块来解锁，以防忘记解锁。</p>
+<p>2.是否可以设置公平&#x2F;非公平: 公平锁是指多个线程在等待同一个锁时，根据先来后到的原则依次获得锁。非公平锁接近于随机选取，但是也可以允许插队。ReentrantLock 等 Lock 实现类可以根据自己的需要来设置公平或非公平，synchronized 则不能设置（默认非公平）。</p>
+<p>3.synchronized 锁不够灵活:synchronized一个线程获取锁之后，其他线程想要获取锁只能等待，只能进入阻塞状态，直到持有锁的线程释放这个锁，可能这个等待过程会持续很久。相比之下，Lock可以使用lockInterruptibly方法，不想等了可以中断退出，也可以使tryLock获取锁，能获取就获取，不能获取线程也可以去干别的事情，更加灵活。</p>
+<p>4.synchronized 锁只能同时被一个线程拥有，但是 Lock 锁没有这个限制:例如读写锁中的读锁时可以被多个线程<br>同时拥有的。</p>
+<p>其他:例如实现方式的不同等。</p>
+<h1 id="AQS队列同步器"><a href="#AQS队列同步器" class="headerlink" title="AQS队列同步器"></a>AQS队列同步器</h1><blockquote>
+<p>感觉这部分对底层实现方法的要求不高，只要知道这里是干啥的就行（</p>
+</blockquote>
+<p>队列同步器AbstractOueuedSynchronizer(以下简称同步器)是用来构建锁或者其他同步组件的基础框架，它使用了一个<strong>int成员变量state</strong>表示同步状态通过<strong>内置的FIFO队列</strong>来完成资源获取线程的排队工作，是实现大部分同步需求的基础。</p>
+<p>可重入锁ReentrantLock，读写锁ReentrantReadWriteLock，CountDownLatch，Semephore这些同步组件都是基于AQS的经典应用。AQS子类推荐被定义为自定义同步组件的静态内部类，同步器自身没有实现任何同步接口，它仅仅是定义了若干同步状态获取和释放的方法来供自定义同步组件(锁，CountDownLatch等)使用，同步器既可以支持独占式地获取同步状态，也可以支持共享式地获取同步状态，这样就可以方便实现不同类型的同步组件。</p>
+<p>这里给一个共享锁Mutex的自定义实现代码：</p>
+<img src="/2025/02/27/JavaTutorial08/image-20250301092407108.png" class>
+
+<p>显然，<strong>Lock是面向锁的使用者的</strong>，他定义了使用者与锁的交互接口，隐藏了实现细节。而<strong>AQS是面向锁的实现者的</strong>，它简化了锁的实现方式，屏蔽了同步状态的管理，线程的排队，等待与唤醒等底层操作。锁和同步器很好的隔离 了使用者和实现者所需关注的领域。</p>
+<h2 id="AQS实现方法"><a href="#AQS实现方法" class="headerlink" title="AQS实现方法"></a>AQS实现方法</h2><p>还是非常复杂的。好像是出于不要让人混淆的原因吧，AQS的实现被分成了三类方法：</p>
+<p>使用者继承AQS类并重写<strong>5个指定的方法(第二类)<strong>。重写同步器指定的方法时需要使用</strong>同步器提供的3个方法</strong>来访问或修改同步状态**(第一类)<strong>。最后将AQS组合在自定义同步组件的实现中，并</strong>调用其9个模板方法(第三类)和 5个重写过的方法**来实现。另外，模板方法也会调用使用者重写的方法实现。</p>
+<p>但其实画张图厘清逻辑就也还好：</p>
+<img src="/2025/02/27/JavaTutorial08/image-20250301095027425.png" class>
+
+<p>总结: 实现一个自定义锁的步骤<br>·继承Lock接口<br>·定义一个AQS的子类，作为锁的静态内部类。该类继承自AQS，也就拥有了AQS定义的9个模版方法。另外还需要实现AQS定义的5个可重写方法，重写实现过程中需要用到3个同步状态的修改方法。<br>·实现Lock规定的接口方法，原理就是将”操作”代理到AQS的子类sync上，即利用sync的14种方法来实现Lock。</p>
+<h2 id="AQS框架原理"><a href="#AQS框架原理" class="headerlink" title="AQS框架原理"></a>AQS框架原理</h2><p>就像刚刚说的，AQS最重要的就是一个int类型的state变量，一个同步队列。不同锁对于state变量的用法是不同的，所以下面我们先介绍同步队列的基本结构。</p>
+<img src="/2025/02/27/JavaTutorial08/image-20250301113223083.png" class>
+
+<img src="/2025/02/27/JavaTutorial08/image-20250301113240132.png" class>
+
+<p>以及加入和释放节点的过程如下：</p>
+<img src="/2025/02/27/JavaTutorial08/image-20250301113516667.png" class>
+
+<img src="/2025/02/27/JavaTutorial08/image-20250301113531593.png" class>
+
+<h2 id="不同类型锁的获取与释放"><a href="#不同类型锁的获取与释放" class="headerlink" title="不同类型锁的获取与释放"></a>不同类型锁的获取与释放</h2><img src="/2025/02/27/JavaTutorial08/image-20250301113834282.png" class>
+
+<img src="/2025/02/27/JavaTutorial08/image-20250301113844842.png" class>
+
+<img src="/2025/02/27/JavaTutorial08/image-20250301113908378.png" class>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>​	AQS主要依赖于一个双向链表和一个volatile类型的整数state来实现同步控制。该整数state用来表示同步状态一般情况下，state&#x3D;0表示没有线程占用同步资源，state&gt;0表示有线程占用同步资源，state&gt;1表示同步资源已经被争用了多次，比如ReentrantLock可以允许一个线程多次获得锁，每次state值加1。<br>​	AOS实现同步的关键在于，它提供了一个基于FIFO队列的同步队列，通过将等待线程加入同步队列中，然后在释放同步状态的时候，从同步队列中唤醒等待线程，从而实现了同步机制。<br>​	AQS的实现主要有两种方式:独占式(Exclusive)和共享式(Shared)。独占式指只有一个线程可以占用同步资源，比如ReentrantLock，而共享式是指多个线程可以同时占用同步资源，比如CountDownLatch。在AQS中，这两种方式的实现是基本相同的，区别在于获取和释放同步状态的方式不同。</p>
+<h1 id="ReentrantLock-可重入锁"><a href="#ReentrantLock-可重入锁" class="headerlink" title="ReentrantLock 可重入锁"></a>ReentrantLock 可重入锁</h1><h2 id="公平锁和非公平锁有什么区别-为什么非公平锁比公平锁性能更好"><a href="#公平锁和非公平锁有什么区别-为什么非公平锁比公平锁性能更好" class="headerlink" title="公平锁和非公平锁有什么区别?为什么非公平锁比公平锁性能更好?"></a>公平锁和非公平锁有什么区别?为什么非公平锁比公平锁性能更好?</h2><p>公平锁:锁被释放之后，先申请的线程先得到锁。性能较差一些，因为公平锁为了保证时间上的绝对顺序，上下文切换更频繁。</p>
+<p>非公平锁:锁被释放之后，后申请的线程可能会先获取到锁，是随机或者按照其他优先级排序的。性能更好但可能会导致某些线程永远无法获取到锁。</p>
+<hr>
+<p>公平锁执行流程:获取锁时，先将线程自己添加到同步队列的队尾并休眠，当某线程用完锁之后，会去唤醒同步队列中队首的线程尝试去获取锁，锁的使用顺序也就是队列中的先后顺序，在整个过程中，线程会从运行状态切换到休眠状态，再从休眠状态恢复成运行状态，但线程每次休眠和恢复都需要从用户态转换成内核态，而这个状态的转换是比较慢的，所以公平锁的执行速度会比较慢。</p>
+<p>非公平锁执行流程:当线程获取锁时，会先通过 CAS 尝试获取锁，如果获取成功就直接拥有锁，如果获取锁失败才会进入同步队列，等待下次尝试获取锁。这样做的好处是，获取锁不用遵循先到先得的规则，<strong>从而避免了线程休眠和恢复的操作，这样就加速了程序的执行效率。</strong></p>
+<blockquote>
+<p>当尝试获取的是一个公平锁，那在拿到锁之前，会首先调用 <strong>hasQueuedPredecessors</strong>方法来检查是否有其他线程在等待队列中排在当前线程前面，即检查队列中是否有该节点的前驱。（按照公平原则，有的话，你就该排在它之后。）导致的结果就是当前线程需要让出 CPU，进入同步队列中，这就是上下文切换。当有大量线程尝试获取锁时，这个上下文切换就是很频繁的。<br>非公平锁没有上面那个hasQueuedPredecessors 对程而是尝试获取锁时，如果获取到了，就直接返回成功了，线程获取到了锁，继续执行。并不会进入同步队列中，也就不会发生上下文切换。</p>
+</blockquote>
+<h2 id="ReentrantLock是如何实现公平锁的-非公平锁的"><a href="#ReentrantLock是如何实现公平锁的-非公平锁的" class="headerlink" title="ReentrantLock是如何实现公平锁的?非公平锁的?"></a>ReentrantLock是如何实现公平锁的?非公平锁的?</h2><img src="/2025/02/27/JavaTutorial08/image-20250301115319921.png" class>
+
+<p>ReentrantLock类内部总共存在Sync、NonfairSync、FairSync三个类，NonfairSync与FairSync类继承自Sync，Sync类继承自AbstractQueuedSynchronizer抽象类。<br>非公平锁是ReentrantLock的默认实现。公平锁对比非公平锁的实现差异主要体现在tryAcquire方法(获取锁)这里。非公平锁(NonfairSync)的tryAcquire实现直接调用了父类Sync中的nonfairTryAcquire。而公平锁tryAcquire的唯一不同的点为判断条件多了hasQueuedPredecessors()方法，即加入了同步队列中当前节点是否有前驱节点的判断，如果该方法返回true，则表示有线程比当前线程更早地请求获取锁，因此需要等待前驱线程获取并释放锁之后才能继续获取锁(这就叫公平)。</p>
+<h1 id="ReentrantReadWriteLock-读写锁"><a href="#ReentrantReadWriteLock-读写锁" class="headerlink" title="ReentrantReadWriteLock 读写锁"></a>ReentrantReadWriteLock 读写锁</h1><p>之前提到锁(如Mutex和ReentrantLock)基本都是排他锁，这些锁在同一时刻只允许一个线程进行访问，而ReentrantReadWriteLock在同一时刻可以<strong>允许多个读线程访问</strong>，但是在写线程访问时，所有的读线程和其他写线程均被阻塞。读写锁维护了一对锁，一个读锁和一个写锁，通过分离读锁和写锁，使得并发性相比一般的排他锁有了很大提升。</p>
+<p>Java并发包中提供的读写锁是ReentrantReadWriteLock，具有如下特性：</p>
+<p>·<strong>公平性选择</strong>:支持公平和非公平(默认)的锁获取方式；</p>
+<p>·<strong>支持重入</strong>:同一线程获取读锁之后能再次获取;同一线程获取写锁之后能再次获取写锁，并且还能获取读锁；</p>
+<p>·<strong>锁降级</strong>:按照获取写锁，再获取读锁，再释放写锁的顺序，写锁能够降级为读锁。</p>
+<h2 id="读写状态设计"><a href="#读写状态设计" class="headerlink" title="读写状态设计"></a>读写状态设计</h2><img src="/2025/02/27/JavaTutorial08/image-20250301120112664.png" class>
+
+<h2 id="读写加锁与释放规范"><a href="#读写加锁与释放规范" class="headerlink" title="读写加锁与释放规范"></a>读写加锁与释放规范</h2><p>这里是针对多线程竞争同一把锁的时候做的规范。简单说，写锁是独占的，读锁是共享的；如果一个线程先占据写锁，那么虽然别的线程不能读，但是该线程本身可以获取读锁；如果一个线程占据读锁，那么其他线程都可以访问读锁，但是都不能获取写锁。</p>
+<p>读锁和写锁都是支持可重入的。但是，获取读锁的实现从Java 5到Java 6变得复杂许多，主要原因是新增了一 些功能，例如getReadHoldCount()方法，作用是返回当前线程获取读锁的次数。读状态是记录所有线程获取读锁次数的总和getReadLockCount()，而每个线程各自获取读锁的次数只能选择保存在ThreadLocal中(关于ThreadLocal可以查看目Java并发线程基础 )，由线程自身维护。</p>
+<h2 id="锁降级"><a href="#锁降级" class="headerlink" title="锁降级"></a>锁降级</h2><p>指的是写锁降级成为读锁。如果当前线程拥有写锁，然后将其释放，最后再获取读锁，这种分段完成的过程不能称之为锁降级。<strong>锁降级是指把持住(当前拥有的)写锁，再获取到读锁，随后释放(先前拥有的)写锁的过程。</strong></p>
+<p>也就是说，如果一个线程先写后读，那么写操作完成之后直接“锁降级“到读锁进行读操作；当写操作和读操作间隔的比较久，就是第一种情况。</p>
+<h1 id="LockSupport"><a href="#LockSupport" class="headerlink" title="LockSupport"></a>LockSupport</h1><img src="/2025/02/27/JavaTutorial08/image-20250301104021578.png" class>
+
+<p>和Thread.sleep的区别：</p>
+<p>Thread.sleep 的灵活性较低，因为它只能根据指定的时间延迟来暂停线程，并且不能被其他线程提前唤醒。<br>LockSupport.parkNanos 提供了更高的灵活性，因为它可以被其他线程通过 unpark 方法提前唤醒，而且它还提供了纳秒级别的精度(尽管实际的精度可能受到操作系统和硬件的限制)。<br>Thread.sleep 是一个更简单、更易于使用的方法，适用于基本的延迟需求，而LockSupport.parkNanos 则是一个更强大、更灵活的工具，适用于需要更高级并发控制的场景。</p>
+<h1 id="Condition"><a href="#Condition" class="headerlink" title="Condition"></a>Condition</h1><p>这里是需要和AQS联合起来理解更好。</p>
+<p>任意一个]ava对象，都拥有一组监视器方法(定义在java.lang.0bject上)，主要包括wait()、wait(long timeout)、notify()以及notifyAIl()方法，这些方法与synchronized同步关键字配合，可以实现等待&#x2F;通知模式。<strong>Condition接口也提供了类似0bject的监视器方法，与Lock配合可以实现等待&#x2F;通知模式。</strong>但是，Condition 提供了更加精细的等待、唤醒的控制，同时允许创建多个等待队列实现更加复杂的线程通信场景。</p>
+<p>首先需要了解，除了同步队列，Monitor还拥有等待队列。这两个的区别相当于是有没有“排队许可”的问题，在同步队列里的节点线程可以竞争锁，但是等待队列里的还在休眠，不会产生竞争。</p>
+<img src="/2025/02/27/JavaTutorial08/image-20250301194234244.png" class title="由图可知，虽然一个Condition只能维护一个等待队列，但是一个AQS可以拥有多个Condition">
+
+<p>如何实现这种效果呢？最主要的是Condition中的await和signal方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Lock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>();</span><br><span class="line"><span class="type">Condition</span> <span class="variable">condition</span> <span class="operator">=</span> lock.newCondition();</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">conditionWait</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">//等待</span></span><br><span class="line">        condition.await();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">conditionSignal</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 通知</span></span><br><span class="line">        condition.signal();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>分析:<br>·使用: 一般都会将Condition对象作为成员变量，获取一个condition必须通过Lock的newCondition方法</p>
+<p>·await():当调用await()方法后，当前<strong>线程会释放锁</strong>并在此等待</p>
+<p>·signal():其他线程调用Condition对象的signal()方法，<strong>通知当前线程后，当前线程才从等待状态进入锁的同步队列</strong>，尝试获取锁，如果获取到了锁，则从await()方法返回。</p>
+<h2 id="等待与通知"><a href="#等待与通知" class="headerlink" title="等待与通知"></a>等待与通知</h2><img src="/2025/02/27/JavaTutorial08/image-20250301195646571.png" class>
+
+<img src="/2025/02/27/JavaTutorial08/image-20250301195658012.png" class>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0krblog.yqbirdmp.com">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0krblog.yqbirdmp.com/2025/02/27/JavaTutorial08/">https://0krblog.yqbirdmp.com/2025/02/27/JavaTutorial08/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0krblog.yqbirdmp.com" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape004.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/02/27/JavaTutorial09/" title="JavaTutorial09"><img class="cover" src="/statics/landscape003.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">JavaTutorial09</div></div><div class="info-2"><div class="info-item-1"> </div></div></div></a><a class="pagination-related" href="/2025/02/27/JavaTutorial07/" title="JavaTutorial07"><img class="cover" src="/statics/landscape004.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">JavaTutorial07</div></div><div class="info-2"><div class="info-item-1">Java并发线程基础什么是进程和线程？从操作系统层面理解: ·进程就是运行着的程序，它是程序在操作系统的一次执行过程，是一个程序的动态概念，进程是操作系统分配资源的基本单位。 ·线程可以理解为一个进程的执行实体，它是比进程粒度更小的执行单元，也是真正运行在cpu上的执行单元，线程是操作系统调度资源的基本单位。 进程中可以包含多个线程，需要记住进程是操作系统分配资源的基本单位，线程是操作系统调度资源的基本单位。  这时候聪明的小朋友就会问了，唉朱老师朱老师，调度和分配都是什么意思呀？个人的理解是，进程所谓的分配资源更加面向物理层，比如内存和文件句柄；线程，虽然一个进程内的多个线程可以共享该进程的内存空间和其他资源，但是每个线程有自己的执行路径和状态信息。操作系统会根据线程的优先级、等待时间等因素，决定哪个线程可以获得 CPU的使用权，从而实现并发执行。这个就是调度。  从Java程序理解...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Lock%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.</span> <span class="toc-text">Lock接口</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lock%E4%BD%BF%E7%94%A8%E4%B8%8Eapi%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.1.</span> <span class="toc-text">Lock使用与api接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Lock%E4%B8%8ESynchronized%E5%AF%B9%E6%AF%94"><span class="toc-number">1.2.</span> <span class="toc-text">Lock与Synchronized对比</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#AQS%E9%98%9F%E5%88%97%E5%90%8C%E6%AD%A5%E5%99%A8"><span class="toc-number">2.</span> <span class="toc-text">AQS队列同步器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#AQS%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95"><span class="toc-number">2.1.</span> <span class="toc-text">AQS实现方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AQS%E6%A1%86%E6%9E%B6%E5%8E%9F%E7%90%86"><span class="toc-number">2.2.</span> <span class="toc-text">AQS框架原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8D%E5%90%8C%E7%B1%BB%E5%9E%8B%E9%94%81%E7%9A%84%E8%8E%B7%E5%8F%96%E4%B8%8E%E9%87%8A%E6%94%BE"><span class="toc-number">2.3.</span> <span class="toc-text">不同类型锁的获取与释放</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">2.4.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ReentrantLock-%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81"><span class="toc-number">3.</span> <span class="toc-text">ReentrantLock 可重入锁</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AC%E5%B9%B3%E9%94%81%E5%92%8C%E9%9D%9E%E5%85%AC%E5%B9%B3%E9%94%81%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9D%9E%E5%85%AC%E5%B9%B3%E9%94%81%E6%AF%94%E5%85%AC%E5%B9%B3%E9%94%81%E6%80%A7%E8%83%BD%E6%9B%B4%E5%A5%BD"><span class="toc-number">3.1.</span> <span class="toc-text">公平锁和非公平锁有什么区别?为什么非公平锁比公平锁性能更好?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ReentrantLock%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%85%AC%E5%B9%B3%E9%94%81%E7%9A%84-%E9%9D%9E%E5%85%AC%E5%B9%B3%E9%94%81%E7%9A%84"><span class="toc-number">3.2.</span> <span class="toc-text">ReentrantLock是如何实现公平锁的?非公平锁的?</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ReentrantReadWriteLock-%E8%AF%BB%E5%86%99%E9%94%81"><span class="toc-number">4.</span> <span class="toc-text">ReentrantReadWriteLock 读写锁</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%86%99%E7%8A%B6%E6%80%81%E8%AE%BE%E8%AE%A1"><span class="toc-number">4.1.</span> <span class="toc-text">读写状态设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%86%99%E5%8A%A0%E9%94%81%E4%B8%8E%E9%87%8A%E6%94%BE%E8%A7%84%E8%8C%83"><span class="toc-number">4.2.</span> <span class="toc-text">读写加锁与释放规范</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%94%81%E9%99%8D%E7%BA%A7"><span class="toc-number">4.3.</span> <span class="toc-text">锁降级</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#LockSupport"><span class="toc-number">5.</span> <span class="toc-text">LockSupport</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Condition"><span class="toc-number">6.</span> <span class="toc-text">Condition</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%89%E5%BE%85%E4%B8%8E%E9%80%9A%E7%9F%A5"><span class="toc-number">6.1.</span> <span class="toc-text">等待与通知</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/03/09/GameTheroy/" title="GameTheroy"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="GameTheroy"/></a><div class="content"><a class="title" href="/2025/03/09/GameTheroy/" title="GameTheroy">GameTheroy</a><time datetime="2025-03-09T08:45:50.000Z" title="发表于 2025-03-09 16:45:50">2025-03-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/06/MCUTuTorial01/" title="MCUTuTorial01"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MCUTuTorial01"/></a><div class="content"><a class="title" href="/2025/03/06/MCUTuTorial01/" title="MCUTuTorial01">MCUTuTorial01</a><time datetime="2025-03-06T05:46:58.000Z" title="发表于 2025-03-06 13:46:58">2025-03-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial14/" title="JavaTutorial14"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial14"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial14/" title="JavaTutorial14">JavaTutorial14</a><time datetime="2025-03-02T08:16:48.000Z" title="发表于 2025-03-02 16:16:48">2025-03-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial13/" title="JavaTutorial13"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial13"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial13/" title="JavaTutorial13">JavaTutorial13</a><time datetime="2025-03-02T08:16:41.000Z" title="发表于 2025-03-02 16:16:41">2025-03-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial12/" title="JavaTutorial12"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial12"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial12/" title="JavaTutorial12">JavaTutorial12</a><time datetime="2025-03-02T08:16:35.000Z" title="发表于 2025-03-02 16:16:35">2025-03-02</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

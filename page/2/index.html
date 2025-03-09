@@ -1,0 +1,229 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta property="og:type" content="website">
+<meta property="og:title" content="0kr&#39;s Blog">
+<meta property="og:url" content="https://0krblog.yqbirdmp.com/page/2/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0krblog.yqbirdmp.com/statics/avatar.png">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0krblog.yqbirdmp.com/statics/avatar.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0krblog.yqbirdmp.com/page/2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '0kr\'s Blog',
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2025-03-09 16:48:20'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page fixed" id="page-header" style="background-image: url(/statics/landscape001.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="site-info"><h1 id="site-title">0kr's Blog</h1><div id="site-subtitle"><span id="subtitle"></span></div><div id="site_social_icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="post_cover left"><a href="/2025/02/26/JavaTutorial06/" title="JavaTutorial06"><img class="post-bg" src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial06"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/02/26/JavaTutorial06/" title="JavaTutorial06">JavaTutorial06</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-02-26T12:54:58.000Z" title="发表于 2025-02-26 20:54:58">2025-02-26</time></span></div><div class="content">...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2025/02/18/CSInternet05/" title="CSInternet05"><img class="post-bg" src="/statics/landscape004.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CSInternet05"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/02/18/CSInternet05/" title="CSInternet05">CSInternet05</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-02-18T15:32:56.000Z" title="发表于 2025-02-18 23:32:56">2025-02-18</time></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/TCP/">TCP</a></span></div><div class="content">三次握手和四次挥手TCP 可靠性优化 TCP 拥塞控制TCP 半连接和全连接队列TCP 粘包拆包TCP 异常TCP 保活机制TCP Socket  UDP VS TCPUDP 实现可靠传输</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2025/02/18/CSInternet04/" title="CSInternet04"><img class="post-bg" src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CSInternet04"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/02/18/CSInternet04/" title="CSInternet04">CSInternet04</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-02-18T15:32:44.000Z" title="发表于 2025-02-18 23:32:44">2025-02-18</time></span></div><div class="content">DNS 是什么?DNS (Domain Name System) 是互联网的一个核心服务，主要功能是将人类容易记住的域名（如 172.217.163.46）提供反向解析，即从IP地址查找域名，或者是提供邮件服务器查询等其他服务。 DNS 域名解析的流程?解析记录 解析记录存储在域名服务器中，用于表达域名 与 IP 之间的对应关系，称为 记录（record）。根据使用场景，”记录”可以分成不同的类型（type），下面列举几个常见的解析记录类型    type 解释    A 地址记录（Address），返回域名指向的IPv4地址。   AAAA AAAA记录(AAAA record)，返回域名指向的IPv6地址。   NS 域名服务器记录（Name Server），返回保存下一级域名信息的服务器地址。该记录只能设置为域名，不能设置为IP地址。   CNAME 规范名称记录（Canonical Name），返回另一个域名，即当前查询的域名是另一个域名的跳转，详见下文。   MX 邮件记录（Mail...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2025/02/16/CSInternet03/" title="CSInternet03"><img class="post-bg" src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CSInternet03"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/02/16/CSInternet03/" title="CSInternet03">CSInternet03</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-02-16T07:09:28.000Z" title="发表于 2025-02-16 15:09:28">2025-02-16</time></span></div><div class="content">HTTP 有什么缺陷?为什么需要引入 TLS 协议?SSL（安全套接字层）是在 90 年代初开发的。TLS（传输层安全）实际上就是 SSL 的继任者，可以说 TLS 是 SSL 的”后代”。第一个 TLS 版本（TLS 1.0）其实就是 SSL 3.0 的升级版。顺便一提，现代浏览器中也不再支持SSL啦。 关于这个问题，我想还是得从HTTP-&gt;SSL-&gt;TLS的顺序开始讲解会好理解一些： ·通信使用明文(不加密)，内容可能会被窃听。   ·不验证通信方的身份，因此有可能遭遇伪装。   ·无法证明报文的完整性，所以有可能已遭篡改   为了统一解决上述这些问题，需要在 HTTP上再加入加密处理和认证等机制。我们把添加了加密及认证机制的 HTTP 称为 HTTPS（HTTP Secure ）。HTTPS 并非是应用层的一种新协议。只是 HTTP 通信接口部分用SSL(Secure SocketLayer)和TS(Transport Layer Security)协议代替而已。通常，HTTP 直接和 TCP 通信。当使用 SSL时，则演变成先和 SSL通信，再由 SSL和...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2025/02/14/SQLTutorial01/" title="SQLTutorial01"><img class="post-bg" src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SQLTutorial01"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/02/14/SQLTutorial01/" title="SQLTutorial01">SQLTutorial01</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-02-14T04:11:13.000Z" title="发表于 2025-02-14 12:11:13">2025-02-14</time></span></div><div class="content">知识日期函数DAYOFWEEK(date)返回日期date的星期索引(1&#x3D;星期天，2&#x3D;星期一, ……7&#x3D;星期六)。这些索引值对应于ODBC标准。 1select` `DAYOFWEEK(``&#x27;1998-02-03&#x27;``)  -&gt; 3 WEEKDAY(date)返回date的星期索引(0&#x3D;星期一，1&#x3D;星期二, ……6&#x3D; 星期天)。 复制代码 1mysql&gt; ``select` `WEEKDAY(``&#x27;1997-10-04 22:23:00&#x27;``);  -&gt; 5 DAYOFMONTH(date)返回date的月份中日期，在1到31范围内。 1mysql&gt; ``select` `DAYOFMONTH(``&#x27;1998-02-03&#x27;``);  -&gt; 3 DAYOFYEAR(date)返回date在一年中的日数, 在1到366范围内。 1mysql&gt; ``select`...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2025/02/07/SITPplan02/" title="SITPplan02"><img class="post-bg" src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SITPplan02"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/02/07/SITPplan02/" title="SITPplan02">SITPplan02</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-02-07T03:27:35.000Z" title="发表于 2025-02-07 11:27:35">2025-02-07</time></span></div><div class="content">本周任务：前端接口实现与测试项目的运行逻辑是什么样的？  如何在前后端分别实现接口？·实操演示（基于SpringbootDEMO） 一个完整的请求-响应周期示例：  客户端发送请求：GET http://127.0.0.1:8080/save_user?name=newName&amp;age=11 Spring MVC 处理请求： 根据 URL 找到 saveUser 方法 创建 User 对象 将请求参数 name&#x3D;newName 和 age&#x3D;11 绑定到 User 对象   执行业务逻辑： 调用 saveUser 方法 使用绑定好的 User 对象生成响应字符串   返回响应： 将字符串作为 HTTP 响应体返回给客户端    @Controller 告诉 Spring 这是一个处理 Web 请求的类 @RequestMapping(&quot;/hello&quot;) 将 &#x2F;hello 路径的请求映射到这个方法  Spring 发现 saveUser 方法需要一个 User 对象 创建新的 User 实例 检查请求参数：  发现...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2025/02/05/JavaTutorial05/" title="JavaTutorial05"><img class="post-bg" src="/statics/landscape004.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial05"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/02/05/JavaTutorial05/" title="JavaTutorial05">JavaTutorial05</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-02-05T13:58:03.000Z" title="发表于 2025-02-05 21:58:03">2025-02-05</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/Tutorial/">Tutorial</a><span class="article-meta-link">•</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/Java/">Java</a><span class="article-meta-link">•</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/%E9%9D%A2%E8%AF%95/">面试</a></span></div><div class="content">本篇将以面试问答的形式讲解设计模式与JAVA8新特性相关的知识点。</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2025/02/05/JavaTutorial04/" title="JavaTutorial04"><img class="post-bg" src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial04"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/02/05/JavaTutorial04/" title="JavaTutorial04">JavaTutorial04</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-02-05T13:57:58.000Z" title="发表于 2025-02-05 21:57:58">2025-02-05</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/Tutorial/">Tutorial</a><span class="article-meta-link">•</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/Java/">Java</a><span class="article-meta-link">•</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/%E9%9D%A2%E8%AF%95/">面试</a></span></div><div class="content">本篇将以面试问答的形式讲解设计模式与JAVA8新特性相关的知识点。</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2025/02/03/JavaTutorial03/" title="JavaTutorial03"><img class="post-bg" src="/statics/landscape004.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial03"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/02/03/JavaTutorial03/" title="JavaTutorial03">JavaTutorial03</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-02-03T14:07:22.000Z" title="发表于 2025-02-03 22:07:22">2025-02-03</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/Tutorial/">Tutorial</a><span class="article-meta-link">•</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/Java/">Java</a><span class="article-meta-link">•</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/%E9%9D%A2%E8%AF%95/">面试</a></span></div><div class="content">本篇将以面试问答的形式讲解异常、泛型、反射、注解、SPI、I/O相关的知识点。</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2025/02/02/JavaTutorial02/" title="JavaTutorial02"><img class="post-bg" src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial02"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/02/02/JavaTutorial02/" title="JavaTutorial02">JavaTutorial02</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-02-02T14:57:07.000Z" title="发表于 2025-02-02 22:57:07">2025-02-02</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/Tutorial/">Tutorial</a><span class="article-meta-link">•</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/Java/">Java</a><span class="article-meta-link">•</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/%E9%9D%A2%E8%AF%95/">面试</a></span></div><div class="content">本篇将以面试问答的形式讲解语言特性、数据类型、常见类相关的知识点。</div></div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/#content-inner">3</a><a class="page-number" href="/page/4/#content-inner">4</a><a class="extend next" rel="next" href="/page/3/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/03/09/GameTheroy/" title="GameTheroy"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="GameTheroy"/></a><div class="content"><a class="title" href="/2025/03/09/GameTheroy/" title="GameTheroy">GameTheroy</a><time datetime="2025-03-09T08:45:50.000Z" title="发表于 2025-03-09 16:45:50">2025-03-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/06/MCUTuTorial01/" title="MCUTuTorial01"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MCUTuTorial01"/></a><div class="content"><a class="title" href="/2025/03/06/MCUTuTorial01/" title="MCUTuTorial01">MCUTuTorial01</a><time datetime="2025-03-06T05:46:58.000Z" title="发表于 2025-03-06 13:46:58">2025-03-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial14/" title="JavaTutorial14"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial14"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial14/" title="JavaTutorial14">JavaTutorial14</a><time datetime="2025-03-02T08:16:48.000Z" title="发表于 2025-03-02 16:16:48">2025-03-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial13/" title="JavaTutorial13"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial13"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial13/" title="JavaTutorial13">JavaTutorial13</a><time datetime="2025-03-02T08:16:41.000Z" title="发表于 2025-03-02 16:16:41">2025-03-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial12/" title="JavaTutorial12"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial12"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial12/" title="JavaTutorial12">JavaTutorial12</a><time datetime="2025-03-02T08:16:35.000Z" title="发表于 2025-03-02 16:16:35">2025-03-02</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/"><span class="card-category-list-name">Java</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Vue/"><span class="card-category-list-name">Vue</span><span class="card-category-list-count">5</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 1.23em; color: #999ea6">面试</a> <a href="/tags/Vue/" style="font-size: 1.23em; color: #999ea6">Vue</a> <a href="/tags/Tutorial/" style="font-size: 1.5em; color: #99a9bf">Tutorial</a> <a href="/tags/%E6%96%B0%E5%B9%B4%E7%9B%AE%E6%A0%87/" style="font-size: 1.1em; color: #999">新年目标</a> <a href="/tags/Java/" style="font-size: 1.37em; color: #99a4b2">Java</a> <a href="/tags/TCP/" style="font-size: 1.1em; color: #999">TCP</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+    <ul class="card-archive-list">
+  
+      <li class="card-archive-list-item">
+        <a class="card-archive-list-link" href="/archives/2025/03/">
+          <span class="card-archive-list-date">三月 2025</span>
+          <span class="card-archive-list-count">6</span>
+        </a>
+      </li>
+    
+      <li class="card-archive-list-item">
+        <a class="card-archive-list-link" href="/archives/2025/02/">
+          <span class="card-archive-list-date">二月 2025</span>
+          <span class="card-archive-list-count">15</span>
+        </a>
+      </li>
+    
+      <li class="card-archive-list-item">
+        <a class="card-archive-list-link" href="/archives/2025/01/">
+          <span class="card-archive-list-date">一月 2025</span>
+          <span class="card-archive-list-count">4</span>
+        </a>
+      </li>
+    
+      <li class="card-archive-list-item">
+        <a class="card-archive-list-link" href="/archives/2024/11/">
+          <span class="card-archive-list-date">十一月 2024</span>
+          <span class="card-archive-list-count">5</span>
+        </a>
+      </li>
+    
+      <li class="card-archive-list-item">
+        <a class="card-archive-list-link" href="/archives/2024/10/">
+          <span class="card-archive-list-date">十月 2024</span>
+          <span class="card-archive-list-count">1</span>
+        </a>
+      </li>
+    </ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">31</div></div><div class="webinfo-item"><div class="item-name">运行时间 :</div><div class="item-count" id="runtimeshow" data-publishDate="2024-10-31T16:00:00.000Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">120.3k</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>window.typedJSFn = {
+  init: str => {
+    window.typed = new Typed('#subtitle', Object.assign({
+      strings: str,
+      startDelay: 300,
+      typeSpeed: 150,
+      loop: true,
+      backSpeed: 50,
+    }, null))
+  },
+  run: subtitleType => {
+    if (true) {
+      if (typeof Typed === 'function') {
+        subtitleType()
+      } else {
+        btf.getScript('https://cdn.jsdelivr.net/npm/typed.js/dist/typed.umd.min.js').then(subtitleType)
+      }
+    } else {
+      subtitleType()
+    }
+  }
+}
+btf.addGlobalFn('pjaxSendOnce', () => { typed.destroy() }, 'typedDestroy')
+</script><script>function subtitleType () {
+  if (true) {
+    typedJSFn.init(["今日事&#44;今日毕","Never put off till tomorrow what you can do today"])
+  } else {
+    document.getElementById("subtitle").textContent = "今日事&#44;今日毕"
+  }
+}
+typedJSFn.run(subtitleType)</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

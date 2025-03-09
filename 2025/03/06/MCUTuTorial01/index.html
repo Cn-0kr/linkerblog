@@ -1,0 +1,1504 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>MCUTuTorial01 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="P2 命名规则   40正极，20接地。P0到3，镜像Z形。左侧上下，右侧外里。9脚复位，P0上拉。31引脚，电平决定，接高访内，接低访外。   P4–点亮一个LED灯 1）通过PCB原理图可以知道控制LED灯亮灭的是P2口的，并且接入+VCC5V即高电平1，LED灯要那个亮的话那个线，P2端要设置为0，不亮就设置为1，有电势差，即有电流流过灯亮； 2）P2&#x3D;1111  1110，即第一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MCUTuTorial01">
+<meta property="og:url" content="https://0krblog.yqbirdmp.com/2025/03/06/MCUTuTorial01/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="P2 命名规则   40正极，20接地。P0到3，镜像Z形。左侧上下，右侧外里。9脚复位，P0上拉。31引脚，电平决定，接高访内，接低访外。   P4–点亮一个LED灯 1）通过PCB原理图可以知道控制LED灯亮灭的是P2口的，并且接入+VCC5V即高电平1，LED灯要那个亮的话那个线，P2端要设置为0，不亮就设置为1，有电势差，即有电流流过灯亮； 2）P2&#x3D;1111  1110，即第一">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0krblog.yqbirdmp.com/statics/landscape002.jpg">
+<meta property="article:published_time" content="2025-03-06T05:46:58.000Z">
+<meta property="article:modified_time" content="2025-03-06T06:00:51.899Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0krblog.yqbirdmp.com/statics/landscape002.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0krblog.yqbirdmp.com/2025/03/06/MCUTuTorial01/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MCUTuTorial01',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2025-03-06 14:00:51'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape002.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">MCUTuTorial01</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">MCUTuTorial01</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-03-06T05:46:58.000Z" title="发表于 2025-03-06 13:46:58">2025-03-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-03-06T06:00:51.899Z" title="更新于 2025-03-06 14:00:51">2025-03-06</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">6.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>20分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>P2 命名规则</p>
+<img src="/2025/03/06/MCUTuTorial01/image-20250306135404950.png" class>
+
+<p>40正极，20接地。P0到3，镜像Z形。左侧上下，右侧外里。9脚复位，P0上拉。31引脚，电平决定，接高访内，接低访外。</p>
+<img src="/2025/03/06/MCUTuTorial01/image-20250306135822478.png" class>
+
+<p>P4–点亮一个LED灯</p>
+<p><strong>1）</strong>通过PCB原理图可以知道控制LED灯亮灭的是P2口的，并且接入+VCC5V即高电平1，LED灯要那个亮的话那个线，P2端要设置为0，不亮就设置为1，有电势差，即有电流流过灯亮；</p>
+<p><strong>2）</strong>P2&#x3D;1111  1110，即第一个灯亮其他灯不亮，但是我们读取是从下面的，所有不是（P2&#x3D;0111  1111）这样写；</p>
+<p><strong>3）</strong>用到P2口，所有要导入头文件#….鼠标右键点击就可以加进来；</p>
+<p><strong>4）</strong>不能识别 P2&#x3D;1111  1110这样的类型，所有将它转为16进制，开头用0x表示16进制的数</p>
+<p>P2&#x3D;0xFE ;  &#x2F;&#x2F;1111  1110 转换可以网上搜索，计算器也可以直接算；</p>
+<p><strong>5）</strong>一个亮一个灭P2&#x3D;0x55; &#x2F;&#x2F;0101  0101</p>
+<img src="/2025/03/06/MCUTuTorial01/cb6eeb0388e27c6545224630845b5c8463a59343.png@690w_!web-note.webp" class title="img">
+
+
+
+<p>P5—一个LED灯亮灭交替</p>
+<p><strong>1）</strong>用STC可以生成延迟函数：根据晶振改系统频率，还有其他信息；</p>
+<p><strong>2）</strong>复制生成代码到主函数上面，如下图代码：（void：无返回值，这里（）可以设置参数）；while、do…while都表示循环；</p>
+<img src="/2025/03/06/MCUTuTorial01/5f98cdf0297db340d40a1aa27a794f9f5d9ebc82.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong><em>nop</em>()，表示空语句，什么都不做，这个函数要加头文件如下：</p>
+<img src="/2025/03/06/MCUTuTorial01/322196c12cfdf06f6bd824faf7241f44d5496628.png@456w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>要在主函数，及程序入口调用才可以实现延迟：如下</p>
+<img src="/2025/03/06/MCUTuTorial01/b739f205c423cbccb5ad022c5b1c71d181ad3888.png@690w_!web-note.webp" class title="img">
+
+<p>P6–流水灯—-&gt;1）-3）即可实现，4）后面为–&gt;优化</p>
+<p><strong>1）</strong>将P5延迟的代码复制过来；</p>
+<p><strong>2）</strong>在main函数里面控制P2口灯的亮灭，代码如下，如上图放在while循环里面；</p>
+<img src="/2025/03/06/MCUTuTorial01/ec4b722b4ee34a287d920a7edfea22322bf4cd58.png@512w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>下载到板子上测试即可</p>
+<p><strong>4）</strong>生成延迟1秒函数，复制到main()函数前面</p>
+<img src="/2025/03/06/MCUTuTorial01/66498414c47b4bb6a8d71f9bf57a877a0d5ed9da.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/941effb58f99886c260e154e9e999f1a25dd6100.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>修改生成的延迟函数，可设置控制延时时间</p>
+<img src="/2025/03/06/MCUTuTorial01/2b9abde417a4aa5e06bbef0da5f4590a229a8f32.png@690w_!web-note.webp" class title="img">
+
+
+
+<p><strong>6）</strong>主函数修改延时加参数就可以了</p>
+<img src="/2025/03/06/MCUTuTorial01/1e98ca003229baa94d797d4cd0c6e83a11ec1ece.png@400w_!web-note.webp" class title="img">
+
+<p>P7——独立按键———</p>
+<img src="/2025/03/06/MCUTuTorial01/f6d2241dcea96ccd42f813cccc275c737768b0ae.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/4c2ab52950e068a9de634ca54a110ea7ec378adf.png@690w_!web-note.webp" class title="img">
+
+<p><strong>1）</strong>（上图）一端接GND,另一端接IO口，单片机上电，所有io口默认都是高电平，没按下高电平，按下低电平；</p>
+<img src="/2025/03/06/MCUTuTorial01/91a1259e08bb482578432e6b1718cbb3ee11a919.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>把上面的头文件加上X就可以单独设置：</p>
+<img src="/2025/03/06/MCUTuTorial01/3228c356c177f5a0ec6fe480f8f4af71378d431c.png@686w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>如下，单独设置：</p>
+<img src="/2025/03/06/MCUTuTorial01/d97a5d53b7ce1c00da9ead51d90053f3559091e9.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>K1接P3_1（看芯片网络标号RXD对应的引脚）上得到对应连接：</p>
+<img src="/2025/03/06/MCUTuTorial01/a141cc9f04e1bbd4e04319086a1208ea32e6f173.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/669e947a337990f65e489efa7fbfec8240a1afa2.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>按下亮松开灭第一个，P3_1是控制开关的，P2_0控制灯；</p>
+<img src="/2025/03/06/MCUTuTorial01/e2c36f6193666e872f4ad110b83b11202be10149.png@574w_!web-note.webp" class title="img">
+
+
+
+<p>p8———独立按键控制LED灯状态</p>
+<img src="/2025/03/06/MCUTuTorial01/686bee0296ad861197af6c0edc7f7e00a4d1a405.png@690w_!web-note.webp" class title="img">
+
+<p><strong>1）</strong>消除抖动的方法，延时代码生成：</p>
+<img src="/2025/03/06/MCUTuTorial01/4793e1fb7739dec7e42cc65e3e60d88a222e5582.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>粘贴到main函数上方，修改延时代码如下：</p>
+<img src="/2025/03/06/MCUTuTorial01/31b405d51f5fcd936895c208706bbcf6423aff85.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>实现一个LED灯亮灭未用按键：</p>
+<img src="/2025/03/06/MCUTuTorial01/8906fc793d0655243dfccdffee35ad35e3e538cb.png@590w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>监测按下按键是否松手，一直按着要一直监测，松手了才操作，像鼠标点击关闭浏览器，点到X的位置，不松还没关闭，松手了才关闭：（28行代码取反的意思，原来亮，取反就是不亮）</p>
+<img src="/2025/03/06/MCUTuTorial01/f90ea9a084a844e3c725ea2cf182182020ab4651.png@690w_!web-note.webp" class title="img">
+
+
+
+<p><strong>p9—-延迟函数同P8 独立按键控制LED——</strong></p>
+<p><strong>1）</strong>通过工具，生成延时函数，复制到mian.c文件</p>
+<img src="/2025/03/06/MCUTuTorial01/46d4a48d1ee2e6de081f3dc78561a928cdcef3e8.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>修改延时函数，将延时设置为可改变的，带参数函数；</p>
+<img src="/2025/03/06/MCUTuTorial01/2338d614dc2b63a32a70323857b928a6c33a8d59.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>主函数调用延时函数，实现LED灯亮灭，P3_1为控制按钮，P2控制灯亮灭，LEDNum控制移动：</p>
+<img src="/2025/03/06/MCUTuTorial01/03a99a88acad1d9a558c9abbee4554bf5b0dcca6.png@690w_!web-note.webp" class title="img">
+
+
+
+<p>P10—-代码—延迟同P9</p>
+<p>**1)**把前面的延迟函数复制过来，延迟函数放在main函数前面，也可以放到后面，如果放到后面要把下面选中的蓝色部分复制到到现在的位置加分号“；”：</p>
+<img src="/2025/03/06/MCUTuTorial01/cdc46a200bf796a42ba2ebfa28091618ecc75dd1.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>延时函数在后面时，代码如下，要在前面声明：</p>
+<img src="/2025/03/06/MCUTuTorial01/263b1dfc2e9ce5ea0e09aa28ea06f174232c5d84.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>位移的情况，下面是左移&lt;&lt;</p>
+<img src="/2025/03/06/MCUTuTorial01/5de7fc969c44361e5c3c09a3adbb23a81ff603c0.png@380w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>左移操作实现：</p>
+<img src="/2025/03/06/MCUTuTorial01/40dfd764bfba495002609f2e0efcd5e0b3b394d4.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>板上的操作实现，只控制第一个按钮，按其他没用，灯往箭头方向移动：</p>
+<img src="/2025/03/06/MCUTuTorial01/29547c08467b10169f464713da65e31e6696b47f.png@690w_!web-note.webp" class title="img">
+
+<p><strong>6）</strong>实现右移操作（看行数，接5）代码）：</p>
+<img src="/2025/03/06/MCUTuTorial01/99b69f9e4cb06804948c66d84c98de827a24718d.png@690w_!web-note.webp" class title="img">
+
+
+
+<p><strong>P11 —-静态数码管显示——</strong></p>
+<p><strong>1）</strong>常见数码管使用</p>
+<img src="/2025/03/06/MCUTuTorial01/24f1c0082775c5c625c59e471db3cd798672cda3.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>板中数码管，可控制显示各个位置显示不同数字</p>
+<img src="/2025/03/06/MCUTuTorial01/74ea96c9997435ee9a35bbd7fb3db1b02c2ea7b0.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>控制数码管显示的原理图</p>
+<img src="/2025/03/06/MCUTuTorial01/2f480f58c0a727f1d064ad20056dfb2e197e6cf6.png@452w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/2ffdad8aa103319d6090a74f05477526fcbfea33.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>管脚定义（对应字母控制对应位置亮）：上面的为共阴极、下面的为共阳极（可以理解为3,8管脚处为供电，三角形尖尖有一横的是负极，所有共阴极），两个图中的数字为引脚：</p>
+<img src="/2025/03/06/MCUTuTorial01/eecafcb08415a295930b0713de2d5e3948ee5d6d.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>用共阴极（因为共阴极所有3、8号公共端要接地，即为0）连接显示数字6的操作，有电势差即有电流流过灯才会亮，所有下面的1为亮，0不亮：（位选：10111110：显示6）</p>
+<img src="/2025/03/06/MCUTuTorial01/0e17fcd50cf65ced2aa26866a37dc3c92b24b81f.png@690w_!web-note.webp" class title="img">
+
+<p><strong>6）</strong>共阳极，接VCC为1，下面的为0才亮，有电流流过，有电势差灯才亮：</p>
+<img src="/2025/03/06/MCUTuTorial01/e4b16c8a621b6901bc12060c8db775068b7624e5.png@690w_!web-note.webp" class title="img">
+
+<p><strong>7）</strong>下面为多个数码管，PCB板的4个为一体，同样上面为共阴极、下面为共阳极的原理图：</p>
+<img src="/2025/03/06/MCUTuTorial01/948b30be581ab91c08497cb9232288dd68167942.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/dc31ecd8cd35a4e2fc52d897c3d3f625f3275d57.png@690w_!web-note.webp" class title="img">
+
+<p><strong>8）</strong>共阴极，那么我们公共端（12、9、8、6）接地给0才会亮，及可以控制第几个亮；显示的数字则通过下面（11、7、4、2、1、10、5、3即对应字母ABCDEFG）控制，给1才亮，给0不亮（电势差）；<strong>下图显示结果：第三亮，显示数字1:（共引脚，其他亮的话数字也一样）</strong></p>
+<img src="/2025/03/06/MCUTuTorial01/09c10105855c66628310a5322143f9a26f7126e7.png@690w_!web-note.webp" class title="img">
+
+<p><strong>9）</strong>原理图是共阴极（上面给0、下给1亮）</p>
+<img src="/2025/03/06/MCUTuTorial01/57d1fc9b224637cbb44db27cd20ee7c2883f4188.png@690w_!web-note.webp" class title="img">
+
+<p><strong>10）</strong>上图完整版：</p>
+<img src="/2025/03/06/MCUTuTorial01/b5f1395371cbfd1fe9f8aa9418ffaf0fde360653.png@690w_!web-note.webp" class title="img">
+
+<p><strong>11）</strong>输入3（ABC,读的时候是从下读 C  B  A ）个口，控制输出8个口，输出口连接共阴极的，是0还是1，在这里控制：使能端连接（按下图给1和0就可以用了）</p>
+<img src="/2025/03/06/MCUTuTorial01/95b3ac66b620d7fc55508b6db6a9cce37c9c952b.png@690w_!web-note.webp" class title="img">
+
+<p>**12)**通过CBA给数字0和1二进制转换10进制（得到数字几）就控制Y几，Y0头上“—”是表示低电平有效（即给0）：</p>
+<img src="/2025/03/06/MCUTuTorial01/7bd12860d3ff60816bdd4b3768b553d59a97d1f7.png@690w_!web-note.webp" class title="img">
+
+<p><strong>13）</strong>双向缓冲，高电平往低电平送数据</p>
+<img src="/2025/03/06/MCUTuTorial01/8d717139f9d4cac41e90abde2f51d97b70c29ff7.png@690w_!web-note.webp" class title="img">
+
+<p><strong>14）</strong>CC2电容作用：滤波电容，稳定电源，确定电路稳定性，提高电路工作性能可靠运行；</p>
+<p>RP4：排阻，限流，防止电流过大</p>
+<img src="/2025/03/06/MCUTuTorial01/94e2c8bae6c290f4c5c73b39d8df8ebee23b7765.png@690w_!web-note.webp" class title="img">
+
+<p><strong>15）</strong>这里的P01……P07,就是用P0口，后面代码就是通过P0口控制灯的</p>
+<img src="/2025/03/06/MCUTuTorial01/a4d1e6cfa05a31f636f142f3d20f8f63a8aca40b.png@690w_!web-note.webp" class title="img">
+
+<p><strong>16）</strong>只有Y5为0，其他Y0…Y7都为1；</p>
+<img src="/2025/03/06/MCUTuTorial01/891b3b9e3d08afa2395269455e7000a7e4ccf67c.png@690w_!web-note.webp" class title="img">
+
+<p><strong>17）</strong>读取顺序都是从下到上</p>
+<img src="/2025/03/06/MCUTuTorial01/c54ce7170dcac9a817014d916755d19196caa6b7.png@690w_!web-note.webp" class title="img">
+
+<p><strong>18）</strong>代码控制公共端，从下往上写：</p>
+<img src="/2025/03/06/MCUTuTorial01/77abfa10a353152acabf412a09d47503465673fe.png@656w_!web-note.webp" class title="img">
+
+<p><strong>19）</strong>二进制101转换为1十进制为5，控制Y5，即公共端的LED6；</p>
+<img src="/2025/03/06/MCUTuTorial01/903257f393faf835fc534fc97b1ca22bcf06f00e.png@690w_!web-note.webp" class title="img">
+
+<p><strong>20）</strong>要显示下图的数字6</p>
+<img src="/2025/03/06/MCUTuTorial01/256bee653ebe64e509286704daf737553b58ff67.png@690w_!web-note.webp" class title="img">
+
+<p><strong>21）</strong>代码实现如下（P2控制共阴极，P0控制显示数字）及结果；</p>
+<img src="/2025/03/06/MCUTuTorial01/924bc63eba765c234bb1050cb17a50602475f654.png@558w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/b92b00193bba6331305bd5837aea4c8962dbc8a5.png@690w_!web-note.webp" class title="img">
+
+<p><strong>22）</strong>要显示的数字对应的值</p>
+<img src="/2025/03/06/MCUTuTorial01/da92ef8c60ad51054ec392707ac34ed61c2625fc.png@690w_!web-note.webp" class title="img">
+
+<p><strong>23）</strong>优化操作代码，代码第三行如上表内容，下面&#x2F;&#x2F;8表示第一个灯Y7即LED8,在最左边那个</p>
+<img src="/2025/03/06/MCUTuTorial01/cd17a655bc51519c0a49058e32d4c82295885024.png@690w_!web-note.webp" class title="img">
+
+<p><strong>24）</strong>函数调用（前面参数为显示位置，后面为显示数字），接上面代码：</p>
+<img src="/2025/03/06/MCUTuTorial01/9878a753acbbe05634e07cfe92a9951e055eb06e.png@690w_!web-note.webp" class title="img">
+
+<p><strong>P12—动态数码管显示—–</strong></p>
+<p><strong>1）</strong>将P11代码复制粘贴到这里项目；</p>
+<p><strong>2）</strong>生成延迟函数复制过来，修改一下：</p>
+<img src="/2025/03/06/MCUTuTorial01/dc084992e1e739020da676c88879a0740bc79213.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/3942cb34a16a58c2433833febccb73386513b703.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>动态显示，放循环里面</p>
+<img src="/2025/03/06/MCUTuTorial01/ad6ea540287d27865090ddd9d00f01846757f2b7.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>注释掉上面的延时调用，旁边的管会有些影响，需要<strong>消影，段选、位选影响造成串位，如下代码消除</strong>；</p>
+<img src="/2025/03/06/MCUTuTorial01/ed2df52daed9b980a9ad0712185abe20a28a417f.png@650w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>了解</p>
+<img src="/2025/03/06/MCUTuTorial01/f98584cf6591f840f830f280333bb58af8758d2e.png@690w_!web-note.webp" class title="img">
+
+
+
+<p><strong>P13–模块化编程—-</strong></p>
+<img src="/2025/03/06/MCUTuTorial01/707c55b9c21e7a0db630f86f3a5f603fea83bc48.png@690w_!web-note.webp" class title="img">
+
+<p><strong>1）</strong>驱动，先会用，后续有详细内容：</p>
+<img src="/2025/03/06/MCUTuTorial01/76b16d7b3e411708e77b56ec3d72379f3d27d0f5.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>模块化，功能函数用点C文件写，点H文件声明函数，在main函数文件引入头文件直接调用：</p>
+<img src="/2025/03/06/MCUTuTorial01/6390e9203ffb699020855dee04857e54a23b731a.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>注意事项</p>
+<img src="/2025/03/06/MCUTuTorial01/4c9ef9911bf1a9d7f00cf5aca40d53feac748887.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>预编译</p>
+<p>[5-1] 模块化编程 P13 - 15:49预编译</p>
+<img src="/2025/03/06/MCUTuTorial01/cfc7bc9682ae52ee7e4f7e932331f073bdf010ed.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>写代码</p>
+<p>[5-1] 模块化编程 P13 - 26:42写代码</p>
+<p><strong>6）</strong>延时函数文件</p>
+<img src="/2025/03/06/MCUTuTorial01/963d165fe93b550e4b2f13e9c132b7ad6b94965f.png@690w_!web-note.webp" class title="img">
+
+<p><strong>7）</strong>头文件延迟</p>
+<img src="/2025/03/06/MCUTuTorial01/c94e0982f365e4a04e560401471a9038b1ede7ec.png@690w_!web-note.webp" class title="img">
+
+<p><strong>8）</strong>主函数文件程序入口：</p>
+<img src="/2025/03/06/MCUTuTorial01/fb7616d03bd3ff2890d0282f3612b0bde0058ff5.png@588w_!web-note.webp" class title="img">
+
+<p><strong>9）</strong>数码管模块，用到的头文件要引用：</p>
+<img src="/2025/03/06/MCUTuTorial01/fc486483804460a8968959852360f439962a679b.png@690w_!web-note.webp" class title="img">
+
+<p><strong>10）</strong>数码管模块头文件</p>
+<img src="/2025/03/06/MCUTuTorial01/e06a527f226bc7f915d62831cd938101e220cffe.png@690w_!web-note.webp" class title="img">
+
+<p><strong>11）</strong>函数调用</p>
+<img src="/2025/03/06/MCUTuTorial01/1e33801aeb532fbf65ade8182221e1f88a175fea.png@610w_!web-note.webp" class title="img">
+
+<p><strong>12）</strong>显示</p>
+<img src="/2025/03/06/MCUTuTorial01/7361521155f17fa468eb919f79c4db62cd90d300.png@690w_!web-note.webp" class title="img">
+
+
+
+<p><strong>P14–LCD1602调试工具——-</strong></p>
+<img src="/2025/03/06/MCUTuTorial01/df43ce2e2f95f4d84df20a233a6cd0bd2f304dfe.png@690w_!web-note.webp" class title="img">
+
+<p><strong>1）</strong>调试工具原理图</p>
+<img src="/2025/03/06/MCUTuTorial01/6bd58880470bd0aae3337931a9df5460bb199663.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>模块化代码，可以自己去下（我没有板不下），下完放到自己工程目录下：</p>
+<p>[5-2] LCD1602调试工具 P14 - 03:43UP主代码</p>
+<img src="/2025/03/06/MCUTuTorial01/56fd4de50fc633e8133b09683bfbf945db1001d7.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>将下好的两个文件添加到工程：</p>
+<img src="/2025/03/06/MCUTuTorial01/b22971062b80a3d6ecaaf9b09174c7b52f5ffcf0.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>文件主要内容如下：</p>
+<img src="/2025/03/06/MCUTuTorial01/26890bf82edd753f72b77db98cad300c449a910a.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>main函数调用：</p>
+<img src="/2025/03/06/MCUTuTorial01/725fe5b9ac31aaebefe77be457986ceb95365c65.png@690w_!web-note.webp" class title="img">
+
+<p><strong>6）</strong>显示其他管脚冲突，所有会一起显示：</p>
+<img src="/2025/03/06/MCUTuTorial01/5ba5420c9fe6e7121224eefe11606986d28865ba.png@690w_!web-note.webp" class title="img">
+
+<p><strong>7）</strong>其他函数的调用及功能，可以设置显示位置和范围：</p>
+<p>[5-2] LCD1602调试工具 P14 - 14:08</p>
+<img src="/2025/03/06/MCUTuTorial01/510974e2cc4ebe660feb2eff5a99a1c19be2e61f.png@690w_!web-note.webp" class title="img">
+
+<p><strong>8）</strong>需要用到延迟函数：可以直接将前面模块化文件复制到工程目录下，添加进来引用即可；</p>
+<p>[5-2] LCD1602调试工具 P14 - 18:18</p>
+<p><strong>P15—矩阵按键—–</strong></p>
+<img src="/2025/03/06/MCUTuTorial01/d28b1665200f1400cf833bc84869cc64139fc332.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/f4fce5815c2de9cf95df828e2db03a35c8e91e86.png@690w_!web-note.webp" class title="img">
+
+<p><strong>1）</strong>P14-P17给0就代表扫描，其他给1（没选中），一次只能扫描一行；P10-P13给0表示按下，给1表示没按下；（逐行扫描）</p>
+<img src="/2025/03/06/MCUTuTorial01/cf8060b0a7474e5036ed4799ce921efe4600a6ec.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>按列扫描也一样思路</p>
+<p><strong>3）</strong>写代码：</p>
+<p>[6-1] 矩阵键盘 P15 - 26:19</p>
+<p><strong>4）</strong>将延迟的和LCD1602(液晶显示)的代码复制到工程目录下:</p>
+<p>[6-1] 矩阵键盘 P15 - 27:18</p>
+<p>移植</p>
+<img src="/2025/03/06/MCUTuTorial01/a97ba497f3350605babfac79542a4111b85fed84.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>添加到keil中（选中文件右键，Add filess to Grop—）</p>
+<img src="/2025/03/06/MCUTuTorial01/2b9e097bb58c1e20f1e1a8d437ccb5727127f7d8.png@392w_!web-note.webp" class title="img">
+
+<p>**6)**引用头文件使用（前面知识，要先初始化才能用）：</p>
+<img src="/2025/03/06/MCUTuTorial01/52b0a98e2d3dde7f3f8efdc566915d3c9f65800d.png@690w_!web-note.webp" class title="img">
+
+<p><strong>7）</strong>去掉警告，不显示：</p>
+<img src="/2025/03/06/MCUTuTorial01/621a8a75184453f935294d649b8aa18f375c8eef.png@690w_!web-note.webp" class title="img">
+
+<p><strong>8）</strong>快速生成常用格式代码：</p>
+<img src="/2025/03/06/MCUTuTorial01/dc83903ccc8c27ab07cda56aa2d71aebac2b78ed.png@690w_!web-note.webp" class title="img">
+
+<p><strong>9）</strong>设置，完成后双击就可以生成了：</p>
+<img src="/2025/03/06/MCUTuTorial01/dcbe13a89b7a5e22bd89f2fbcde397ee8fa9e7f4.png@690w_!web-note.webp" class title="img">
+
+<p><strong>10）</strong>扫描矩阵按键代码，可以选中图片右键浏览，这样看模糊：（局部变量要赋初始值）</p>
+<img src="/2025/03/06/MCUTuTorial01/22c2b8a184489283b8c237f57b041b512c6ecc69.png@690w_!web-note.webp" class title="img">
+
+<p><strong>11）</strong>第一列判断是否被按下代码</p>
+<img src="/2025/03/06/MCUTuTorial01/0963da0edfe4fdbac79eb06267865bc3212f2d1d.png@690w_!web-note.webp" class title="img">
+
+<p><strong>12）</strong>那一列检测那一列置0，再检测列的第几个按下（其他的列复制过来改下）：</p>
+<img src="/2025/03/06/MCUTuTorial01/598b6279867f0722c2ef5d0af130e3413d3bed14.png@690w_!web-note.webp" class title="img">
+
+<p><strong>13）</strong>头文件声明</p>
+<img src="/2025/03/06/MCUTuTorial01/aa1467e8eb60eb01b147f328bad4ec2c5dbf46e7.png@674w_!web-note.webp" class title="img">
+
+<p><strong>14）</strong>main函数调用</p>
+<img src="/2025/03/06/MCUTuTorial01/250bae626354754476b0604ad92cda9319e24b9e.png@690w_!web-note.webp" class title="img">
+
+<p><strong>15）</strong>矩阵按键函数其他列如下：</p>
+<img src="/2025/03/06/MCUTuTorial01/330de325e9d910d1c0ac97041251704f0cdec0d2.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/4db09b35e2211756fbfc69d053ae99b9ec6704f9.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/44d3468b0fcbde1ae2266de7d39d459bb81b95c4.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/1f9ff271eaef60e06d869a48177bff4029591250.png@690w_!web-note.webp" class title="img">
+
+<p><strong>P16–矩阵键盘密码锁—-</strong></p>
+<p><strong>1）</strong>将P15代码复制过来到工程目录下（复制功能模块点C和点H文件）在主函数引入头文件；</p>
+<img src="/2025/03/06/MCUTuTorial01/cb7c31cd850e4232909319c159b0166e9237f031.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>乘以10和+&#x3D;操作理解：</p>
+<p>[6-2] 矩阵键盘密码锁 P16 - 08:04</p>
+<img src="/2025/03/06/MCUTuTorial01/a7f6ddbd36b1b55f30721f7e9c4342065ea71b9f.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>显示密码超出范围(大于int类型函数显示值)，解决方法Count，计数：</p>
+<p>[6-2] 矩阵键盘密码锁 P16 - 10:00</p>
+<p><strong>4）</strong>11按键确认键：</p>
+<p>[6-2] 矩阵键盘密码锁 P16 - 12:1911确认键</p>
+<img src="/2025/03/06/MCUTuTorial01/560b5305bf24aef3ddcbaad99404efa7d5c6a78e.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>取消键12</p>
+<p>[6-2] 矩阵键盘密码锁 P16 - 18:26</p>
+<img src="/2025/03/06/MCUTuTorial01/28661db43efc8172bc8a9913a759a1a32acdc8f2.png@690w_!web-note.webp" class title="img">
+
+<p><strong>P17—定时器—–有点难前面的搞懂了，这里不是很懂-</strong></p>
+<p><strong>1）</strong>介绍，Delay前面CPU是一直在等的，用定时器在Delay时可以去检测按键，提高CPU利用率：</p>
+<img src="/2025/03/06/MCUTuTorial01/665810012948c0d8582c96e480972a71a5574967.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/705a673128865479bb528e27db03acfdf313df90.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/285946b2b6740b238cc65cb0471d0ceaaab001f1.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/ac54ca95f3f4c76061452a29088a95d86944be03.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/306423af34a6979c500b214d4210e9feeda20615.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/d2dc8b0de53e3f87b8cd52a59eba881c348de9c9.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/c3358ef3d2c2b2933caa45c9ed5faba2383b9390.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>模式1最常用：</p>
+<img src="/2025/03/06/MCUTuTorial01/07caaae743f6852c6fc21159555e80e6b8e17415.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>模式：时钟–计数最大65535（计数系统TL0\TH0：每来一个脉冲+1方法计数）-TF0(标志位，到最大了回到0)-中断：</p>
+<img src="/2025/03/06/MCUTuTorial01/81f65f5a30a22eceaf9b6a3e42471abc66c38dbb.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>非门与门图形为控制部分（TR0是否启动暂定）</p>
+<p><strong>5）</strong>定时器部分：</p>
+<img src="/2025/03/06/MCUTuTorial01/c6eadaae4bb8f5b5dec63ed37484dacab713647c.png@690w_!web-note.webp" class title="img">
+
+<p><strong>6）</strong>时钟可以由系统提供（上图，晶振），也可以由外部T0P提供（如下图引脚）</p>
+<img src="/2025/03/06/MCUTuTorial01/b2b30a14cd5791bbb6b058a74c2bef0969fa5418.png@690w_!web-note.webp" class title="img">
+
+<p><strong>7）</strong>C&#x2F;T,给1连上面为控制器，给0连接下面为定时器（如下图）：</p>
+<img src="/2025/03/06/MCUTuTorial01/29a56342a98efc3230387e1d44b0d3c3c275194c.png@100w_!web-note.webp" class title="img">
+
+<p><strong>8）</strong>中断系统：</p>
+<img src="/2025/03/06/MCUTuTorial01/ee21784726b359fcedcb4a21d41871623812e331.png@690w_!web-note.webp" class title="img">
+
+<p><strong>9）</strong>中断资源</p>
+<img src="/2025/03/06/MCUTuTorial01/a2df4f7bb82b801dd7b554439d7b1cb6e8910710.png@690w_!web-note.webp" class title="img">
+
+<p><strong>10）</strong></p>
+<img src="/2025/03/06/MCUTuTorial01/b85ae9aef609698c128b4edefb87550631d9f33b.png@690w_!web-note.webp" class title="img">
+
+<p><strong>11）</strong></p>
+<img src="/2025/03/06/MCUTuTorial01/878425519f3450d5f53065a9235231623aff7a58.png@690w_!web-note.webp" class title="img">
+
+<p><strong>P18–按键控制LED流水灯&amp;定时器–</strong></p>
+<p><strong>1）</strong>TMOD寄存器工作模式、TCON控制寄存器，定时器0配置使用（不可位寻址，只能整体赋值）</p>
+<img src="/2025/03/06/MCUTuTorial01/d0c1e8262634614b0656292ba24b7a0db8c1e07d.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>定时器模式1：门控端给0，就是tr0单独控制：C&#x2F;T，T这里有一横表示低电平有效，就给0是用T（定时器模式），给1用C（控制器模式），M1,M0工作模式选择</p>
+<img src="/2025/03/06/MCUTuTorial01/7a5e73bd7b5f65914796bd88f1eeb3458e3ce8d8.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>如上图4-6给0：</p>
+<img src="/2025/03/06/MCUTuTorial01/a2338737401e6d55d9ba5da8d7e562eb92bb0aa2.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>控制计数器（可位寻址，可以单独每一位赋值）</p>
+<img src="/2025/03/06/MCUTuTorial01/dca1eb610c1566c749de5c385806ad9d553a0dea.png@690w_!web-note.webp" class title="img">
+
+<p>**5)**中断溢出标志位：</p>
+<p>TF&#x3D;0（等于1产生中断）; </p>
+<p>TR0&#x3D;1（定时器是否开启，给1开始，电机开始工作）；</p>
+<p>IE0、IT0：控制外部中断引脚，可以不配置</p>
+<p><strong>6）</strong></p>
+<img src="/2025/03/06/MCUTuTorial01/44c27c2570d8a63c8ef031f1e267754d21fccbf8.png@690w_!web-note.webp" class title="img">
+
+<p><strong>7）</strong>TH0&#x3D;64535存不下这么大的数要分开存，这里是16进制</p>
+<img src="/2025/03/06/MCUTuTorial01/b03c9a7294aae53ad73fc68c47c8643555953b93.png@690w_!web-note.webp" class title="img">
+
+<p><strong>8）</strong>定时器配置TH0\TL0</p>
+<img src="/2025/03/06/MCUTuTorial01/37cbe257791efcebbdd024f62e3e80bd7caed22e.png@690w_!web-note.webp" class title="img">
+
+<p><strong>9）</strong>中断配置T0–&gt;ET0&#x3D;1–EA&#x3D;1，PT0&#x3D;0</p>
+<img src="/2025/03/06/MCUTuTorial01/e8b5857f2d784ba2f0924af2506896ea1a3bb770.png@690w_!web-note.webp" class title="img">
+
+<p><strong>10）定时器</strong>配置完成（TMOD定时器工作模式，TCON定时器控制器（单独赋值TF0中断溢出标志位（TF&#x3D;0整体赋值）\TR0开始计算））第六行改代码为TF0&#x3D;0</p>
+<p>[7-2] 按键控制LED流水灯模式&amp;定时器时钟 P18 - 12:25</p>
+<img src="/2025/03/06/MCUTuTorial01/b30f3b6a8a12941f1265368d106459c1d3a95cb9.png@690w_!web-note.webp" class title="img">
+
+<p><strong>11）</strong>中断完成，可验证。（P2_0\TMOD等已经定义了所有可以直接使用，包含头文件进来即可）终于有点懂了</p>
+<img src="/2025/03/06/MCUTuTorial01/8a9cf0bbc54bc7b927fd54ecb3cd4a5c05a779ae.png@690w_!web-note.webp" class title="img">
+
+<p><strong>12）</strong>检测是否进入中断函数里面</p>
+<img src="/2025/03/06/MCUTuTorial01/a7ee65135a32b41309126355e7e6f1a9dcd9291b.png@690w_!web-note.webp" class title="img">
+
+<p><strong>13）</strong>代码优化，TMOD问题（不可位寻址）配置两个的时候，后面的会把前面的覆盖；</p>
+<img src="/2025/03/06/MCUTuTorial01/c03681ed945788428fcb57f0afafcf7f4e0ea4d7.png@690w_!web-note.webp" class title="img">
+
+<p><strong>14）</strong>不会改变高4位</p>
+<img src="/2025/03/06/MCUTuTorial01/b6f55ea871fb4571da8a276429bfa04efed8aaa3.png@690w_!web-note.webp" class title="img">
+
+<p><strong>15）</strong>简写</p>
+<img src="/2025/03/06/MCUTuTorial01/59d1ea15868bdc08c3da54920f0763e499d29f21.png@690w_!web-note.webp" class title="img">
+
+<p><strong>16）</strong>差1毫秒原因</p>
+<p>[7-2] 按键控制LED流水灯模式&amp;定时器时钟 P18 - 27:12</p>
+<img src="/2025/03/06/MCUTuTorial01/6ea910fe6f5bf12e6c53f76693e6987ccb41f85b.png@666w_!web-note.webp" class title="img">
+
+<p><strong>17）</strong>定时器模块化</p>
+<p>[7-2] 按键控制LED流水灯模式&amp;定时器时钟 P18 - 34:02</p>
+<img src="/2025/03/06/MCUTuTorial01/1c9524a169d257a544ad0d5a47d20b5071b21860.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/bf8b6e1d0de245b2f0669f29364ac003533074d1.png@628w_!web-note.webp" class title="img">
+
+<p><strong>18）</strong>static修饰变量程序结束后，内存还有，不清理</p>
+<img src="/2025/03/06/MCUTuTorial01/625839238fc553e10d2cf1ea5534b7ea8f12fd5a.png@690w_!web-note.webp" class title="img">
+
+<p><strong>19）独立按键</strong>模块化，前面学了（while检测松手）P2改为P3，按键为P3，灯为P2</p>
+<img src="/2025/03/06/MCUTuTorial01/b7753c0c687d1d858a8944f54eb99f0122212851.png@690w_!web-note.webp" class title="img">
+
+<p><strong>20）</strong>头文件</p>
+<img src="/2025/03/06/MCUTuTorial01/5307e70922d64ef495d3a7e5bf320a3752346066.png@568w_!web-note.webp" class title="img">
+
+<p><strong>21）</strong>main调用</p>
+<img src="/2025/03/06/MCUTuTorial01/0a297ed049986c34c65481f81c7f4a6f372aa6e4.png@690w_!web-note.webp" class title="img">
+
+<p><strong>22）</strong>流水灯模式P2&#x3D;0亮</p>
+<p>[7-2] 按键控制LED流水灯模式&amp;定时器时钟 P18 - 46:48</p>
+<p><strong>23）</strong>循环左右移，移动到最高又回到最低位</p>
+<img src="/2025/03/06/MCUTuTorial01/d34948744751eb61bea4411df8196b02c24f7e04.png@418w_!web-note.webp" class title="img">
+
+<p><strong>24）</strong>流水灯代码</p>
+<img src="/2025/03/06/MCUTuTorial01/81a9751f7303aaa9530fd9f71692e190200cda20.png@690w_!web-note.webp" class title="img">
+
+<p><strong>25）</strong>接上面</p>
+<img src="/2025/03/06/MCUTuTorial01/4baea1ceb67b16992e9df48e7a8f2897633ab772.png@690w_!web-note.webp" class title="img">
+
+<p><strong>26）</strong>接上面</p>
+<img src="/2025/03/06/MCUTuTorial01/d2911193da2ddfcbe8fbf7e8e7d4958f0a66d171.png@690w_!web-note.webp" class title="img">
+
+<p><strong>27）</strong>时钟新项目</p>
+<p>[7-2] 按键控制LED流水灯模式&amp;定时器时钟 P18 - 53:17</p>
+<p><strong>①</strong>把LCD1602液晶显示、延迟、定时器、的代码复制到工程目录下，导入；</p>
+<p><strong>②</strong>主函数包含其他模块头文件并初始化；</p>
+<img src="/2025/03/06/MCUTuTorial01/490bd148691312f3d2abbe0fe0443b5b618771d0.png@690w_!web-note.webp" class title="img">
+
+<p><strong>③</strong>复制定时器中断函数（过程不要太长，一般简单任务）到main函数下：</p>
+<img src="/2025/03/06/MCUTuTorial01/e83f24902e5f4d95e180e618061fcea657a7ff32.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/d2d6e2c1bf4a66fbe830a69601fcdbd865353583.png@690w_!web-note.webp" class title="img">
+
+<p><strong>④</strong>定义变量，秒计数、分、小时并显示：</p>
+<img src="/2025/03/06/MCUTuTorial01/a64fd26dbb7af9259d90442c9237387a2f9f08be.png@690w_!web-note.webp" class title="img">
+
+<p><strong>⑤</strong>为了方便验证，给初始值</p>
+<img src="/2025/03/06/MCUTuTorial01/3491ae999adb6318ade125c6e35a1f1848fa4131.png@690w_!web-note.webp" class title="img">
+
+
+
+<p><strong>P19—串口通讯——</strong></p>
+<p><strong>1）</strong>介绍</p>
+<img src="/2025/03/06/MCUTuTorial01/7906efabec9f28b64d96f729cecfed02734a0bf8.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）向</strong>单片机发送数据（下面框），返回（上框）</p>
+<img src="/2025/03/06/MCUTuTorial01/3476879a8be6864adbcf9acf0260481eb147665b.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>DB9串口传输数据（注意使用的电压是否一致）使用RS232或RS485电平</p>
+<img src="/2025/03/06/MCUTuTorial01/5c3c788ae10436d2cfbc78c20e179d762490d96e.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>知识点</p>
+<img src="/2025/03/06/MCUTuTorial01/7d22596a95a9284e62e966c0f1ac46837bf3dfa3.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/fd1e1e169a6cdc69804e9eddc760101e313d3905.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/69fbf3d0a823be870dbd852bba96844270992ad6.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/a919329225fa14b65d65077fa2f0bf5f6f7c5f26.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/985bda9da218b851378e1713125bb1d7c06e38e1.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/3d36ee066d51477ee8ad0a575c994580bd4bae46.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/c9e948e7778c8f6bbb6b244e4dab89af5b255d40.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/4f7c6dff15f99f141a1e2d08ba9c865de538fed5.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/eeb0e82c211f50ca5e42b6759c9fafa8d634bafa.png@690w_!web-note.webp" class title="img">
+
+<p><strong>P20—串口代码—-</strong></p>
+<p><strong>一、</strong></p>
+<img src="/2025/03/06/MCUTuTorial01/a0f0ed44a4b5c829e95e4954be73b8df6c8e26e5.png@690w_!web-note.webp" class title="img">
+
+<p><strong>1）</strong>将延迟函数复制过来并导入工程里面；</p>
+<p><strong>2）</strong>配置串口控制寄存器，配置模式1最常用，REN允许接收给1，不允许接收给0（也可以给1外面不给发就行）；</p>
+<img src="/2025/03/06/MCUTuTorial01/bb36010fbd6229db956891fee3a0029a7ab31a93.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/a2e19b4d4719349dd4d704f755bbc1b90340afd5.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/56a8f29cc5a35fa9d72bbaff331f3d0addb604bf.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>发送完置1（硬件只负责），但必须软件复位置0；</p>
+<img src="/2025/03/06/MCUTuTorial01/4d1dcc9ba0b46740a693b112bf1c4cce12187544.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/92b06b12db51921cafb47bff2e7fa38b8bdfc7dc.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/897dfcfb8f1cbe9083911464cf597614d85fc533.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>将寄存器配置：</p>
+<p>SCON&#x3D;0x40(串行寄存器配置上面图红色字体部分)；PCON&#x3D;0（波特率）；</p>
+<p>下图为定时器配置：</p>
+<img src="/2025/03/06/MCUTuTorial01/c5836fc5ddc1e6662b2ba1faf1d45a5fa583afd7.png@690w_!web-note.webp" class title="img">
+
+<p>这里定时器1，没有定时器0，所有要把高位修改（不影响高低位配置用“”&amp; |“”这两个方式）</p>
+<img src="/2025/03/06/MCUTuTorial01/d3580f268b8e5bbe49be9df386bb52db5344e7e9.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>自动重装：</p>
+<img src="/2025/03/06/MCUTuTorial01/07c553a5b9a0e42d2d6acb0d884a4c5a8a66a13a.png@690w_!web-note.webp" class title="img">
+
+<p><strong>6）89C52</strong></p>
+<img src="/2025/03/06/MCUTuTorial01/78985fa864f7dda057e43bd2936e3602b192c139.png@690w_!web-note.webp" class title="img">
+
+<p><strong>7）</strong>生成代码复制过来修改一下配置</p>
+<img src="/2025/03/06/MCUTuTorial01/798b3b3cdc6b27df28bdf1de956908eb4d3448f1.png@690w_!web-note.webp" class title="img">
+
+<p><strong>8）</strong>发送数据端</p>
+<img src="/2025/03/06/MCUTuTorial01/b3fcb00f5795f047e3ce0e0a355e0dc4c01cbfe3.png@690w_!web-note.webp" class title="img">
+
+<p><strong>9）</strong>调用单项发送完成</p>
+<img src="/2025/03/06/MCUTuTorial01/4209ee0e2c418383b2ef4a8324f70386c370c0c8.png@610w_!web-note.webp" class title="img">
+
+<p><strong>10）</strong>模块化串口设置（完整代码）</p>
+<img src="/2025/03/06/MCUTuTorial01/bb746f6e4b2f35a7d1153f583ef364463d93aa65.png@690w_!web-note.webp" class title="img">
+
+<p><strong>11）</strong>串口初始化和单片机向电脑发送一个字节递增数据数据</p>
+<img src="/2025/03/06/MCUTuTorial01/c41b0de94cca6defc4c512cd2d3eca2402c0ab2b.png@690w_!web-note.webp" class title="img">
+
+<p><strong>12）</strong>调用</p>
+<img src="/2025/03/06/MCUTuTorial01/a510ad21a38e623e405a1c6c395182928a7a3676.png@690w_!web-note.webp" class title="img">
+
+<p><strong>二、</strong></p>
+<p>[8-2] 串口向电脑发送数据&amp;电脑通过… P20 - 34:23第二实现</p>
+<p><strong>1）</strong>复制一份一修改（收：要中断系统，配置寄存器REN置1接收使能）；</p>
+<img src="/2025/03/06/MCUTuTorial01/25a5b3428287c6ac93a16ce09d154b97c3c299a2.png@690w_!web-note.webp" class title="img">
+
+<p>所有寄存器设置如下配置：</p>
+<img src="/2025/03/06/MCUTuTorial01/b7ad8d72403245b65b96781c8629293ea7d89e9e.png@228w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>配置中断</p>
+<img src="/2025/03/06/MCUTuTorial01/18e5b65457a3cdb7896b64bc4781066067d9308d.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>中断配置代码如下：</p>
+<img src="/2025/03/06/MCUTuTorial01/b9f5dbeb9cc3c78d07dc4c3622bcb752e745484f.png@172w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>中断寄存器修改后总如下，其他不用修改</p>
+<img src="/2025/03/06/MCUTuTorial01/97bfe4f7b731437996fa54ce57f47be3f589aa89.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>中断号4：</p>
+<img src="/2025/03/06/MCUTuTorial01/e4f31fd7e524193559eb8c9af96ec3b2ad53a9c5.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>中断验证：</p>
+<img src="/2025/03/06/MCUTuTorial01/cce398ef6ce9b00a62ff24af0069c5bb86b22e68.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>接收中断标志RI</p>
+<img src="/2025/03/06/MCUTuTorial01/d0c9ee357ee3d1e5b21c2b63d1bc53ce6e617ef2.png@690w_!web-note.webp" class title="img">
+
+
+
+<p>[8-2] 串口向电脑发送数据&amp;电脑通过… P20 - 42:17</p>
+<p><strong>5）</strong>函数不能在主函数又在中断函数里面，调用，向单片机发送数据代码：第二功能实现：</p>
+<img src="/2025/03/06/MCUTuTorial01/6135cb2aa709a8918001fc40da18e3221bc7aa56.png@690w_!web-note.webp" class title="img">
+
+<p><strong>6）</strong>波特率计算</p>
+<p>[8-2] 串口向电脑发送数据&amp;电脑通过… P20 - 47:45</p>
+<img src="/2025/03/06/MCUTuTorial01/680f9d094c1f5b234cb819cba321ccfbe8ce742c.png@690w_!web-note.webp" class title="img">
+
+<p><strong>P21</strong> –LED点阵屏—-</p>
+<img src="/2025/03/06/MCUTuTorial01/1957445e1397e94101aa4457e368160db4d79d87.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/0f23cb049a9008c64e1b962f39e2ec33fdb1ce1d.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/ef9db0fc3b0e21eb28c93a004eadb050ae46600c.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/b491694535e615f0da66dae60a43c11d1f89c0cb.png@690w_!web-note.webp" class title="img">
+
+<p>SER串行输入，往下一位一位移动（SERCLK）,够8位复制到右边（RCLK）</p>
+<img src="/2025/03/06/MCUTuTorial01/1fbeddd8e1df2e03e8601e84ab420bf8b345ecc2.png@690w_!web-note.webp" class title="img">
+
+<p><strong>—–P23实时时钟——-（上面两个视频有点蒙到时候可以再看）</strong></p>
+<p><strong>1）</strong>RTC：实时时钟</p>
+<img src="/2025/03/06/MCUTuTorial01/21147b8c6d6e339e8102ef2895e5da83f0cc71fb.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>DIP直插封装、so贴片封装、接时钟的晶振（脉冲）固定的，CE、I&#x2F;O、SCLK通讯引脚，设置写入时间及读取时钟</p>
+<img src="/2025/03/06/MCUTuTorial01/a3d34c30b0a4e98544ee315601325f2661deb499.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>原理图</p>
+<img src="/2025/03/06/MCUTuTorial01/d9f9f530316ec6b3f1b000a781d7975b96b70719.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>内部结果框图，RAM（寄存器）</p>
+<img src="/2025/03/06/MCUTuTorial01/4efe92d46eff7df7824fd178392d557ae81d63a5.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>寄存器、WP：读写写保护；地址：0s80</p>
+<img src="/2025/03/06/MCUTuTorial01/ff39a42213b67869a1feb9aa7c06637320417ccc.png@690w_!web-note.webp" class title="img">
+
+<p><strong>6）</strong>要操作RTC最高位给1，第6位操作时钟给0，操作秒地址位给0，第0位读写操作：WR：0写；即10000000-》80h：写秒，读81h</p>
+<img src="/2025/03/06/MCUTuTorial01/1057b9bc774438db3df503e2aa9e7b0e4ed0ea63.png@690w_!web-note.webp" class title="img">
+
+<p><strong>7）时序定义</strong>要操CE:使能开始给0，要使用给1，最后结束给0；在SCLK时钟上升沿，IO口被写入，下降沿输出：R&#x2F;W（控制读写，给1输出数据，给0，写完一个字节继续写）D0-D7：1302操控，其他的单片机操控。</p>
+<img src="/2025/03/06/MCUTuTorial01/20847a474c646b02a0d0ad2f307f80d0f2573e63.png@690w_!web-note.webp" class title="img">
+
+<p><strong>P24-DS1302时钟&amp;可调时钟——————-</strong></p>
+<p><strong>1）</strong>把LCD1602液晶屏显示配置代码复制过来，导入项目中</p>
+<p><strong>2）</strong>键时钟的文件独立出来定义P34-36：</p>
+<img src="/2025/03/06/MCUTuTorial01/509f780b81fedc6d9d3b53bb1e108f19a1b65c5d.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>从新定义三个引脚</p>
+<img src="/2025/03/06/MCUTuTorial01/ba7092d376a0d8200127885ea621d816bee567c4.png@538w_!web-note.webp" class title="img">
+
+<p><strong>4）初始化</strong>写操作，默认给0：</p>
+<img src="/2025/03/06/MCUTuTorial01/a62a6e79ccbcfeee97b4bf328c041efaf9bcfc65.png@620w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/b8e012b73fcf42fca01950bd8d41b45ffd63dc70.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>时钟写字节</p>
+<img src="/2025/03/06/MCUTuTorial01/675660ab4e7780593c98730fe7ee9dbfc6f3efec.png@690w_!web-note.webp" class title="img">
+
+<p><strong>6）</strong>时钟读操作，先给下降沿，再上升沿，控制下面红色部分，上下区分开来：（&amp;清零，|置1）</p>
+<img src="/2025/03/06/MCUTuTorial01/86b2a513c20add0bab47bdc839108a279545cff5.png@690w_!web-note.webp" class title="img">
+
+<p><strong>7）</strong>看上图框前8位先置0再置1的原因（加上后面一句）：</p>
+<img src="/2025/03/06/MCUTuTorial01/72cf49cde93e857a3d79403ec625d5c45c211532.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/bd4b7e164e582cfc925584b4744425b4b2a83db4.png@690w_!web-note.webp" class title="img">
+
+<p><strong>8）</strong>头文件声明：</p>
+<img src="/2025/03/06/MCUTuTorial01/d34df7927d802d39eb02f2ad5a6c8e094ee6109b.png@690w_!web-note.webp" class title="img">
+
+<p><strong>9）</strong>调用</p>
+<img src="/2025/03/06/MCUTuTorial01/cda72fc974b5c12aa390a203446045582bc7c558.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/9498bbc9e0ed6a4c636a0c912cb95b8c1212dbce.png@690w_!web-note.webp" class title="img">
+
+<p><strong>10）</strong>调用测试后问题解决</p>
+<img src="/2025/03/06/MCUTuTorial01/f91faa6dafe3f3fa471271e8a3b678ccf514a69f.png@690w_!web-note.webp" class title="img">
+
+<p><strong>11）</strong>存在方式（最后两行，取高4位和低4位）</p>
+<img src="/2025/03/06/MCUTuTorial01/ef93c5b06d3bc3d72aa1caeaaaaa6b675de3e8b9.png@690w_!web-note.webp" class title="img">
+
+<p><strong>12）</strong>调用显示十进制方法：</p>
+<img src="/2025/03/06/MCUTuTorial01/5bb35c01c8af249ea1c0fc28ab053efd5963d19c.png@690w_!web-note.webp" class title="img">
+
+<p><strong>13）</strong>定义数组优化模块</p>
+<p>[10-2] DS1302时钟&amp;可调时钟 P24 - 39:45</p>
+<img src="/2025/03/06/MCUTuTorial01/4aa5630d3cd3ed2ab654b12b76df5c896803a67e.png@690w_!web-note.webp" class title="img">
+
+<p><strong>14）</strong>设置时间和读取时间（WP：写保护关闭，置0）：写的地址或上0x01就是读地址</p>
+<img src="/2025/03/06/MCUTuTorial01/a8c0945f0205407d998181a3527f84f3d3648fa2.png@690w_!web-note.webp" class title="img">
+
+<p><strong>15）</strong>函数名为头文件的10行：</p>
+<img src="/2025/03/06/MCUTuTorial01/b59cfcc2862dfd7d670c85b2351baa165972c028.png@690w_!web-note.webp" class title="img">
+
+<p><strong>16）</strong>函数头文件</p>
+<img src="/2025/03/06/MCUTuTorial01/303c2c0d4b1f6daf55851b4ffc8dded291c5fa29.png@690w_!web-note.webp" class title="img">
+
+<p><strong>17）</strong>主函数</p>
+<img src="/2025/03/06/MCUTuTorial01/7f825d0bd574d5da62f4cc31deffc29a908d0b0d.png@690w_!web-note.webp" class title="img">
+
+<p><strong>17）</strong>主函数</p>
+<img src="/2025/03/06/MCUTuTorial01/b26ac590bea0bd4e52c0bbb8b0bef7079b76518a.png@690w_!web-note.webp" class title="img">
+
+<p>第一个功能结束—————————</p>
+<p>第二个功能——————————–</p>
+<p>[10-2] DS1302时钟&amp;可调时钟 P24 - 54:11</p>
+<p><strong>1）</strong>将定时器和按键模块化代码拿过来使用；</p>
+<p><strong>2）</strong>在主函数包含头文件，其他的模块化代码不用动，写好直接用：</p>
+<img src="/2025/03/06/MCUTuTorial01/997508286773b07c5fa76d1096840399fae67dd5.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>显示时间（最后的2是显示宽度）</p>
+<img src="/2025/03/06/MCUTuTorial01/28f909a65cabec258c63fe4f297bbe400130eb9d.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>后面不写了代码太多，都是判断年月日的</p>
+<p>[10-2] DS1302时钟&amp;可调时钟 P24 - 01:10:18减</p>
+<p><strong>P25——————蜂鸣器——————-</strong></p>
+<p><strong>1）</strong>介绍</p>
+<img src="/2025/03/06/MCUTuTorial01/224350b265f4ccc4b3dff10c745d8cdba1b83c91.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/9a77a0234ebc5295886d4fbcbc7612548fc609d4.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/1314d5241f83568fb6372cac9e4a681a904bfc5e.png@690w_!web-note.webp" class title="img">
+
+<p><strong>1）</strong>介绍C1-C2升高8度。往右升高，往左降低：相邻半音黑白，1对应中央C1，i表示升即C2部分，降低8度下面加一个点，降低2个8度，下面加两个点（白键）；黑升音#，降音b</p>
+<img src="/2025/03/06/MCUTuTorial01/95235902bc69f433a1412bbfd7d64d308ca6b410.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>-表示时长，665-表示5占2个时长；</p>
+<img src="/2025/03/06/MCUTuTorial01/070416fad284b94e0f3438fc99e13da7b97e2d63.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>音符</p>
+<img src="/2025/03/06/MCUTuTorial01/97570e18109327bc134bec49bff5586c04cb8125.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>音符i. 表示500+250s,符弧，按下去不放</p>
+<img src="/2025/03/06/MCUTuTorial01/714f66a79e89c95844f8a2a0a86684f7f29ee95b.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）C调全白键，D有黑键</strong></p>
+<img src="/2025/03/06/MCUTuTorial01/818bfe33b5e81f29bcecf88c991d4b3794da5103.png@690w_!web-note.webp" class title="img">
+
+<p><strong>6）</strong>频率，12频分，周期&#x3D;1&#x2F;频率*1000000</p>
+<img src="/2025/03/06/MCUTuTorial01/f03c854953e85acc00a9a8a6be0215398e38a5ac.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/3277df10a7cc12472bbc6e7877b400f8e5885634.png@690w_!web-note.webp" class title="img">
+
+<p><strong>P26—蜂鸣器波播发提示音&amp;音乐代码–</strong></p>
+<p><strong>1）</strong>延迟、数码管（8字灯）、按键模块拿过来</p>
+<p><strong>2）</strong>实现</p>
+<img src="/2025/03/06/MCUTuTorial01/e617d824c531bbaa73768242704fe19197437a9e.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>蜂鸣器模块化代码</p>
+<img src="/2025/03/06/MCUTuTorial01/fc4311d984d1c6a5acbf854a680e82d64d486444.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/209397704aa2eb473e282bce498989cdb313aac4.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/e003ac076febf7ee39d620ced0f7c6bed23c7126.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/07a5e6c424633de01da3de0a4f6ea2cb688070cd.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/312b21ad6d8cd764f4d668ad9a0070842845e522.png@690w_!web-note.webp" class title="img">
+
+<p><strong>第一个功能结束——————</strong></p>
+<p><strong>第二个功能—播放音乐–后面有总代码</strong></p>
+<p><strong>1）</strong></p>
+<p>[11-2] 蜂鸣器播放提示音&amp;音乐 P26 - 15:02</p>
+<p><strong>2）</strong>定时器模块、延迟模块拿进来</p>
+<img src="/2025/03/06/MCUTuTorial01/dc7408da5f858dff5391ef3aff67c42fdf55b06a.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>中断</p>
+<img src="/2025/03/06/MCUTuTorial01/993cc7a15c52e908f65323d2440cefba140f030f.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>中断TL0\TH0计数来一个脉冲就计数，时钟，一个为结束标志位，决定中断时间的，时间一到就中断了：20行代码，半个周期翻转一次：</p>
+<img src="/2025/03/06/MCUTuTorial01/7d3a61447ff6fb479a0825a9c19cd9e30abb43b8.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>64580重装值，到时间从新中断计数，上面一个例子的<strong>钢琴键图下面的图中有计算</strong></p>
+<img src="/2025/03/06/MCUTuTorial01/84af345b957735ddc8fd0854f5f0dbe0a5012d7a.png@690w_!web-note.webp" class title="img">
+
+<p><strong>6）</strong>显示第一个低音</p>
+<img src="/2025/03/06/MCUTuTorial01/6e963353ec26fca4c2f5c077ba5af22a3d35652f.png@690w_!web-note.webp" class title="img">
+
+<p><strong>7）</strong>上图显示的为如下：</p>
+<img src="/2025/03/06/MCUTuTorial01/3a19627a9b1b4c5fb6d527fadf81b696c38bb2c6.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/f077851a7a8a7a431767796e92d58b5f90f61bee.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/908e7eecefe6e734a8155158190104a89fba425e.png@690w_!web-note.webp" class title="img">
+
+<p><strong>8）</strong>修改，以1&#x2F;4音符为基准</p>
+<img src="/2025/03/06/MCUTuTorial01/3e88ea6e37aa9bbf634ca515ec0e69d6524b85c4.png@690w_!web-note.webp" class title="img">
+
+<p><strong>9）</strong>125以1&#x2F;16为基准</p>
+<img src="/2025/03/06/MCUTuTorial01/bab91cad52bab77443ebcc8074fda45fee7047bc.png@690w_!web-note.webp" class title="img">
+
+<p>10）索引数组</p>
+<img src="/2025/03/06/MCUTuTorial01/8c464aed208f97d73c1b94c6e264bb4ee4bc5b7e.png@690w_!web-note.webp" class title="img">
+
+<p><strong>小星星音乐播放总代码：</strong></p>
+<img src="/2025/03/06/MCUTuTorial01/fa924671b9548aa9a5ca692bbe6122350bb097dd.png@690w_!web-note.webp" class title="img">
+
+<p>音符索引与时长</p>
+<img src="/2025/03/06/MCUTuTorial01/98a274bc969fe9d462f4b01e5ebc30af4e43cab2.png@630w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/6a14c1193aba90e7bcfcafa1ddb32be2dc576947.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/54434fb690a7adf23a9732610a16b2a2138a4c84.png@626w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/e34633ed3bb8225a15bf45c0636a6da02c046c0f.png@690w_!web-note.webp" class title="img">
+
+<p>小星星代码结束</p>
+<p>天空之城代码开始-不想写：</p>
+<p>[11-2] 蜂鸣器播放提示音&amp;音乐 P26 - 41:46</p>
+<p><strong>P27——-AT24C02—–</strong></p>
+<p><strong>1）</strong>介绍SRAM速度比DRAM快：</p>
+<img src="/2025/03/06/MCUTuTorial01/862b1114d67464b8153c0342f992eb9057033935.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/cb95c749e09684c08f0ba8ee5216c3f453a104eb.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/4b7e2518f03068e9e4efd46c1d8dcebe1d914a3a.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/0cc90ba45f9a3fcbabd491e84d5cc2827bd75904.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/0507d085c79b81f35256f666b40f5eecd2d7965e.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/d2f09c4eaa48fdcf590f00a72f0cc118e88d804a.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>单片机IO口弱上拉模式、</p>
+<img src="/2025/03/06/MCUTuTorial01/8b1ee6d7b9b47697645656813572fea04509144b.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>I2C起始和终止位置</p>
+<img src="/2025/03/06/MCUTuTorial01/6b78d0f58e9442dd6b0221c30d8162ed13f960c0.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>发送</p>
+<img src="/2025/03/06/MCUTuTorial01/9d16c4c0af337c635ea01d76595f83b84d6fb671.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>接收</p>
+<img src="/2025/03/06/MCUTuTorial01/9d4ae4dc12de5e4a36b2047c2e2fc5b0497acfa2.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/d61f9d5a5f854d15b562802b498f13c2c205a7b6.png@690w_!web-note.webp" class title="img">
+
+<p>地址7位+1位标志位：</p>
+<img src="/2025/03/06/MCUTuTorial01/683e1f8ff324d88d9c4e35d5705c9057b4e42907.png@690w_!web-note.webp" class title="img">
+
+<p><strong>6）</strong>开始位+接收地址+读+数据+应答+数据+应答+停止</p>
+<img src="/2025/03/06/MCUTuTorial01/7fa2a93f4c3d0fddde9dc3edf5b894e8b6a4a6b5.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/3cf8f34b31308794af2baa27e63d0f9932522287.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/f418bc4d9cd6959c16939002995ae027992e6168.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/b5b9814f4ced64e55addce013a04f9e7f681858d.png@674w_!web-note.webp" class title="img">
+
+<p><strong>P28—-AT24C02数据存储&amp;秒表——-</strong></p>
+<p><strong>1）</strong>按键、延迟、LCD1602液晶屏模块拿进来；</p>
+<p><strong>2）</strong>I2C模块：开始、结束、发送一个字节、接收一个字节</p>
+<p><strong>3）</strong>AT模块：在某个地址写&#x2F;读</p>
+<img src="/2025/03/06/MCUTuTorial01/2de62473889ef302e77b3a323517b7019ccc22ed.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）-2）</strong>I2C位声明（SCL\SDA开始为高电平）：读取时要先释放SDA&#x3D;1；0为应答，1非应答</p>
+<img src="/2025/03/06/MCUTuTorial01/a0ccedb5bff7f7ad71ce490a5b0d54f25e5cb473.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/91709af5a98eef3162d1f47822aadbcf3f0eb76c.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/4daf6703f74e7970ddf9eeac29cc86b4a80ebe58.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/2d43c93142ac9513144365d899e9a3ad2db41fe5.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/e8ad5a6ba72c13fa92e7b1209d54cb91fdbd90fd.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/c242047d30fee795cfa7b9cb5f6c968a02eec6da.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>I2C发送一个字节<strong>看P27的4）图</strong>，要考虑要不要延时，数据信号线和时钟信号线切换时：</p>
+<img src="/2025/03/06/MCUTuTorial01/66b6fd7a1d8cd59c3c380d7eac4359c6ba23ab62.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/043acc9c9a97ee03026698953560bda6a63fa9ec.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>AT模块SLAVE ADDRESS+W ：从机地址；WordAddress 要写入字节的地址</p>
+<img src="/2025/03/06/MCUTuTorial01/b839b2638df07db2eabd8324aa5c05ecce42b355.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/fa8600c57372c5c407d57aedc0633444cbf4e116.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/1bd6080877e537082312963034ff646dd972183b.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/302d22dd53cdcfc4f7164b1bb003044ddb2380bc.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/b0350299a5888d270b4e3d8b8204ce868b7702e3.png@690w_!web-note.webp" class title="img">
+
+<p><strong>6）</strong>写字节：上面代码根据下图写，从机地址最后一个框里面：（255溢出）</p>
+<img src="/2025/03/06/MCUTuTorial01/2c6999945f88905b8202fc26acbedc27f09d8512.png@690w_!web-note.webp" class title="img">
+
+
+
+<p>[12-2] AT24C02数据存储&amp;秒表(定… P28 - 41:28</p>
+<p><strong>–二—另一个功能—偷懒不想弄了-</strong></p>
+<p>[12-2] AT24C02数据存储&amp;秒表(定… P28 - 46:40</p>
+<p>**1)**数码管Nixie、延时Delay、按键、定时器。。。拿过来；</p>
+<p>**2)**数码管、按键都要用到定时器；。。</p>
+<p><strong>P29–DS18B20温度传感器——-</strong></p>
+<img src="/2025/03/06/MCUTuTorial01/bffaa31e0eb28ed1d0326ef05e3fdfb2aab4a451.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/d613cd8ba26000cce2da96266ec503e8b4b97e3a.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/171da8cbdd5116535a8f5929ff68f73984a7d4c2.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/91c0ce91cc03e43331209b979d253fb658e39af8.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/d8d4b7777cb3b022c5c6d831e4e76356757fe0f0.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/5aacdf1a5fbf5a2d1e595099e2e7d129516733b8.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/6956b3e066bbf5388b6c13f380f146752b6b1b8c.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/2c28dcd63acbf50e0dfc6354372f496c4f5dae1e.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/16db1d7f9199ce776d10c41f30d30b6aafd8d29c.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/4130ab5ce79232b7bb182f260cd7efe600a67b4c.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/fec33b32a8b3711e0fd2be2530c9f52390ea394a.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/5f0125cf2ac7d2cbec1339c9ba2440664e56451d.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/e582b90069228cc68788a4eab7f2f173044f1d48.png@690w_!web-note.webp" class title="img">
+
+<p><strong>1）</strong>MS BYTE前5位是符号位，1为负数，0为正数（在前）；</p>
+<p><strong>2）</strong>LS BYT后5位是小数位,如果BIT为0.5，后面依次减少一半； 其他为实际数据的补码存储；</p>
+<p><strong>P30—DS18B20读取温度——</strong></p>
+<p><strong>1）</strong>把延时、LCD液晶屏拿过来；</p>
+<p><strong>2）</strong>定义端口、再初始化（要拉低，所有先拉高）：</p>
+<img src="/2025/03/06/MCUTuTorial01/b16747bcc4de1db8747c3b359c07ee50d85b3636.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>初始化</p>
+<img src="/2025/03/06/MCUTuTorial01/e5828b4bffe7178b7007932b75c19096b9bd331d.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/6295fce33e72d2d3ce2d89e48493731b9cf45a12.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>发送一位看下面字，i要定义一下</p>
+<img src="/2025/03/06/MCUTuTorial01/339aac5ff1f380cc3102c5d0b4e623d7edd87c76.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/50e100d44191cbc68f67534d252f7ea742d9a66e.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>发送接收一位</p>
+<img src="/2025/03/06/MCUTuTorial01/a11132be9105e0fc5edd103dcc347e709bedce6e.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/caf56b089f3f26ce4cedd84fe669abba57ced184.png@690w_!web-note.webp" class title="img">
+
+<p><strong>6）</strong>发送一个字节和接收一个字节及声明</p>
+<img src="/2025/03/06/MCUTuTorial01/54932dd9644a1632f1cef4a82c1afa2bf06839de.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/49a5a770c50e1d24686e6f946406c0a2b504a2e1.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/ffbfb6de098f501e1bc38330486204be4b3f5d2d.png@690w_!web-note.webp" class title="img">
+
+<p><strong>7）</strong>转换温度</p>
+<img src="/2025/03/06/MCUTuTorial01/9740ed9c3c7d6214bf237b54629f5dc4476a0471.png@690w_!web-note.webp" class title="img">
+
+<p><strong>8）根据上图只有三个函数</strong>转换温度，发送一个指令0xcc</p>
+<img src="/2025/03/06/MCUTuTorial01/7d8cbcbcfcd7153966a45dbd806c11c39e78188d.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/90ada9f3b4274394918d7bf325a2aef23f3db2ef.png@690w_!web-note.webp" class title="img">
+
+<p><strong>9）</strong>读取温度，用补码表示正负，所有用int接收，<strong>26行除以16.0右移的是4位：</strong></p>
+<img src="/2025/03/06/MCUTuTorial01/9a527db0eafb3c969e38e44235634d5d59f63c1d.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/082a1e691cd9a58b88b432fccc521f9bbf31ce0d.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/b9aafd2b7438aa0fff5622ed81f00eecc35d37f7.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/2f31ed3d498a9c2b2c1fe492043b6adfd82249fb.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/7f08e7cb2127f6888de8f971af0f7cec019b78b6.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/ef9310cbb7176e57097dc45c74b3507fbb5cd0e3.png@662w_!web-note.webp" class title="img">
+
+<p><strong>10）</strong>主函数调用：转换后加个延时头引用，转换完成再读：</p>
+<img src="/2025/03/06/MCUTuTorial01/5173277b6c9136973595fb8bdaba6c43231799ed.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/e54c9437f2d974917e1dbce69e29ccd4a6d4a6e6.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/c1616e6df9e5518cd447aad03c4ea7ebc682abca.png@690w_!web-note.webp" class title="img">
+
+<p>**二—温度报警器—**第二个代码不写了，摆烂</p>
+<p>[13-2] DS18B20温度读取&amp;温度报警器 P30 - 44:53</p>
+<p><strong>P31—LCD1602—————–</strong></p>
+<img src="/2025/03/06/MCUTuTorial01/58a6478caaa951147bc3c1cda0fb3d1921d0ff88.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/43491f6fdfedd2c60f778882decc66f9f424666a.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/bfd4b9afdafa6359ddccf3da2a1b27bf5d250f92.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/4cd38fd14e834ade01998d370b6927e6a2692ef7.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/30798ca23bad21fbc854b89150389d36b096200a.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/f5dce8fa3eb40d69be810c0b9626674b8442aacd.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/4d5f27eb5b8b997e580aa88acbfd0169ea7e53e2.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/51f2d41479be31bdbb057b5aead6aea10cdf91ec.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/2779f29946333a639167af6a90efa3a8b2c0e93d.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/70846440892ed537d8f320abfa44eb40430dec0b.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/b06c71d82f69221c26c490af10f9ba3595ba3f0c.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/87522bbf2cf33307ea0b352cbfd71fc3ea914435.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/13beb5a411b8734ab9e0b35f13a0d2252c2848fe.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/703e5c3fb12bfb87ee1047539b6bc1934e81ec2c.png@690w_!web-note.webp" class title="img">
+
+<p><strong>P32—LCD1602功能函数—–</strong></p>
+<img src="/2025/03/06/MCUTuTorial01/b4c7ff996554fd0b625f848a982ecec9dd44444f.png@690w_!web-note.webp" class title="img">
+
+<p><strong>1）</strong>引脚定义：P0为数据端口引脚</p>
+<img src="/2025/03/06/MCUTuTorial01/0170ece74a8539d15ab00b2220bdf489d7059d2a.png@656w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/19366551932515da8b36cbbf8e378d38e7564d45.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>写指令（看上节引脚指令图，可以知道1和0代表什么）：</p>
+<img src="/2025/03/06/MCUTuTorial01/92dd103e2206b7df9cdd4dd3457377a48a4d4d31.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>写数据，跟面一样改33行为1就可以了</p>
+<img src="/2025/03/06/MCUTuTorial01/e71c300b9208ae6a2ba85d3be94264ec33668ca0.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>初始化</p>
+<img src="/2025/03/06/MCUTuTorial01/4a344023c91cb14c313f3ae6bb09e71db2de66ea.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/d4bafa86e65d26f968ddbc603b40857bad108755.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>显示数据，光标地址</p>
+<img src="/2025/03/06/MCUTuTorial01/bb4a81dbef6193b2899f5b62943b855f05041902.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/140317744e0c8fc8c84cbd4e04f5e8cb3f77bb56.png@690w_!web-note.webp" class title="img">
+
+<p><strong>6）</strong>显示字符串（写到显示屏里面显示出来）</p>
+<img src="/2025/03/06/MCUTuTorial01/6767a3044574c5cff81c0932224477a2737f9e9c.png@690w_!web-note.webp" class title="img">
+
+<p><strong>7）</strong>无符号整数显示（光标位置可以独立出来）</p>
+<img src="/2025/03/06/MCUTuTorial01/d0096ba64294f6f1557fa099935fd29e44ceabd7.png@660w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/1ba05764fcd3eaea7b1f440e4c2a4e292da5c1a6.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/2c356fa60941826e087ea7cb844c500fdc89060b.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/c84f950976263ea2ce5a21beff052655abf293cf.png@690w_!web-note.webp" class title="img">
+
+<p><strong>8）</strong>显示有符号的数</p>
+<img src="/2025/03/06/MCUTuTorial01/ddf06ac4bc2572b71d4a8193a85801dbba1ab448.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/843ee60f707f88d41f71cdf1079db25c767425f5.png@690w_!web-note.webp" class title="img">
+
+<p><strong>9）</strong>显示16进制数，取每一位除16，不想整理</p>
+<img src="/2025/03/06/MCUTuTorial01/c331b2ac3daf5f821163905bfa031da9a4d6a95f.png@690w_!web-note.webp" class title="img">
+
+
+
+<p>[14-2] LCD1602功能函数代码 P32 - 46:08</p>
+<p><strong>10）</strong>显示二进制，对2取余</p>
+<img src="/2025/03/06/MCUTuTorial01/dd643f03428b2406068291effafb01a73bfd2546.png@690w_!web-note.webp" class title="img">
+
+<p><strong>11）</strong></p>
+<p>[14-2] LCD1602功能函数代码 P32 - 55:35字符超出-移动</p>
+<p><strong>P33–直流电机驱动PWM—</strong></p>
+<p><strong>1）</strong>直流电机、电机匀速控制，转1毫秒停1毫秒或其他的设置；频率快就不会出现抖动，比较平缓，频率慢会出现抖动；Ton打开时间、Toff关闭时间、Ts总时间；占空比高：高电平长低电平端、占空比低：高电平短，低电平长（周期一样）；</p>
+<img src="/2025/03/06/MCUTuTorial01/aabf2e84fce9cfd3c80b8eb0de5c63dce8c742d5.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/0ae99bc752c97af7e96c3200b2496ff337d93dc6.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/89f40701fe151b55ff8cc2e055befd045bdfa671.png@690w_!web-note.webp" class title="img">
+
+<p><strong>P34LED呼吸灯&amp;直流电机调速–代码</strong></p>
+<p><strong>1）</strong>LED呼吸灯：P2口为控制LED，0亮，1灭；亮延时时间长，灯就亮；亮时间段，灭时间长灯就暗（循环），延时总时间固定，周期就固定：</p>
+<img src="/2025/03/06/MCUTuTorial01/5068b70d2b1c99de26d7a6665a041f2aa7190156.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/7242f0e8a24ca1196163d46de13cbd2d0e739ce8.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/9630c52ff56ec26c8212bb1763ec2281c5d6a20e.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>PWM通常用硬件来实现（定时器有些有这个功能）如下用定时器实现</p>
+<p>[15-2] LED呼吸灯&amp;直流电机调速 P34 - 10:47</p>
+<img src="/2025/03/06/MCUTuTorial01/47ab34e74692650ef2ec83f30f0831ccb9fd7b6a.png@690w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>数码管、定时器、按键、延时模块的代码拿过来；**计数&lt;比较值，输出0，计数&gt;比较值，输出1(自己设置的，这里以这个为例)**控制占空比可以用比较值控制；</p>
+<img src="/2025/03/06/MCUTuTorial01/21896b81981cac14a6080fab12792531bfe47ec8.png@690w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>定时器初始化，频率：10K-20K就不会产生鸣叫声，运行稳定。这里只能设置低的，100us</p>
+<img src="/2025/03/06/MCUTuTorial01/d12298dc73f55e3b12c1f268ccf74ae9fc2ed685.png@690w_!web-note.webp" class title="img">
+
+<p><strong>5）</strong>中断</p>
+<img src="/2025/03/06/MCUTuTorial01/b3d9fdbe291922614bcbd3d2caf85fde56734d72.png@690w_!web-note.webp" class title="img">
+
+<p><strong>6）</strong>定时器Counter：计数器；</p>
+<p>Counter%&#x3D;100；自动刷新，超过100后又从0开始；</p>
+<p>Compare:比较值；如下实现：3）图功能，设置占空比直接设置：compare；比较值越大低电平越长；</p>
+<img src="/2025/03/06/MCUTuTorial01/a73302d937a063b0a1df34f856485e75b9a6b3de.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/5d25d2b2e6dccdb5575da5bc62b937d32e26a97b.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/808f18d8d28e95be3faee9bab33cf06fafb1dadc.png@670w_!web-note.webp" class title="img">
+
+<p><strong>6）</strong>电机（1转）调速，改一下灯的端口即可</p>
+<img src="/2025/03/06/MCUTuTorial01/821f01c49e56d15bece0f1e92342ad88dcb82aaf.png@690w_!web-note.webp" class title="img">
+
+<p><strong>7）</strong>电机速度可以调一下才能动</p>
+<img src="/2025/03/06/MCUTuTorial01/cb043d66fce0629edd771398bfea0c041f5320ef.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/51deb6d78b3c0f51d7b7776a1ecdde99bd8152b7.png@690w_!web-note.webp" class title="img">
+
+<p><strong>8）</strong>效果</p>
+<img src="/2025/03/06/MCUTuTorial01/122cac83229fbc50bbb38e1a7cdabe20e6163b1c.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/bf3cb8ff8b0deb606680e61422dab4b74e4a1b8c.png@416w_!web-note.webp" class title="img">
+
+<p><strong>P35— AD&#x2F;DA—–</strong></p>
+<p><strong>1）</strong>介绍</p>
+<img src="/2025/03/06/MCUTuTorial01/7cb0bba46ce615f2021bbc9dc4f6e95f722086ff.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/94d8fa0a442a4ca6bad74e76a7f0c78a1e4df2c8.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/4d9d553dd6e17197662e569506cbcd55be714968.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/59c89f0f02822c680adc45ceded050655d253946.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/b9ae693f04ce96b5ddb3ca78a46ce53e0593f477.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/7a2b060aa44d5cd360698eea7c38f978850d25d5.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/729264db16bc366c20be551be2b56260a89efe72.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/4cc4ad61db48c91c47537dae5793f809e8cec8ce.png@690w_!web-note.webp" class title="img">
+
+<p><strong>2）</strong>可调节电阻、热敏电阻、光敏电阻（AD）；</p>
+<img src="/2025/03/06/MCUTuTorial01/9338f06ac1e1598e4bbd139cff899519b56d0b96.png@214w_!web-note.webp" class title="img">
+
+<p><strong>3）</strong>DA</p>
+<img src="/2025/03/06/MCUTuTorial01/06020241bcbb4fd5b5364f11ee009e31f0c006b2.png@116w_!web-note.webp" class title="img">
+
+<p><strong>4）</strong>数字量（0-255）、模拟量（0-5V）；ADC触摸屏芯片</p>
+<img src="/2025/03/06/MCUTuTorial01/d05e1f1bf6829769b5756c7ff4cbbddf46ed4957.png@690w_!web-note.webp" class title="img">
+
+
+
+<img src="/2025/03/06/MCUTuTorial01/7f79f4d3d868c9eef913424c3dab6dfee41c9cb8.png@690w_!web-note.webp" class title="img">
+
+
+
+
+
+<p>[16-1] AD&#x2F;DA P35 - 23:49运算放大器</p>
+<p><strong>5）</strong>DA与AD原理</p>
+<p>[16-1] AD&#x2F;DA P35 - 46:39DA原理分析</p>
+<p><strong>占空比：</strong>开始时间&#x2F;总时间（开始时间+结束时间）</p>
+<img src="/2025/03/06/MCUTuTorial01/3ad0d44081872ec632d02ed6cb1cb7043b2dd71e.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/8a788e7febcbf0bf04cf03ce059fbac2b015a17b.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/5d73ccc0637341489583bb7574b4570641af99ab.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/437d3b17815711438dc3afdd2523367e6c8648d6.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/74dcc3947d56ffca2ffbde09c883fef8924ab037.png@690w_!web-note.webp" class title="img">
+
+
+
+<p>[16-1] AD&#x2F;DA P35 - 01:21:59时序</p>
+<p>CS：片选、共用线：DCLK时钟、DIN输入、DOUT输出</p>
+<img src="/2025/03/06/MCUTuTorial01/ce6d873277c5b5ef56d97a60937597169812c883.png@690w_!web-note.webp" class title="img">
+
+<p>AIN0\AIN1\AIN2:光敏、热敏、可调节</p>
+<img src="/2025/03/06/MCUTuTorial01/e2349f0692fd0c6f0ae8afc4173188fa5bf4eee8.png@690w_!web-note.webp" class title="img">
+
+
+
+<p><strong>P36AD—-模数转换&amp;DA数模转换——</strong></p>
+<p><strong>1）</strong> 把延时、液晶屏LCD拿过来；</p>
+<p><strong>2）</strong>键XPT2046源文件和头文件；</p>
+<p><strong>3）</strong>接口引脚定义：CS\DCLK\DIN\DOUT</p>
+<img src="/2025/03/06/MCUTuTorial01/a59ddb2e6645d1dfe9778dbdc0e1e0b57fc1085c.png@646w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/10afa7fdc912f3b3ecf525e66a54129a73b605b0.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/b95f5b8b922008812c3087110bc5c3fa3dd58189.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/d04c1d145e7caf8cc9c5ad3fbd376579cd1ce3be.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/d04c1d145e7caf8cc9c5ad3fbd376579cd1ce3be.png@690w_!web-note.webp" class title="img">
+
+<p>3）根据上面时序写代码：</p>
+<img src="/2025/03/06/MCUTuTorial01/2cc9a556700c55d38369d49acbea53f15ace57d2.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/32f489856523d3919937157961d56ed7519ee8c2.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/16a6151057b56cbe9e5cd1443692e49f415b370c.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/b5708268f4e02eada28f2418417bddf0aa91069b.png@690w_!web-note.webp" class title="img">
+
+<img src="/2025/03/06/MCUTuTorial01/00c82d8a28c15b6666f1a325c4c57dadb46d0063.png@690w_!web-note.webp" class title="img">
+
+<p>4）后面写了</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0krblog.yqbirdmp.com">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0krblog.yqbirdmp.com/2025/03/06/MCUTuTorial01/">https://0krblog.yqbirdmp.com/2025/03/06/MCUTuTorial01/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0krblog.yqbirdmp.com" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related  no-desc" href="/2025/03/09/GameTheroy/" title="GameTheroy"><img class="cover" src="/statics/landscape001.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">GameTheroy</div></div></div></a><a class="pagination-related  no-desc" href="/2025/03/02/JavaTutorial14/" title="JavaTutorial14"><img class="cover" src="/statics/landscape001.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">JavaTutorial14</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/03/09/GameTheroy/" title="GameTheroy"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="GameTheroy"/></a><div class="content"><a class="title" href="/2025/03/09/GameTheroy/" title="GameTheroy">GameTheroy</a><time datetime="2025-03-09T08:45:50.000Z" title="发表于 2025-03-09 16:45:50">2025-03-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/06/MCUTuTorial01/" title="MCUTuTorial01"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MCUTuTorial01"/></a><div class="content"><a class="title" href="/2025/03/06/MCUTuTorial01/" title="MCUTuTorial01">MCUTuTorial01</a><time datetime="2025-03-06T05:46:58.000Z" title="发表于 2025-03-06 13:46:58">2025-03-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial14/" title="JavaTutorial14"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial14"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial14/" title="JavaTutorial14">JavaTutorial14</a><time datetime="2025-03-02T08:16:48.000Z" title="发表于 2025-03-02 16:16:48">2025-03-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial13/" title="JavaTutorial13"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial13"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial13/" title="JavaTutorial13">JavaTutorial13</a><time datetime="2025-03-02T08:16:41.000Z" title="发表于 2025-03-02 16:16:41">2025-03-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial12/" title="JavaTutorial12"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial12"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial12/" title="JavaTutorial12">JavaTutorial12</a><time datetime="2025-03-02T08:16:35.000Z" title="发表于 2025-03-02 16:16:35">2025-03-02</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

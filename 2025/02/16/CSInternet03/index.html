@@ -1,0 +1,296 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>CSInternet03 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="HTTP 有什么缺陷?为什么需要引入 TLS 协议?SSL（安全套接字层）是在 90 年代初开发的。TLS（传输层安全）实际上就是 SSL 的继任者，可以说 TLS 是 SSL 的”后代”。第一个 TLS 版本（TLS 1.0）其实就是 SSL 3.0 的升级版。顺便一提，现代浏览器中也不再支持SSL啦。 关于这个问题，我想还是得从HTTP-&gt;SSL-&gt;TLS的顺序开始讲解会好理解一些">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSInternet03">
+<meta property="og:url" content="https://0krblog.yqbirdmp.com/2025/02/16/CSInternet03/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="HTTP 有什么缺陷?为什么需要引入 TLS 协议?SSL（安全套接字层）是在 90 年代初开发的。TLS（传输层安全）实际上就是 SSL 的继任者，可以说 TLS 是 SSL 的”后代”。第一个 TLS 版本（TLS 1.0）其实就是 SSL 3.0 的升级版。顺便一提，现代浏览器中也不再支持SSL啦。 关于这个问题，我想还是得从HTTP-&gt;SSL-&gt;TLS的顺序开始讲解会好理解一些">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0krblog.yqbirdmp.com/statics/landscape002.jpg">
+<meta property="article:published_time" content="2025-02-16T07:09:28.000Z">
+<meta property="article:modified_time" content="2025-02-18T15:31:18.775Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0krblog.yqbirdmp.com/statics/landscape002.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0krblog.yqbirdmp.com/2025/02/16/CSInternet03/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CSInternet03',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-02-18 23:31:18'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape002.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">CSInternet03</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">CSInternet03</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-02-16T07:09:28.000Z" title="发表于 2025-02-16 15:09:28">2025-02-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-02-18T15:31:18.775Z" title="更新于 2025-02-18 23:31:18">2025-02-18</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>7分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="HTTP-有什么缺陷-为什么需要引入-TLS-协议"><a href="#HTTP-有什么缺陷-为什么需要引入-TLS-协议" class="headerlink" title="HTTP 有什么缺陷?为什么需要引入 TLS 协议?"></a>HTTP 有什么缺陷?为什么需要引入 TLS 协议?</h1><p>SSL（安全套接字层）是在 90 年代初开发的。TLS（传输层安全）实际上就是 SSL 的继任者，可以说 TLS 是 SSL 的”后代”。第一个 TLS 版本（TLS 1.0）其实就是 SSL 3.0 的升级版。顺便一提，现代浏览器中也不再支持SSL啦。</p>
+<p>关于这个问题，我想还是得从HTTP-&gt;SSL-&gt;TLS的顺序开始讲解会好理解一些：</p>
+<p><strong>·通信使用明文(不加密)，内容可能会被窃听。</strong></p>
+<img src="/2025/02/16/CSInternet03/image-20250218211321578.png" class>
+
+<p><strong>·不验证通信方的身份，因此有可能遭遇伪装。</strong></p>
+<img src="/2025/02/16/CSInternet03/image-20250218211519582.png" class>
+
+<p><strong>·无法证明报文的完整性，所以有可能已遭篡改</strong></p>
+<img src="/2025/02/16/CSInternet03/image-20250218211359950.png" class title="中间人攻击MIMA（Man-in-the-Middle-Attack）示意图">
+
+<p>为了统一解决上述这些问题，<strong>需要在 HTTP上再加入加密处理和认证等机制</strong>。我们把添加了加密及认证机制的 HTTP 称为 HTTPS（HTTP Secure ）。HTTPS 并非是应用层的一种新协议。只是 HTTP 通信接口部分用SSL(Secure SocketLayer)和TS(Transport Layer Security)协议代替而已。通常，HTTP 直接和 TCP 通信。当使用 SSL时，则演变成先和 SSL通信，再由 SSL和 TCP 通信了。简言之，所谓 HTTPS，其实就是身披SSL协议这层外壳的 HTTP。之后的TLS技术也是同理。</p>
+<img src="/2025/02/16/CSInternet03/image-20250218211712881.png" class>
+
+<h1 id="对称密钥和非对称密钥有什么区别"><a href="#对称密钥和非对称密钥有什么区别" class="headerlink" title="对称密钥和非对称密钥有什么区别?"></a>对称密钥和非对称密钥有什么区别?</h1><p>在对 SSL进行讲解之前，我们先来了解一下加密方法。SSL采用一种叫做公开密钥加密(Public-key cryptography)的加密处理方式。<br>近代的加密方法中加密算法是公开的，而密钥却是保密的，就像保险箱的构造是公开的，但是密码只保存在主人这里一样：通过这种方式得以保持加密方法的安全性。<br>加密和解密都会用到密钥。<strong>没有密钥就无法对密码解密，反过来说任何人只要持有密钥就能解密了。</strong>如果密钥被攻击者获得，那加密也就失去了意义。这就是对称密钥加密的困境。</p>
+<img src="/2025/02/16/CSInternet03/image-20250218212649023.png" class>
+
+<p>公开密钥加密方式很好地解决了共享密钥加密的困难。<br>公开密钥加密使用一对非对称的密钥。一把叫做私有密钥(private key)，另一把叫做公开密钥(public key)。顾名思义，私有密钥不能让其他任何人知道，而公开密钥则可以随意发布，任何人都可以获得<br>使用公开密钥加密方式，<strong>发送密文的一方使用对方的公开密钥进行加密处理，对方收到被加密的信息后，再使用自己的私有密钥进行解密。</strong>利用这种方式，不需要发送用来解密的私有密钥，也不必担心密钥被攻击者窃听而盗走。但是，由于<strong>非对称加密处理起来非常复杂，每条请求都如此处理非常耗费性能</strong>，因此最终<strong>HTTPS混合加密</strong>诞生了。</p>
+<p>答案是：<strong>在交换密钥环节使用公开密钥加密方式，之后的建立通信交换报文阶段则使用共享密钥加密方式</strong>。天才！</p>
+<img src="/2025/02/16/CSInternet03/image-20250218213158336.png" class>
+
+<h1 id="数字签名是什么-数字证书是什么"><a href="#数字签名是什么-数字证书是什么" class="headerlink" title="数字签名是什么?数字证书是什么?"></a>数字签名是什么?数字证书是什么?</h1><p>但是非对称加密仍然存在问题：<strong>那就是无法证明公开密钥本身就是货真价实的公开密钥。</strong>比如，正准备和某台服务器建立公开密钥加密方式下的通信时，如何证明收到的公开密钥就是原本预想的那台服务器发行的公开密钥?</p>
+<p>为了解决上述问题，<strong>可以使用由数字证书认证机构(CA，Certificate Authority)和其相关机关颁发的公开密钥证书。</strong></p>
+<p>数字证书认证机构处于客户端与服务器双方都可信赖的第三方机构的立场上。威瑞信(VeriSign)就是其中一家非常有名的数字证书认证机构。我们来介绍一下数字证书认证机构的业务流程。首先，服务器的运营人员向数字证书认证机构提出公开密钥的申请。数字证书认证机构在判明提出申请者的身份之后，会对已申请的公开密钥做数字签名，然后分配这个已签名的公开密钥，并将该公开密钥放入公钥证书后绑定在一起。就像当你收到朋友给你的支票（?）却无法确认最后的落款是不是他的时，一个专业的机构在上面敲了章说没问题放心用。</p>
+<p>CA干的就是这：接到证书的客户端可使用数字证书认证机构的公开密钥，对那张证书上的数字签名进行验证，一旦验证通过，客户端便可明确两件事：一，认证服务器的公开密钥的是真实有效的数字证书认证机构。二：服务器的公开密钥是值得信赖的。</p>
+<p>那么问题来了，<strong>如何确认这个权威机构是可信的呢？</strong>很显然，此处认证机关的公开密钥必须安全地转交给客户端。使用通信方式时，如何安全转交是一件很困难的事，因此，<strong>多数浏览器开发商发布版本时，会事先在内部植入常用认证机关的公开密钥。</strong></p>
+<p>整个图解过程如下：</p>
+<img src="/2025/02/16/CSInternet03/image-20250218214157134.png" class>
+
+
+
+<h2 id="OpenSSL：自签名"><a href="#OpenSSL：自签名" class="headerlink" title="OpenSSL：自签名"></a>OpenSSL：自签名</h2><p>如果使用 OpenSSL这套开源程序，每个人都可以构建一套属于自己的认证机构，从而自己给自己颁发服务器证书。但该服务器证书在互联网上不可作为证书使用，似乎没什么帮助。</p>
+<p>独立构建的认证机构叫做自认证机构，由自认证机构颁发的“无用”证书也被戏称为自签名证书。</p>
+<p>浏览器访问该服务器时，会显示“无法确认连接安全性”或“该网站的安全证书存在问题”等警告消息。</p>
+<p>但是！如果当Openssl尽管没什么作用，但是仍然遵守了HTTPS协议。这也就意味着，当你想要在强制规定必须接入HTTPS的网站却购买不起SSL证书时，它能帮上你大忙！（说的就是你，微信小程序😡😡😡）</p>
+<h1 id="HTTPS-握手流程是怎么样的-基于-RSA-算法）"><a href="#HTTPS-握手流程是怎么样的-基于-RSA-算法）" class="headerlink" title="HTTPS 握手流程是怎么样的?(基于 RSA 算法）"></a>HTTPS 握手流程是怎么样的?(基于 RSA 算法）</h1><p>也许应该讲讲HTTPS的通信机制了？上图！</p>
+<p><img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost4@main/%E7%BD%91%E7%BB%9C/https/tls%E6%8F%A1%E6%89%8B.png"></p>
+<p>上图简要概述了 TLS 的握手过程，其中每一个「框」都是一个记录(record)，记录是 TLS 收发数据的基本单位，类似于 TCP 里的 segment。多个记录可以组合成一个 TCP 包发送，所以通常经过「四个消息」就可以完成 TLS 握手，也就是需要 2个 RTT(Round-Trip-Time) 的时延，然后就可以在安全的通信环境里发送 HTTP 报文，实现 HTTPS 协议。</p>
+<p>所以可以发现，HTTPS 是应用层协议，需要先完成 TCP 连接建立，然后走 TLS 握手过程后，才能建立通信安全的连接。</p>
+<p>接下来，我们就以最简单的 RSA密钥交换算法，来看看它的 TLS 握手过程。</p>
+<blockquote>
+<p> 注：RSA算法当然是非对称算法啦！当然，如果你第一次看觉得迷糊也是很正常的，但是请牢牢把握住重点：<strong>RSA算法的最终目的是为了让客户端和服务端双方都共享了三个随机数(Client Random、Server Random、pre-master)以生成会话密钥，经过再一次握手确认无内鬼后才开始交易。</strong></p>
+</blockquote>
+<img src="/2025/02/16/CSInternet03/image-20250218221227265.png" class>
+
+<img src="/2025/02/16/CSInternet03/image-20250218221330491.png" class>
+
+<img src="/2025/02/16/CSInternet03/image-20250218221400431.png" class>
+
+<img src="/2025/02/16/CSInternet03/image-20250218221718293.png" class>
+
+<img src="/2025/02/16/CSInternet03/image-20250218221745201.png" class>
+
+<hr>
+<p>当然，最精彩的图是要放在最后细品的：</p>
+<p><img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost4@main/%E7%BD%91%E7%BB%9C/https/https_rsa.png" alt="Guess You Like It.png"></p>
+<h1 id="每个-HTTP-版本新的特性？解决了什么问题？"><a href="#每个-HTTP-版本新的特性？解决了什么问题？" class="headerlink" title="每个 HTTP 版本新的特性？解决了什么问题？"></a>每个 HTTP 版本新的特性？解决了什么问题？</h1><p>HTTP&#x2F;1.1:缓存机制，默认长连接，明文传输，队头阻塞，不支持服务器推送，头部臃肿，管道机制。</p>
+<p>HTTP&#x2F;2：流、帧、<strong>多路复用</strong>、请求优先级、HTTP 报头压缩、服务器推送，解决了 HTTP 层面的队头阻塞。</p>
+<p>缺点：<strong>TCP层的队头阻塞问题</strong>。好比漫画书的传输，HTTP&#x2F;2允许同时传输多个”故事”（Stream），但每个”故事”内部的页面（字节）还是要按顺序来。如果一个故事的第1页丢了，这个故事就要暂停等待；虽然其他故事还能继续看，但这个被阻塞的故事就卡在那里了。</p>
+<img src="/2025/02/16/CSInternet03/image-20250218224028829.png" class>
+
+
+
+<p>HTTP&#x2F;3：基于UDP 协议的“QUIC“协议，更快的连接建立。解决了TCP+TLS 建立连接的延时，连接id设置与连接迁移，QPACK 解决动态表跟新问题。</p>
+<p><img src="https://cdn.xiaolincoding.com//picgo/image-20240105144623562.png"></p>
+<img src="/2025/02/16/CSInternet03/image-20250218224936924.png" class>
+
+<h1 id="了解跨域"><a href="#了解跨域" class="headerlink" title="了解跨域"></a>了解跨域</h1><blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.51cto.com/article/689093.html">https://www.51cto.com/article/689093.html</a></p>
+</blockquote>
+<h1 id="了解RESTful规范"><a href="#了解RESTful规范" class="headerlink" title="了解RESTful规范"></a>了解RESTful规范</h1><p>REST (Representational State Transfer) 是一种软件架构风格，由 Roy Fielding 在 2000 年提出。它的核心理念是：</p>
+<ul>
+<li>面向资源(Resource)：所有事物都被抽象为资源</li>
+<li>状态转移：通过 HTTP 动词对资源进行操作</li>
+<li>无状态：服务器不保存客户端状态</li>
+</ul>
+<p>其中最重要的是统一接口原则：</p>
+<p>-资源标识：每个资源都有唯一的 URI</p>
+<p>-通过表述操作资源：客户端不直接操作服务器资源，而是操作资源的表述</p>
+<p>-自描述消息：请求和响应应该是自描述的，包含足够的信息</p>
+<p>-HATEOAS：通过超链接指引客户端后续操作</p>
+<p>1.资源设计</p>
+<ul>
+<li>一切都是资源</li>
+<li>资源应该是名词</li>
+<li>资源 URI 应该是层级性的</li>
+<li>避免动词，用 HTTP 方法表达动作</li>
+</ul>
+<p>2.URL 设计</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/api/v1/resources              # 资源集合</span><br><span class="line">/api/v1/resources/&#123;id&#125;         # 具体资源</span><br><span class="line">/api/v1/resources/&#123;id&#125;/sub     # 子资源</span><br></pre></td></tr></table></figure>
+
+<p>3.查询参数规范</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">?page=2&amp;per_page=100          # 分页</span><br><span class="line">?sort=name:asc                # 排序</span><br><span class="line">?status=active                # 过滤</span><br><span class="line">?fields=id,name               # 字段选择</span><br></pre></td></tr></table></figure>
+
+<p>4.响应格式</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;code&quot;</span><span class="punctuation">:</span> <span class="number">200</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="string">&quot;success&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;data&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;value&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0krblog.yqbirdmp.com">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0krblog.yqbirdmp.com/2025/02/16/CSInternet03/">https://0krblog.yqbirdmp.com/2025/02/16/CSInternet03/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0krblog.yqbirdmp.com" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/02/18/CSInternet04/" title="CSInternet04"><img class="cover" src="/statics/landscape003.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">CSInternet04</div></div><div class="info-2"><div class="info-item-1">DNS 是什么?DNS (Domain Name System) 是互联网的一个核心服务，主要功能是将人类容易记住的域名（如 172.217.163.46）提供反向解析，即从IP地址查找域名，或者是提供邮件服务器查询等其他服务。 DNS 域名解析的流程?解析记录 解析记录存储在域名服务器中，用于表达域名 与 IP 之间的对应关系，称为 记录（record）。根据使用场景，”记录”可以分成不同的类型（type），下面列举几个常见的解析记录类型    type 解释    A 地址记录（Address），返回域名指向的IPv4地址。   AAAA AAAA记录(AAAA record)，返回域名指向的IPv6地址。   NS 域名服务器记录（Name Server），返回保存下一级域名信息的服务器地址。该记录只能设置为域名，不能设置为IP地址。   CNAME 规范名称记录（Canonical Name），返回另一个域名，即当前查询的域名是另一个域名的跳转，详见下文。   MX 邮件记录（Mail...</div></div></div></a><a class="pagination-related" href="/2025/02/14/SQLTutorial01/" title="SQLTutorial01"><img class="cover" src="/statics/landscape002.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">SQLTutorial01</div></div><div class="info-2"><div class="info-item-1">知识日期函数DAYOFWEEK(date)返回日期date的星期索引(1&#x3D;星期天，2&#x3D;星期一, ……7&#x3D;星期六)。这些索引值对应于ODBC标准。 1select` `DAYOFWEEK(``&#x27;1998-02-03&#x27;``)  -&gt; 3 WEEKDAY(date)返回date的星期索引(0&#x3D;星期一，1&#x3D;星期二, ……6&#x3D; 星期天)。 复制代码 1mysql&gt; ``select` `WEEKDAY(``&#x27;1997-10-04 22:23:00&#x27;``);  -&gt; 5 DAYOFMONTH(date)返回date的月份中日期，在1到31范围内。 1mysql&gt; ``select` `DAYOFMONTH(``&#x27;1998-02-03&#x27;``);  -&gt; 3 DAYOFYEAR(date)返回date在一年中的日数, 在1到366范围内。 1mysql&gt; ``select`...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HTTP-%E6%9C%89%E4%BB%80%E4%B9%88%E7%BC%BA%E9%99%B7-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E5%BC%95%E5%85%A5-TLS-%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.</span> <span class="toc-text">HTTP 有什么缺陷?为什么需要引入 TLS 协议?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%B9%E7%A7%B0%E5%AF%86%E9%92%A5%E5%92%8C%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E9%92%A5%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="toc-number">2.</span> <span class="toc-text">对称密钥和非对称密钥有什么区别?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E6%98%AF%E4%BB%80%E4%B9%88-%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">3.</span> <span class="toc-text">数字签名是什么?数字证书是什么?</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#OpenSSL%EF%BC%9A%E8%87%AA%E7%AD%BE%E5%90%8D"><span class="toc-number">3.1.</span> <span class="toc-text">OpenSSL：自签名</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HTTPS-%E6%8F%A1%E6%89%8B%E6%B5%81%E7%A8%8B%E6%98%AF%E6%80%8E%E4%B9%88%E6%A0%B7%E7%9A%84-%E5%9F%BA%E4%BA%8E-RSA-%E7%AE%97%E6%B3%95%EF%BC%89"><span class="toc-number">4.</span> <span class="toc-text">HTTPS 握手流程是怎么样的?(基于 RSA 算法）</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%AF%8F%E4%B8%AA-HTTP-%E7%89%88%E6%9C%AC%E6%96%B0%E7%9A%84%E7%89%B9%E6%80%A7%EF%BC%9F%E8%A7%A3%E5%86%B3%E4%BA%86%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">每个 HTTP 版本新的特性？解决了什么问题？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%86%E8%A7%A3%E8%B7%A8%E5%9F%9F"><span class="toc-number">6.</span> <span class="toc-text">了解跨域</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%86%E8%A7%A3RESTful%E8%A7%84%E8%8C%83"><span class="toc-number">7.</span> <span class="toc-text">了解RESTful规范</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/03/09/GameTheroy/" title="GameTheroy"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="GameTheroy"/></a><div class="content"><a class="title" href="/2025/03/09/GameTheroy/" title="GameTheroy">GameTheroy</a><time datetime="2025-03-09T08:45:50.000Z" title="发表于 2025-03-09 16:45:50">2025-03-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/06/MCUTuTorial01/" title="MCUTuTorial01"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MCUTuTorial01"/></a><div class="content"><a class="title" href="/2025/03/06/MCUTuTorial01/" title="MCUTuTorial01">MCUTuTorial01</a><time datetime="2025-03-06T05:46:58.000Z" title="发表于 2025-03-06 13:46:58">2025-03-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial14/" title="JavaTutorial14"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial14"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial14/" title="JavaTutorial14">JavaTutorial14</a><time datetime="2025-03-02T08:16:48.000Z" title="发表于 2025-03-02 16:16:48">2025-03-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial13/" title="JavaTutorial13"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial13"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial13/" title="JavaTutorial13">JavaTutorial13</a><time datetime="2025-03-02T08:16:41.000Z" title="发表于 2025-03-02 16:16:41">2025-03-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial12/" title="JavaTutorial12"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial12"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial12/" title="JavaTutorial12">JavaTutorial12</a><time datetime="2025-03-02T08:16:35.000Z" title="发表于 2025-03-02 16:16:35">2025-03-02</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

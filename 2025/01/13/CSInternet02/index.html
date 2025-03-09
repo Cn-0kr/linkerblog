@@ -1,0 +1,600 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>CSInternet02 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="键入网址再按下回车，后面究竟发生了什么?这个问题理应在讲解完DNS和TCP、IP协议之后再说明的，但是这张图实在是太牛逼了，遂迫不及待地分享给各位作为今天的开胃菜：   好了，今天我们来讲解HTTP。没戳！是关于HTTP的全部内容！考虑到篇幅原因，也许会分为两篇或者三篇连载。本篇讲述的是HTTP。。。。。。等方面。 HTTP 报文格式长什么样?是如何分割的? 参考链接：https:&#x2F;&#x2F;learn.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSInternet02">
+<meta property="og:url" content="https://0krblog.yqbirdmp.com/2025/01/13/CSInternet02/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="键入网址再按下回车，后面究竟发生了什么?这个问题理应在讲解完DNS和TCP、IP协议之后再说明的，但是这张图实在是太牛逼了，遂迫不及待地分享给各位作为今天的开胃菜：   好了，今天我们来讲解HTTP。没戳！是关于HTTP的全部内容！考虑到篇幅原因，也许会分为两篇或者三篇连载。本篇讲述的是HTTP。。。。。。等方面。 HTTP 报文格式长什么样?是如何分割的? 参考链接：https:&#x2F;&#x2F;learn.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0krblog.yqbirdmp.com/statics/landscape002.jpg">
+<meta property="article:published_time" content="2025-01-13T04:38:53.000Z">
+<meta property="article:modified_time" content="2025-02-20T13:09:07.398Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0krblog.yqbirdmp.com/statics/landscape002.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0krblog.yqbirdmp.com/2025/01/13/CSInternet02/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CSInternet02',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-02-20 21:09:07'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape002.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">CSInternet02</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">CSInternet02</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-01-13T04:38:53.000Z" title="发表于 2025-01-13 12:38:53">2025-01-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-02-20T13:09:07.398Z" title="更新于 2025-02-20 21:09:07">2025-02-20</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">12.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>41分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="键入网址再按下回车，后面究竟发生了什么"><a href="#键入网址再按下回车，后面究竟发生了什么" class="headerlink" title="键入网址再按下回车，后面究竟发生了什么?"></a>键入网址再按下回车，后面究竟发生了什么?</h1><p>这个问题理应在讲解完DNS和TCP、IP协议之后再说明的，但是这张图实在是太牛逼了，遂迫不及待地分享给各位作为今天的开胃菜：</p>
+<img src="/2025/01/13/CSInternet02/image-20250216144315814.png" class title="图源：图解HTTP">
+
+<p>好了，今天我们来讲解HTTP。没戳！是关于HTTP的全部内容！考虑到篇幅原因，也许会分为两篇或者三篇连载。本篇讲述的是HTTP。。。。。。等方面。</p>
+<h1 id="HTTP-报文格式长什么样-是如何分割的"><a href="#HTTP-报文格式长什么样-是如何分割的" class="headerlink" title="HTTP 报文格式长什么样?是如何分割的?"></a>HTTP 报文格式长什么样?是如何分割的?</h1><blockquote>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%e4%b8%93%e6%a0%8f/%e9%80%8f%e8%a7%86HTTP%e5%8d%8f%e8%ae%ae/09%20%20HTTP%e6%8a%a5%e6%96%87%e6%98%af%e4%bb%80%e4%b9%88%e6%a0%b7%e5%ad%90%e7%9a%84%ef%bc%9f.md%EF%BC%8C%E5%AE%9E%E9%99%85%E4%B8%8A%E5%A4%A7%E9%83%A8%E5%88%86%E9%83%BD%E6%98%AF%E6%91%98%E6%8A%84%EF%BC%8C%E5%8F%AA%E6%9C%89%E6%9C%80%E5%90%8E%E6%98%AF%E8%87%AA%E5%B7%B1%E5%86%99%E7%9A%84%EF%BC%8C%E8%BF%99%E9%87%8C%E5%8F%AA%E6%98%AF%E5%81%9A%E6%95%B4%E5%90%88">https://learn.lianglianglee.com/%e4%b8%93%e6%a0%8f/%e9%80%8f%e8%a7%86HTTP%e5%8d%8f%e8%ae%ae/09%20%20HTTP%e6%8a%a5%e6%96%87%e6%98%af%e4%bb%80%e4%b9%88%e6%a0%b7%e5%ad%90%e7%9a%84%ef%bc%9f.md，实际上大部分都是摘抄，只有最后是自己写的，这里只是做整合</a></p>
+</blockquote>
+<p>HTTP 协议的请求报文和响应报文的结构基本相同，由三大部分组成：</p>
+<ol>
+<li>起始行（start line）：描述请求或响应的基本信息；</li>
+<li>头部字段集合（header）：使用 key-value 形式更详细地说明报文；</li>
+<li>消息正文（entity）：实际传输的数据，它不一定是纯文本，可以是图片、视频等二进制数据。</li>
+</ol>
+<p>这其中前两部分起始行和头部字段经常又合称为“<strong>请求头</strong>”或“<strong>响应头</strong>”，消息正文又称为“<strong>实体</strong>”，但与“<strong>header</strong>”对应，很多时候就直接称为“<strong>body</strong>”。</p>
+<p>HTTP 协议规定报文必须有 header，但可以没有 body，而且在 header 之后必须要有一个“空行”，也就是“CRLF”，十六进制的“0D0A”。</p>
+<p>所以，一个完整的 HTTP 报文就像是下图的这个样子，注意在 header 和 body 之间有一个“空行”。</p>
+<p><img src="https://learn.lianglianglee.com/%e4%b8%93%e6%a0%8f/%e9%80%8f%e8%a7%86HTTP%e5%8d%8f%e8%ae%ae/assets/62e061618977565c22c2cf09930e1d3c.png" alt="图源：https://learn.lianglianglee.com/%e4%b8%93%e6%a0%8f/%e9%80%8f%e8%a7%86HTTP%e5%8d%8f%e8%ae%ae/09%20%20HTTP%e6%8a%a5%e6%96%87%e6%98%af%e4%bb%80%e4%b9%88%e6%a0%b7%e5%ad%90%e7%9a%84%ef%bc%9f.md"></p>
+<blockquote>
+<p>注：CRLF 是 Carriage Return（回车，\r）和 Line Feed（换行，\n）的缩写组合。</p>
+</blockquote>
+<h2 id="请求行"><a href="#请求行" class="headerlink" title="请求行"></a>请求行</h2><p>了解了 HTTP 报文的基本结构后，我们来看看请求报文里的起始行也就是<strong>请求行</strong>（request line），它简要地描述了<strong>客户端想要如何操作服务器端的资源</strong>。</p>
+<p>请求行由三部分构成：</p>
+<ol>
+<li>请求方法：是一个动词，如 GET&#x2F;POST，表示对资源的操作；</li>
+<li>请求目标：通常是一个 URI，标记了请求方法要操作的资源；</li>
+<li>版本号：表示报文使用的 HTTP 协议版本。</li>
+</ol>
+<p>这三个部分通常使用空格（space）来分隔，最后要用 CRLF 换行表示结束。</p>
+<p>比如说下面的例子：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="operator">/</span> HTTP<span class="operator">/</span><span class="number">1.1</span></span><br></pre></td></tr></table></figure>
+
+<p>在这个请求行里，“GET”是请求方法，“&#x2F;”是请求目标，“HTTP&#x2F;1.1”是版本号，把这三部分连起来，意思就是“服务器你好，我想获取网站根目录下的默认文件，我用的协议版本号是 1.1，请不要用 1.0 或者 2.0 回复我。”</p>
+<h2 id="响应行"><a href="#响应行" class="headerlink" title="响应行"></a>响应行</h2><p>看完了请求行，我们再看响应报文里的起始行，在这里它不叫“响应行”，而是叫“<strong>状态行</strong>”（status line），意思是<strong>服务器响应的状态</strong>。</p>
+<p>比起请求行来说，状态行要简单一些，同样也是由三部分构成：</p>
+<ol>
+<li>版本号：表示报文使用的 HTTP 协议版本；</li>
+<li>状态码：一个三位数，用代码的形式表示处理的结果，比如 200 是成功，500 是服务器错误；</li>
+<li>原因：作为数字状态码补充，是更详细的解释文字，帮助人理解原因。</li>
+</ol>
+<p>比如说下面的例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br></pre></td></tr></table></figure>
+
+<p>意思就是：“浏览器你好，我已经处理完了你的请求，这个报文使用的协议版本号是 1.1，状态码是 200，一切 OK。”</p>
+<p>而另一个“GET &#x2F;favicon.ico HTTP&#x2F;1.1”的响应报文状态行是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 404 Not Found</span><br></pre></td></tr></table></figure>
+
+<p>翻译成人话就是：“抱歉啊浏览器，刚才你的请求收到了，但我没找到你要的资源，错误代码是 404，接下来的事情你就看着办吧。”</p>
+<h2 id="头部字段–扩展规则"><a href="#头部字段–扩展规则" class="headerlink" title="头部字段–扩展规则"></a>头部字段–扩展规则</h2><p>头部字段是 key-value 的形式，key 和 value 之间用“:”分隔，最后用 CRLF 换行表示字段结束。比如在“Host: 127.0.0.1”这一行里 key 就是“Host”，value 就是“127.0.0.1”。</p>
+<p>HTTP 头字段非常灵活，不仅可以使用标准里的 Host、Connection 等已有头，也可以任意添加自定义头，这就给 HTTP 协议带来了无限的扩展可能。</p>
+<p>不过使用头字段需要注意下面几点：</p>
+<ol>
+<li>字段名不区分大小写，例如“Host”也可以写成“host”，但首字母大写的可读性更好；</li>
+<li>字段名里不允许出现空格，可以使用连字符“-”，但不能使用下划线“_”。例如，“test-name”是合法的字段名，而“test name”“test_name”是不正确的字段名；</li>
+<li>字段名后面必须紧接着“:”，不能有空格，而“:”后的字段值前可以有多个空格；</li>
+<li>字段的顺序是没有意义的，可以任意排列不影响语义；</li>
+<li>字段原则上不能重复，除非这个字段本身的语义允许，例如 Set-Cookie。</li>
+</ol>
+<h2 id="头部字段–常用头字段分类"><a href="#头部字段–常用头字段分类" class="headerlink" title="头部字段–常用头字段分类"></a>头部字段–常用头字段分类</h2><p>HTTP 协议规定了非常多的头部字段，实现各种各样的功能，但基本上可以分为四大类：</p>
+<ol>
+<li>通用字段：在请求头和响应头里都可以出现；</li>
+<li>请求字段：仅能出现在请求头里，进一步说明请求信息或者额外的附加条件；</li>
+<li>响应字段：仅能出现在响应头里，补充说明响应报文的信息；</li>
+<li>实体字段：它实际上属于通用字段，但专门描述 body 的额外信息。</li>
+</ol>
+<p>对 HTTP 报文的解析和处理实际上主要就是对头字段的处理，理解了头字段也就理解了 HTTP 报文。</p>
+<p>首先要说的是<strong>Host</strong>字段，它属于请求字段，只能出现在请求头里，它同时也是唯一一个 HTTP&#x2F;1.1 规范里要求<strong>必须出现</strong>的字段，也就是说，如果请求头里没有 Host，那这就是一个错误的报文。</p>
+<p>Host 字段告诉服务器这个请求应该由哪个主机来处理，当一台计算机上托管了多个虚拟主机的时候，服务器端就需要用 Host 字段来选择，有点像是一个简单的“路由重定向”。</p>
+<p><strong>User-Agent</strong>是请求字段，只出现在请求头里。它使用一个字符串来描述发起 HTTP 请求的客户端，服务器可以依据它来返回最合适此浏览器显示的页面。</p>
+<p>但由于历史的原因，User-Agent 非常混乱，每个浏览器都自称是“Mozilla”“Chrome”“Safari”，企图使用这个字段来互相“伪装”，导致 User-Agent 变得越来越长，最终变得毫无意义。</p>
+<p>不过有的比较“诚实”的爬虫会在 User-Agent 里用“spider”标明自己是爬虫，所以可以利用这个字段实现简单的反爬虫策略。</p>
+<p><strong>Date</strong>字段是一个通用字段，但通常出现在响应头里，表示 HTTP 报文创建的时间，客户端可以使用这个时间再搭配其他字段决定缓存策略。</p>
+<p><strong>Server</strong>字段是响应字段，只能出现在响应头里。它告诉客户端当前正在提供 Web 服务的软件名称和版本号。Server 字段也不是必须要出现的，因为这会把服务器的一部分信息暴露给外界，如果这个版本恰好存在 bug，那么黑客就有可能利用 bug 攻陷服务器。所以，有的网站响应头里要么没有这个字段，要么就给出一个完全无关的描述信息。</p>
+<p>在许多现代浏览器上，它们都会对发送的请求和接收到的响应做整理并展示到客户端。如果你正在使用Chrome，使用快捷键<code>Ctrl+Shfit+I</code>后点击“网络”即可打开对应网站的HTTP报文。例如，DeepSeek其中的一个请求的报文如下：</p>
+<img src="/2025/01/13/CSInternet02/image-20250216160731380.png" class>
+
+<hr>
+<p><strong>总结：</strong></p>
+<p>HTTP 请求报文:报文首部(请求行(方法、URI、HTTP 版本)、请求首部字段(首部字段名:字段值)、通用首部字段、实体首部字段、其他)、空行、报文主体</p>
+<p><img src="https://learn.lianglianglee.com/%e4%b8%93%e6%a0%8f/%e9%80%8f%e8%a7%86HTTP%e5%8d%8f%e8%ae%ae/assets/1fe4c1121c50abcf571cebd677a8bdea.png"></p>
+<p>HTTP 响应报文:报文首部状态行(HTTP 版本、状态码、解释短语)、头字段（响应首部字段、通用首部字段、实体首部字段、其他)、空行、报文主体</p>
+<p><img src="https://learn.lianglianglee.com/%e4%b8%93%e6%a0%8f/%e9%80%8f%e8%a7%86HTTP%e5%8d%8f%e8%ae%ae/assets/cb0d1d2c56400fe9c9988ee32842b175.png"></p>
+<h1 id="HTTP-提供了哪些方法-GET和POST的区别是什么"><a href="#HTTP-提供了哪些方法-GET和POST的区别是什么" class="headerlink" title="HTTP 提供了哪些方法?GET和POST的区别是什么?"></a>HTTP 提供了哪些方法?GET和POST的区别是什么?</h1><blockquote>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%80%8F%E8%A7%86HTTP%E5%8D%8F%E8%AE%AE/10%20%20%E5%BA%94%E8%AF%A5%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%EF%BC%9F.md">https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%80%8F%E8%A7%86HTTP%E5%8D%8F%E8%AE%AE/10%20%20%E5%BA%94%E8%AF%A5%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95%EF%BC%9F.md</a></p>
+</blockquote>
+<p>HTTP 协议里为什么要有“请求方法”这个东西呢？</p>
+<p>这就要从 HTTP 协议设计时的定位说起了。蒂姆·伯纳斯 - 李最初设想的是要用 HTTP 协议构建一个超链接文档系统，使用 URI 来定位这些文档，也就是资源。那么，该怎么在协议里操作这些资源呢？</p>
+<p>很显然，需要有某种“动作的指示”，告诉操作这些资源的方式。所以，就这么出现了“请求方法”。它的实际含义就是客户端发出了一个“动作指令”，要求服务器端对 URI 定位的资源执行这个动作。</p>
+<p>目前 HTTP&#x2F;1.1 规定了八种方法，单词<strong>都必须是大写的形式</strong>，我先简单地列把它们列出来，后面再详细讲解。</p>
+<ol>
+<li>GET：获取资源，可以理解为读取或者下载数据；</li>
+<li>HEAD：获取资源的元信息；</li>
+<li>POST：向资源提交数据，相当于写入或上传数据；</li>
+<li>PUT：类似 POST；</li>
+<li>DELETE：删除资源；</li>
+<li>CONNECT：建立特殊的连接隧道；</li>
+<li>OPTIONS：列出可对资源实行的方法；</li>
+<li>TRACE：追踪请求 - 响应的传输路径。</li>
+</ol>
+<hr>
+<p>emm。。。其实按我理解很简单啦，就是GET方法获取资源，POST 方法提交数据。Head方法是简化版GET，比如，想要检查一个文件是否存在，只要发个 HEAD 请求就可以了，没有必要用 GET 把整个文件都取下来。PUT方法也是也是对标POST的，但是意思更接近于update而非create或insert，用的也很少，有的服务器甚至是禁止使用PUT方法的。</p>
+<p>然后就是比较重要的安全性和幂等性方面的问题：</p>
+<p>在 HTTP 协议里，所谓的“<strong>安全</strong>”是指请求方法不会“破坏”服务器上的资源，即不会对服务器上的资源造成实质的修改。所谓的“<strong>幂等</strong>”实际上是一个数学用语，被借用到了 HTTP 协议里，意思是多次执行相同的操作，结果也都是相同的，即多次“幂”后结果“相等”。</p>
+<p>安全性：GET请求暴漏在 URL中，参数可见，不适合传递敏感信息；POST请求数据放在请求体中，相对安全，但是需要 https 才能保证数据加密运输。</p>
+<p>幂等性:   GET请求幂等，重复请求不会改变服务器状态；POST非幂等，多次请求可能导致重复创建资源或者执行多次相同操作。</p>
+<p>GET 和 HEAD 既是安全的也是幂等的，至于PUT和POST，可以对比一下 SQL 来加深理解：把 POST 理解成 INSERT，把 PUT 理解成 UPDATE，这样就很清楚了。多次 INSERT 会添加多条记录，而多次 UPDATE 只操作一条记录，而且效果相同。</p>
+<h1 id="URI和URL有什么区别-域名的端口是怎么识别的"><a href="#URI和URL有什么区别-域名的端口是怎么识别的" class="headerlink" title="URI和URL有什么区别?域名的端口是怎么识别的?"></a>URI和URL有什么区别?域名的端口是怎么识别的?</h1><p>关于第一个问题，我是在帖子下面看到的别人的截图，为表尊重此处也把原图贴上（</p>
+<img src="/2025/01/13/CSInternet02/image-20250216163359432.png" class>
+
+
+
+<p>URI 本质上是一个字符串，这个字符串的作用是<strong>唯一地标记资源的位置或者名字</strong>。</p>
+<p>这里我要提醒你注意，它不仅能够标记万维网的资源，也可以标记其他的，如邮件系统、本地文件系统等任意资源。而“资源”既可以是存在磁盘上的静态文本、页面数据，也可以是由 Java、PHP 提供的动态服务。</p>
+<p>下面的这张图显示了 URI 最常用的形式，由 scheme、host:port、path 和 query 四个部分组成，但有的部分可以视情况省略。</p>
+<p><img src="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%80%8F%E8%A7%86HTTP%E5%8D%8F%E8%AE%AE/assets/46581d7e1058558d8e12c1bf37d30d2a.png"></p>
+<h2 id="URI-的基本组成"><a href="#URI-的基本组成" class="headerlink" title="URI 的基本组成"></a>URI 的基本组成</h2><p>URI 第一个组成部分叫<strong>scheme</strong>，翻译成中文叫“<strong>方案名</strong>”或者“<strong>协议名</strong>”，表示<strong>资源应该使用哪种协议</strong>来访问。</p>
+<p>最常见的当然就是“http”了，表示使用 HTTP 协议。另外还有“https”，表示使用经过加密、安全的 HTTPS 协议。此外还有其他不是很常见的 scheme，例如 ftp、ldap、file、news 等。</p>
+<p>浏览器或者你的应用程序看到 URI 里的 scheme，就知道下一步该怎么走了，会调用相应的 HTTP 或者 HTTPS 下层 API。显然，如果一个 URI 没有提供 scheme，即使后面的地址再完善，也是无法处理的。</p>
+<p>在 scheme 之后，必须是<strong>三个特定的字符</strong>“**:&#x2F;&#x2F;**”，它把 scheme 和后面的部分分离开。</p>
+<p>实话实说，这个设计非常的怪异，我最早上网的时候看见地址栏里的“:&#x2F;&#x2F;”就觉得很别扭，直到现在也还是没有太适应。URI 的创造者蒂姆·伯纳斯 - 李也曾经私下承认“:&#x2F;&#x2F;”并非必要，当初有些“过于草率”了。</p>
+<p>不过这个设计已经有了三十年的历史，不管我们愿意不愿意，只能接受。</p>
+<p>在“:&#x2F;&#x2F;”之后，是被称为“<strong>authority</strong>”的部分，表示<strong>资源所在的主机名</strong>，通常的形式是“host:port”，即主机名加端口号。</p>
+<p>主机名可以是 IP 地址或者域名的形式，必须要有，否则浏览器就会找不到服务器。但端口号有时可以省略，浏览器等客户端会依据 scheme 使用默认的端口号，例如 HTTP 的默认端口号是 80，HTTPS 的默认端口号是 443。</p>
+<p>有了协议名和主机地址、端口号，再加上后面<strong>标记资源所在位置</strong>的<strong>path</strong>，浏览器就可以连接服务器访问资源了。</p>
+<p>URI 里 path 采用了类似文件系统“目录”“路径”的表示方式，因为早期互联网上的计算机多是 UNIX 系统，所以采用了 UNIX 的“&#x2F;”风格。其实也比较好理解，它与 scheme 后面的“:&#x2F;&#x2F;”是一致的。</p>
+<p>这里我也要再次提醒你注意，URI 的 path 部分必须以“&#x2F;”开始，也就是必须包含“&#x2F;”，不要把“&#x2F;”误认为属于前面 authority。</p>
+<p>说了这么多“理论”，来看几个实例。</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//nginx</span>.org</span><br><span class="line">http:<span class="regexp">//</span>www.chrono.com:<span class="number">8080</span>/<span class="number">11</span>-<span class="number">1</span></span><br><span class="line">https:<span class="regexp">//</span>tools.ietf.org/html/rfc7230</span><br><span class="line">file:<span class="regexp">//</span><span class="regexp">/D:/</span>http_study/www/</span><br></pre></td></tr></table></figure>
+
+<p>第一个 URI 算是最简单的了，协议名是“http”，主机名是“nginx.org”，端口号省略，所以是默认的 80，而路径部分也被省略了，默认就是一个“&#x2F;”，表示根目录。</p>
+<p>第二个 URI 是在实验环境里这次课程的专用 URI，主机名是“<a target="_blank" rel="noopener" href="http://www.chrono.com”,端口号是/">www.chrono.com”，端口号是</a> 8080，后面的路径是“&#x2F;11-1”。</p>
+<p>第三个是 HTTP 协议标准文档 RFC7230 的 URI，主机名是“tools.ietf.org”，路径是“&#x2F;html&#x2F;rfc7230”。</p>
+<p>最后一个 URI 要注意了，它的协议名不是“http”，而是“file”，表示这是本地文件，而后面居然有三个斜杠，这是怎么回事？</p>
+<p>如果你刚才仔细听了 scheme 的介绍就能明白，这三个斜杠里的前两个属于 URI 特殊分隔符“:&#x2F;&#x2F;”，然后后面的“&#x2F;D:&#x2F;http_study&#x2F;www&#x2F;”是路径，而中间的主机名被“省略”了。这实际上是 file 类型 URI 的“特例”，它允许省略主机名，默认是本机 localhost。</p>
+<p>但对于 HTTP 或 HTTPS 这样的网络通信协议，主机名是绝对不能省略的。原因之前也说了，会导致浏览器无法找到服务器。</p>
+<p>查询参数 query 有一套自己的格式，是多个“<strong>key&#x3D;value</strong>”的字符串，这些 KV 值用字符“**&amp;**”连接，浏览器和客户端都可以按照这个格式把长串的查询参数解析成可理解的字典或关联数组形式。</p>
+<p>你可以在实验环境里用 Chrome 试试下面这个加了 query 参数的 URI：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://www.chrono.com:8080/11-1?uid=1234&amp;name=mario&amp;referer=xxx</span><br></pre></td></tr></table></figure>
+
+<p>Chrome 的开发者工具也能解码出 query 里的 KV 对，省得我们“人肉”分解。</p>
+<img src="/2025/01/13/CSInternet02/e42073080968e8e0c58d9a9126ab82f3.png" class>
+
+<h2 id="URL完整形态"><a href="#URL完整形态" class="headerlink" title="URL完整形态"></a>URL完整形态</h2><p>不过必须要说的是，URI 还有一个“真正”的完整形态，如下图所示。</p>
+<img src="/2025/01/13/CSInternet02/ff41d020c7a27d1e8191057f0e658b38.png" class>
+
+<p>这个“真正”形态比基本形态多了两部分。</p>
+<p>第一个多出的部分是协议名之后、主机名之前的<strong>身份信息</strong>“user:passwd@”，表示登录主机时的用户名和密码，但现在已经不推荐使用这种形式了（RFC7230），因为它把敏感信息以明文形式暴露出来，存在严重的安全隐患。</p>
+<p>第二个多出的部分是查询参数后的<strong>片段标识符</strong>“#fragment”，它是 URI 所定位的资源内部的一个“锚点”或者说是“标签”，浏览器可以在获取资源后直接跳转到它指示的位置。</p>
+<p>但片段标识符仅能由浏览器这样的客户端使用，服务器是看不到的。也就是说，浏览器永远不会把带“#fragment”的 URI 发送给服务器，服务器也永远不会用这种方式去处理资源的片段。</p>
+<h2 id="URL转义编码"><a href="#URL转义编码" class="headerlink" title="URL转义编码"></a>URL转义编码</h2><p>刚才我们看到了，在 URI 里只能使用 ASCII 码，但如果要在 URI 里使用英语以外的汉语、日语等其他语言该怎么办呢？</p>
+<p>还有，某些特殊的 URI，会在 path、query 里出现“@&amp;?“等起界定符作用的字符，会导致 URI 解析错误，这时又该怎么办呢？</p>
+<p>所以，URI 引入了编码机制，对于 ASCII 码以外的字符集和特殊字符做一个特殊的操作，把它们转换成与 URI 语义不冲突的形式。这在 RFC 规范里称为“escape”和“unescape”，俗称“转义”。</p>
+<p>URI 转义的规则有点“简单粗暴”，<strong>直接把非 ASCII 码或特殊字符转换成十六进制字节值，然后前面再加上一个“%”。</strong></p>
+<p>例如，空格被转义成“%20”，“?”被转义成“%3F”。而中文、日文等则通常使用 UTF-8 编码后再转义，例如“银河”会被转义成“%E9%93%B6%E6%B2%B3”。</p>
+<p>有了这个编码规则后，URI 就更加完美了，可以支持任意的字符集用任何语言来标记资源。</p>
+<p>不过我们在浏览器的地址栏里通常是不会看到这些转义后的“乱码”的，这实际上是浏览器一种“友好”表现，隐藏了 URI 编码后的“丑陋一面”，不信你可以试试下面的这个 URI。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://www.chrono.com:8080/11-1? 夸父逐日</span><br></pre></td></tr></table></figure>
+
+<p>先在 Chrome 的地址栏里输入这个 query 里含有中文的 URI，然后点击地址栏，把它再拷贝到其他的编辑器里，它就会“现出原形”：</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span>www.chrono.com:<span class="number">8080</span>/<span class="number">11</span>-<span class="number">1</span>?<span class="variable">%E</span>5<span class="variable">%A</span>4<span class="variable">%B</span>8<span class="variable">%E</span>7<span class="variable">%8</span>8<span class="variable">%B</span>6<span class="variable">%E</span>9<span class="variable">%8</span>0<span class="variable">%9</span>0<span class="variable">%E</span>6<span class="variable">%9</span>7<span class="variable">%A5</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="HTTP-有哪些状态码-分别代表什么意思"><a href="#HTTP-有哪些状态码-分别代表什么意思" class="headerlink" title="HTTP 有哪些状态码?分别代表什么意思?"></a>HTTP 有哪些状态码?分别代表什么意思?</h1><p>有五类，1xx 提示信息、2xx成功、3xx 重定向、4xx 客户端错误，请求报文有误，服务器无法处理；5xx 服务器错误。100~599</p>
+<h2 id="1××"><a href="#1××" class="headerlink" title="1××"></a>1××</h2><p>1××类状态码属于提示信息，是协议处理的中间状态，实际能够用到的时候很少。</p>
+<p>我们偶尔能够见到的是“<strong>101 Switching Protocols</strong>”。它的意思是客户端使用 Upgrade 头字段，要求在 HTTP 协议的基础上改成其他的协议继续通信，比如 WebSocket。而如果服务器也同意变更协议，就会发送状态码 101，但这之后的数据传输就不会再使用 HTTP 了。</p>
+<h2 id="2××"><a href="#2××" class="headerlink" title="2××"></a>2××</h2><p>2××类状态码表示服务器收到并成功处理了客户端的请求，这也是客户端最愿意看到的状态码。</p>
+<p>“<strong>200 OK</strong>”是最常见的成功状态码，表示一切正常，服务器如客户端所期望的那样返回了处理结果，如果是非 HEAD 请求，通常在响应头后都会有 body 数据。</p>
+<p>“<strong>204 No Content</strong>”是另一个很常见的成功状态码，它的含义与“200 OK”基本相同，但响应头后没有 body 数据。所以对于 Web 服务器来说，正确地区分 200 和 204 是很必要的。</p>
+<p>“<strong>206 Partial Content</strong>”是 HTTP 分块下载或断点续传的基础，在客户端发送“范围请求”、要求获取资源的部分数据时出现，它与 200 一样，也是服务器成功处理了请求，但 body 里的数据不是资源的全部，而是其中的一部分。</p>
+<p>状态码 206 通常还会伴随着头字段“<strong>Content-Range</strong>”，表示响应报文里 body 数据的具体范围，供客户端确认，例如“Content-Range: bytes 0-99&#x2F;2000”，意思是此次获取的是总计 2000 个字节的前 100 个字节。</p>
+<h2 id="3××"><a href="#3××" class="headerlink" title="3××"></a>3××</h2><p>3××类状态码表示客户端请求的资源发生了变动，客户端必须用新的 URI 重新发送请求获取资源，也就是通常所说的“重定向”，包括著名的 301、302 跳转。</p>
+<p>“<strong>301 Moved Permanently</strong>”俗称“永久重定向”，含义是此次请求的资源已经不存在了，需要改用改用新的 URI 再次访问。</p>
+<p>与它类似的是“<strong>302 Found</strong>”，曾经的描述短语是“<strong>Moved Temporarily</strong>”，俗称“临时重定向”，意思是请求的资源还在，但需要暂时用另一个 URI 来访问。</p>
+<p>301 和 302 都会在响应头里使用字段<strong>Location</strong>指明后续要跳转的 URI，最终的效果很相似，浏览器都会重定向到新的 URI。两者的根本区别在于语义，一个是“永久”，一个是“临时”，所以在场景、用法上差距很大。</p>
+<p>比如，你的网站升级到了 HTTPS，原来的 HTTP 不打算用了，这就是“永久”的，所以要配置 301 跳转，把所有的 HTTP 流量都切换到 HTTPS。</p>
+<p>再比如，今天夜里网站后台要系统维护，服务暂时不可用，这就属于“临时”的，可以配置成 302 跳转，把流量临时切换到一个静态通知页面，浏览器看到这个 302 就知道这只是暂时的情况，不会做缓存优化，第二天还会访问原来的地址。</p>
+<p>“<strong>304 Not Modified</strong>” 是一个比较有意思的状态码，它用于 If-Modified-Since 等条件请求，表示资源未修改，用于缓存控制。它不具有通常的跳转含义，但可以理解成“重定向已到缓存的文件”（即“缓存重定向”）。</p>
+<p>301、302 和 304 分别涉及了 HTTP 协议里重要的“重定向跳转”和“缓存控制”，在之后的课程中我还会细讲。</p>
+<h2 id="4××"><a href="#4××" class="headerlink" title="4××"></a>4××</h2><p>4××类状态码表示客户端发送的请求报文有误，服务器无法处理，它就是真正的“错误码”含义了。</p>
+<p>“<strong>400 Bad Request</strong>”是一个通用的错误码，表示请求报文有错误，但具体是数据格式错误、缺少请求头还是 URI 超长它没有明确说，只是一个笼统的错误，客户端看到 400 只会是“一头雾水”“不知所措”。所以，在开发 Web 应用时应当尽量避免给客户端返回 400，而是要用其他更有明确含义的状态码。</p>
+<p>“<strong>403 Forbidden</strong>”实际上不是客户端的请求出错，而是表示服务器禁止访问资源。原因可能多种多样，例如信息敏感、法律禁止等，如果服务器友好一点，可以在 body 里详细说明拒绝请求的原因，不过现实中通常都是直接给一个“闭门羹”。</p>
+<p>“<strong>404 Not Found</strong>”可能是我们最常看见也是最不愿意看到的一个状态码，它的原意是资源在本服务器上未找到，所以无法提供给客户端。但现在已经被“用滥了”，只要服务器“不高兴”就可以给出个 404，而我们也无从得知后面到底是真的未找到，还是有什么别的原因，某种程度上它比 403 还要令人讨厌。</p>
+<p>4××里剩下的一些代码较明确地说明了错误的原因，都很好理解，开发中常用的有：</p>
+<ul>
+<li>405 Method Not Allowed：不允许使用某些方法操作资源，例如不允许 POST 只能 GET；</li>
+<li>406 Not Acceptable：资源无法满足客户端请求的条件，例如请求中文但只有英文；</li>
+<li>408 Request Timeout：请求超时，服务器等待了过长的时间；</li>
+<li>409 Conflict：多个请求发生了冲突，可以理解为多线程并发时的竞态；</li>
+<li>413 Request Entity Too Large：请求报文里的 body 太大；</li>
+<li>414 Request-URI Too Long：请求行里的 URI 太大；</li>
+<li>429 Too Many Requests：客户端发送了太多的请求，通常是由于服务器的限连策略；</li>
+<li>431 Request Header Fields Too Large：请求头某个字段或总体太大；</li>
+</ul>
+<h2 id="5××"><a href="#5××" class="headerlink" title="5××"></a>5××</h2><p>5××类状态码表示客户端请求报文正确，但服务器在处理时内部发生了错误，无法返回应有的响应数据，是服务器端的“错误码”。</p>
+<p>“<strong>500 Internal Server Error</strong>”与 400 类似，也是一个通用的错误码，服务器究竟发生了什么错误我们是不知道的。不过对于服务器来说这应该算是好事，通常不应该把服务器内部的详细信息，例如出错的函数调用栈告诉外界。虽然不利于调试，但能够防止黑客的窥探或者分析。</p>
+<p>“<strong>501 Not Implemented</strong>”表示客户端请求的功能还不支持，这个错误码比 500 要“温和”一些，和“即将开业，敬请期待”的意思差不多，不过具体什么时候“开业”就不好说了。</p>
+<p>“<strong>502 Bad Gateway</strong>”通常是服务器作为网关或者代理时返回的错误码，表示服务器自身工作正常，访问后端服务器时发生了错误，但具体的错误原因也是不知道的。</p>
+<p>“<strong>503 Service Unavailable</strong>”表示服务器当前很忙，暂时无法响应服务，我们上网时有时候遇到的“网络服务正忙，请稍后重试”的提示信息就是状态码 503。</p>
+<p>503 是一个“临时”的状态，很可能过几秒钟后服务器就不那么忙了，可以继续提供服务，所以 503 响应报文里通常还会有一个“<strong>Retry-After</strong>”字段，指示客户端可以在多久以后再次尝试发送请求。</p>
+<p>我看了面经，好像比较好的回答都会先给个概念再举个例子，像下面这样：</p>
+<img src="/2025/01/13/CSInternet02/image-20250216170941747.png" class>
+
+<p>关于502的状态码我又搜索了下相关资料，其实更准确的说法是网关代理服务器（通常是 Nginx）和后端服务器通信异常，就是说它们已经成功建立连接但是Nginx收到了一个无效的响应。</p>
+<p>这时主要问题通常出在后端服务器，比如服务器运行异常、处理超时、内存溢出或者负载过高无法响应，但也可能是网关配置问题，比如端口配置错误或者协议不匹配（如 HTTP&#x2F;1.1 和 HTTP&#x2F;2 混用）等。这个时候可以优先检查后端服务的运行状态和日志以排查错误。</p>
+<h1 id="了解-HTTP-里的数据类型和语言类型"><a href="#了解-HTTP-里的数据类型和语言类型" class="headerlink" title="了解 HTTP 里的数据类型和语言类型"></a>了解 HTTP 里的数据类型和语言类型</h1><blockquote>
+<p>仅此一篇：<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%80%8F%E8%A7%86HTTP%E5%8D%8F%E8%AE%AE/15%20%20%E6%B5%B7%E7%BA%B3%E7%99%BE%E5%B7%9D%EF%BC%9AHTTP%E7%9A%84%E5%AE%9E%E4%BD%93%E6%95%B0%E6%8D%AE.md">https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%80%8F%E8%A7%86HTTP%E5%8D%8F%E8%AE%AE/15%20%20%E6%B5%B7%E7%BA%B3%E7%99%BE%E5%B7%9D%EF%BC%9AHTTP%E7%9A%84%E5%AE%9E%E4%BD%93%E6%95%B0%E6%8D%AE.md</a> 已经非常精简，推荐直接看原文。这里摘抄的是文章的小结部分。</p>
+</blockquote>
+<img src="/2025/01/13/CSInternet02/b2118315a977969ddfcc7ab9d26cb358.png" class>
+
+<ol>
+<li>数据类型表示实体数据的内容是什么，使用的是 MIME type，相关的头字段是 Accept 和 Content-Type；</li>
+<li>数据编码表示实体数据的压缩方式，相关的头字段是 Accept-Encoding 和 Content-Encoding；</li>
+<li>语言类型表示实体数据的自然语言，相关的头字段是 Accept-Language 和 Content-Language；</li>
+<li>字符集表示实体数据的编码方式，相关的头字段是 Accept-Charset 和 Content-Type；</li>
+<li>客户端需要在请求头里使用 Accept 等头字段与服务器进行“内容协商”，要求服务器返回最合适的数据；</li>
+<li>Accept 等头字段可以用“,”顺序列出多个可能的选项，还可以用“;q&#x3D;”参数来精确指定权重。</li>
+</ol>
+<img src="/2025/01/13/CSInternet02/0e9bcd6922fa8908bdba79d98ae5fa10.png" class>
+
+<p><img src="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%80%8F%E8%A7%86HTTP%E5%8D%8F%E8%AE%AE/assets/b4d1671872876a60ad717821f0fb819e.png"></p>
+<h1 id="了解-HTTP-数据压缩与分块传输"><a href="#了解-HTTP-数据压缩与分块传输" class="headerlink" title="了解 HTTP 数据压缩与分块传输"></a>了解 HTTP 数据压缩与分块传输</h1><blockquote>
+<p><a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%80%8F%E8%A7%86HTTP%E5%8D%8F%E8%AE%AE/16%20%20%E6%8A%8A%E5%A4%A7%E8%B1%A1%E8%A3%85%E8%BF%9B%E5%86%B0%E7%AE%B1%EF%BC%9AHTTP%E4%BC%A0%E8%BE%93%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E6%96%B9%E6%B3%95.md">https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%80%8F%E8%A7%86HTTP%E5%8D%8F%E8%AE%AE/16%20%20%E6%8A%8A%E5%A4%A7%E8%B1%A1%E8%A3%85%E8%BF%9B%E5%86%B0%E7%AE%B1%EF%BC%9AHTTP%E4%BC%A0%E8%BE%93%E5%A4%A7%E6%96%87%E4%BB%B6%E7%9A%84%E6%96%B9%E6%B3%95.md</a></p>
+</blockquote>
+<ol>
+<li>压缩 HTML 等文本文件是传输大文件最基本的方法；</li>
+<li>分块传输可以流式收发数据，节约内存和带宽，使用响应头字段“Transfer-Encoding: chunked”来表示，分块的格式是 16 进制长度头 + 数据块；</li>
+<li>范围请求可以只获取部分数据，即“分块请求”，实现视频拖拽或者断点续传，使用请求头字段“Range”和响应头字段“Content-Range”，响应状态码必须是 206；</li>
+<li>也可以一次请求多个范围，这时候响应报文的数据类型是“multipart&#x2F;byteranges”，body 里的多个部分会用 boundary 字符串分隔。</li>
+</ol>
+<p>要注意这四种方法不是互斥的，而是可以混合起来使用，例如压缩后再分块传输，或者分段后再分块，实验环境的 URI“&#x2F;16-3”就模拟了后一种的情形，你可以自己用 Telnet 试一下。</p>
+<h1 id="了解临时和永久重定向"><a href="#了解临时和永久重定向" class="headerlink" title="了解临时和永久重定向"></a>了解临时和永久重定向</h1><blockquote>
+<p><a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%80%8F%E8%A7%86HTTP%E5%8D%8F%E8%AE%AE/18%20%20%E5%9B%9B%E9%80%9A%E5%85%AB%E8%BE%BE%EF%BC%9AHTTP%E7%9A%84%E9%87%8D%E5%AE%9A%E5%90%91%E5%92%8C%E8%B7%B3%E8%BD%AC.md">https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%80%8F%E8%A7%86HTTP%E5%8D%8F%E8%AE%AE/18%20%20%E5%9B%9B%E9%80%9A%E5%85%AB%E8%BE%BE%EF%BC%9AHTTP%E7%9A%84%E9%87%8D%E5%AE%9A%E5%90%91%E5%92%8C%E8%B7%B3%E8%BD%AC.md</a></p>
+</blockquote>
+<p>301 的含义是“<strong>永久</strong>”的。</p>
+<p>如果域名、服务器、网站架构发生了大幅度的改变，比如启用了新域名、服务器切换到了新机房、网站目录层次重构，这些都算是“永久性”的改变。原来的 URI 已经不能用了，必须用 301“永久重定向”，通知浏览器和搜索引擎更新到新地址，这也是搜索引擎优化（SEO）要考虑的因素之一。</p>
+<p>302 的含义是“<strong>临时</strong>”的。</p>
+<p>原来的 URI 在将来的某个时间点还会恢复正常，常见的应用场景就是系统维护，把网站重定向到一个通知页面，告诉用户过一会儿再来访问。另一种用法就是“服务降级”，比如在双十一促销的时候，把订单查询、领积分等不重要的功能入口暂时关闭，保证核心服务能够正常运行。</p>
+<hr>
+<ol>
+<li>重定向是服务器发起的跳转，要求客户端改用新的 URI 重新发送请求，通常会自动进行，用户是无感知的；</li>
+<li>301⁄302 是最常用的重定向状态码，分别是“永久重定向”和“临时重定向”；</li>
+<li>响应头字段 Location 指示了要跳转的 URI，可以用绝对或相对的形式；</li>
+<li>重定向可以把一个 URI 指向另一个 URI，也可以把多个 URI 指向同一个 URI，用途很多；</li>
+<li>使用重定向时需要当心性能损耗，还要避免出现循环跳转。</li>
+</ol>
+<img src="/2025/01/13/CSInternet02/image-20250216203647748.png" class title="对于https:&#x2F;&#x2F;www.bing.com，当你在网址栏输入bing.com时会发生重定向哦">
+
+
+
+<h1 id="HTTP-长连接是怎么实现的"><a href="#HTTP-长连接是怎么实现的" class="headerlink" title="HTTP 长连接是怎么实现的?"></a>HTTP 长连接是怎么实现的?</h1><ol>
+<li>早期的 HTTP 协议使用短连接，收到响应后就立即关闭连接，效率很低；</li>
+<li>HTTP&#x2F;1.1 默认启用长连接，在一个连接上收发多个请求响应，提高了传输效率；</li>
+<li>服务器会发送“Connection: keep-alive”字段表示启用了长连接；</li>
+<li>报文头里如果有“Connection: close”就意味着长连接即将关闭；</li>
+<li>过多的长连接会占用服务器资源，所以服务器会用一些策略有选择地关闭长连接；</li>
+</ol>
+<p>长连接也还是有缺点的；就算是在空闲状态，它还是会消耗服务器资源，而且在重负载时，还有可能遭受 DoS 攻击。这种场景下，可以使用非长连接，即尽快关闭那些空闲的连接，也能对性能有所提升。</p>
+<h1 id="HTTP-1-1-队头阻塞是什么"><a href="#HTTP-1-1-队头阻塞是什么" class="headerlink" title="HTTP&#x2F;1.1 队头阻塞是什么?"></a>HTTP&#x2F;1.1 队头阻塞是什么?</h1><p>“队头阻塞”问题会导致性能下降，可以用“并发连接”和“域名分片”技术缓解。</p>
+<hr>
+<p>因为 HTTP 规定报文必须是“一发一收”，这就形成了一个先进先出的“串行”队列。队列里的请求没有轻重缓急的优先级，只有入队的先后顺序，排在最前面的请求被最优先处理。</p>
+<p>如果队首的请求因为处理的太慢耽误了时间，那么队列里后面的所有请求也不得不跟着一起等待，结果就是其他的请求承担了不应有的时间成本。</p>
+<p><img src="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%80%8F%E8%A7%86HTTP%E5%8D%8F%E8%AE%AE/assets/6a6d30a89fb085d5f1773a887aaf5572.png"></p>
+<p>“<strong>并发连接</strong>”（concurrent connections），就是同时对一个域名发起多个长连接，用数量来解决质量的问题。</p>
+<p>但这种方式也存在缺陷。如果每个客户端都想自己快，建立很多个连接，用户数×并发数就会是个天文数字。服务器的资源根本就扛不住，或者被服务器认为是恶意攻击，反而会造成“拒绝服务”。</p>
+<p>所以，HTTP 协议建议客户端使用并发，但不能“滥用”并发。RFC2616 里明确限制每个客户端最多并发 2 个连接。不过实践证明这个数字实在是太小了，众多浏览器都“无视”标准，把这个上限提高到了 6~8。后来修订的 RFC7230 也就“顺水推舟”，取消了这个“2”的限制。</p>
+<p>但“并发连接”所压榨出的性能也跟不上高速发展的互联网无止境的需求，还有什么别的办法吗？</p>
+<p>公司发展的太快了，员工越来越多，上下班打卡成了迫在眉睫的大问题。前台空间有限，放不下更多的打卡机了，怎么办？那就多开几个打卡的地方，每个楼层、办公区的入口也放上三四台打卡机，把人进一步分流，不要都往前台挤。</p>
+<p>这个就是“<strong>域名分片</strong>”（domain sharding）技术，还是用数量来解决质量的思路。然而如MDN所言，这个方法已经在HTTP&#x2F;2中被替代。</p>
+<img src="/2025/01/13/CSInternet02/CSInternet02" style="zoom:67%;">
+
+
+
+<h1 id="队头阻塞只会发生在-HTTP-1-1的长连接中吗"><a href="#队头阻塞只会发生在-HTTP-1-1的长连接中吗" class="headerlink" title="队头阻塞只会发生在 HTTP&#x2F;1.1的长连接中吗?"></a>队头阻塞只会发生在 HTTP&#x2F;1.1的长连接中吗?</h1><p>非也。以下截图自小林coding：图解网络</p>
+<img src="/2025/01/13/CSInternet02/image-20250216224608741.png" class>
+
+<h1 id="HTTP-无状态协议是保证用户登陆状态的"><a href="#HTTP-无状态协议是保证用户登陆状态的" class="headerlink" title="HTTP 无状态协议是保证用户登陆状态的?"></a>HTTP 无状态协议是保证用户登陆状态的?</h1><p>今天我们学习了 HTTP 里的 Cookie 知识。虽然现在已经出现了多种 Local Web Storage 技术，能够比 Cookie 存储更多的数据，但 Cookie 仍然是最通用、兼容性最强的客户端数据存储手段。</p>
+<p>简单小结一下今天的内容：</p>
+<ol>
+<li>Cookie 是服务器委托浏览器存储的一些数据，让服务器有了“记忆能力”；</li>
+<li>响应报文使用 Set-Cookie 字段发送“key&#x3D;value”形式的 Cookie 值；</li>
+<li>请求报文里用 Cookie 字段发送多个 Cookie 值；</li>
+<li>为了保护 Cookie，还要给它设置有效期、作用域等属性，常用的有 Max-Age、Expires、Domain、HttpOnly 等；</li>
+<li>Cookie 最基本的用途是身份识别，实现有状态的会话事务。</li>
+</ol>
+<p>还要提醒你一点，因为 Cookie 并不属于 HTTP 标准（RFC6265，而不是 RFC2616&#x2F;7230），所以语法上与其他字段不太一致，使用的分隔符是“;”，与 Accept 等字段的“,”不同，小心不要弄错了。</p>
+<p>Cookie 机制：服务器生成Cookie,客户端存储 Cookie,浏览器把带有 Cookie 的报文发送给服务器，服务器就能够保持状态了</p>
+<h1 id="Cookie-、Session-和-Token-有什么区别"><a href="#Cookie-、Session-和-Token-有什么区别" class="headerlink" title="Cookie 、Session 和 Token 有什么区别?"></a>Cookie 、Session 和 Token 有什么区别?</h1><blockquote>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7064953803564384263#heading-4">https://juejin.cn/post/7064953803564384263#heading-4</a></p>
+</blockquote>
+<p>如果说Cookie是客户端行为，那么Session就是服务端行为。</p>
+<img src="/2025/01/13/CSInternet02/34adc8791b274a06a11b20a50cf50040tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class>
+
+<p>Cookie机制在最初和服务端完成交互后，保持状态所需的信息都将存储在客户端，后续直接读取发送给服务端进行交互。</p>
+<p>Session代表服务器与浏览器的一次会话过程，并且完全有服务端掌控，实现分配ID、会话信息存储、会话检索等功能。</p>
+<p>Session机制将用户的所有活动信息、上下文信息、登录信息等都存储在服务端，只是生成一个唯一标识ID发送给客户端，后续的交互将没有重复的用户信息传输，取而代之的是唯一标识ID，暂且称之为Session-ID吧。</p>
+<h3 id="3-2-简单的交互流程"><a href="#3-2-简单的交互流程" class="headerlink" title="3.2 简单的交互流程"></a>3.2 简单的交互流程</h3><ul>
+<li>当客户端第一次请求session对象时候，服务器会为客户端创建一个session，并将通过特殊算法算出一个session的ID，用来标识该session对象。</li>
+<li>当浏览器下次请求别的资源的时候，浏览器会将sessionID放置到请求头中，服务器接收到请求后解析得到sessionID，服务器找到该id的session来确定请求方的身份和一些上下文信息。</li>
+</ul>
+<h3 id="3-3-Session的实现方式"><a href="#3-3-Session的实现方式" class="headerlink" title="3.3 Session的实现方式"></a>3.3 Session的实现方式</h3><p>首先明确一点，Session和Cookie没有直接的关系，可以认为Cookie只是实现Session机制的一种方法途径而已，没有Cookie还可以用别的方法。</p>
+<blockquote>
+<p>Session和Cookie的关系就像加班和加班费的关系，看似关系很密切，实际上没啥关系。</p>
+</blockquote>
+<p>session的实现主要两种方式：cookie与url重写，而cookie是首选方式，因为各种现代浏览器都默认开通cookie功能，但是每种浏览器也都有允许cookie失效的设置，因此对于Session机制来说还需要一个备胎。</p>
+<img src="/2025/01/13/CSInternet02/de6ebfa6caa64da7835a73db16768768tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class title="img">
+
+<p>将会话标识号以参数形式附加在超链接的URL地址后面的技术称为URL重写。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ini 代码解读复制代码原始的URL：</span><br><span class="line">http://taobao.com/getitem?<span class="attr">name</span>=baymax&amp;action=buy</span><br><span class="line">重写后的URL:</span><br><span class="line">http://taobao.com/getitem?<span class="attr">sessionid</span>=<span class="number">1</span>wui87htentg&amp;?name=baymax&amp;action=buy</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-4-存在的问题"><a href="#3-4-存在的问题" class="headerlink" title="3.4 存在的问题"></a>3.4 存在的问题</h3><img src="/2025/01/13/CSInternet02/880a3135d8ca45cfb5b247d2beed35dbtplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class title="img">
+
+<p>由于Session信息是存储在服务端的，因此如果用户量很大的场景，Session信息占用的空间就不容忽视。</p>
+<p>对于大型网站必然是集群化&amp;分布式的服务器配置，如果Session信息是存储在本地的，那么由于负载均衡的作用，原来请求机器A并且存储了Session信息，下一次请求可能到了机器B，此时机器B上并没有Session信息。</p>
+<p>这种情况下要么在B机器重复创建造成浪费，要么引入高可用的Session集群方案，引入Session代理实现信息共享，要么实现定制化哈希到集群A，这样做其实就有些复杂了。</p>
+<img src="/2025/01/13/CSInternet02/4dac864f579746a6903a0c76376e2622tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class title="img">
+
+<h2 id="4-Token方案"><a href="#4-Token方案" class="headerlink" title="4. Token方案"></a>4. Token方案</h2><p>Token是令牌的意思，由服务端生成并发放给客户端，具有时效性的一种验证身份的手段。</p>
+<p>Token避免了Session机制带来的海量信息存储问题，也避免了Cookie机制的一些安全性问题，属于典型的时间换空间的思路。在现代移动互联网场景、跨域访问等场景有广泛的用途。</p>
+<h3 id="4-1-简单的交互流程"><a href="#4-1-简单的交互流程" class="headerlink" title="4.1 简单的交互流程"></a>4.1 简单的交互流程</h3><img src="/2025/01/13/CSInternet02/b93c9ae060ae4d23ba6ed98b45db5c10tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class title="img">
+
+<ul>
+<li>客户端将用户的账号和密码提交给服务器</li>
+<li>服务器对其进行校验，通过则生成一个token值，将其保存在数据库，同时也返回给客户端，作为后续的请求交互身份令牌</li>
+<li>客户端拿到服务端返回的token值后，可将其保存在本地，以后每次请求服务器时都携带该token，提交给服务器进行身份校验</li>
+<li>服务器接收到请求后，解析出其中的Token，再根据相同的加密算法和参数生成Token与客户端的Token进行对比，一致则通过，否则拒绝服务</li>
+<li>Token验证通过，服务端就可以根据该Token中的uid获取对应的用户信息，进行业务请求的响应</li>
+</ul>
+<h3 id="4-2-Token的设计思想"><a href="#4-2-Token的设计思想" class="headerlink" title="4.2 Token的设计思想"></a>4.2 Token的设计思想</h3><p>以JSON Web Token（JWT）为例，Token主要由3部分组成：</p>
+<ul>
+<li>Header头部信息<br> 记录了使用的加密算法信息</li>
+<li>Payload 净荷信息<br> 记录了用户信息和过期时间等</li>
+<li>Signature 签名信息<br> 根据header中的加密算法和payload中的用户信息以及密钥key来生成，是服务端验证服务端的重要依据</li>
+</ul>
+<img src="/2025/01/13/CSInternet02/af9ff28d71604427a1aed423ad985b75tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class title="img">
+
+<p>header和payload的信息不做加密，只做一般的base64编码，服务端收到token后剥离出header和payload获取算法、用户、过期时间等信息，然后根据自己的加密密钥来生成signature，并与客户端的sign进行一致性验证。</p>
+<p>这样就实现了用CPU加解密的时间换取存储空间，干净利落，同时服务端密钥的重要性就显而易见，一旦泄露整个机制就崩塌了，这个时候就需要考虑HTTPS了。</p>
+<h3 id="4-3-Token方案的特点"><a href="#4-3-Token方案的特点" class="headerlink" title="4.3 Token方案的特点"></a>4.3 Token方案的特点</h3><ul>
+<li>Token可以跨站共享，实现单点登录</li>
+<li>Token机制无需太多存储空间，Token包含了用户的信息，只需在客户端存储状态信息即可，对于服务端的扩展性很好</li>
+<li>Token机制的安全性依赖于服务端加密算法和密钥的安全性</li>
+<li>Token机制也不是万金油</li>
+</ul>
+<p>作者：后端研究所<br>链接：<a target="_blank" rel="noopener" href="https://juejin.cn/post/7064953803564384263">https://juejin.cn/post/7064953803564384263</a><br>来源：稀土掘金<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
+<hr>
+<p>Cookie 由服务器产生，所有状态、身份信息均存储在客户端。后续交互直接发送所有信息给服务端。Session 由服务器产生所有状态、身份信息均存储在服务端。服务器生成具有标识作用的Seesion ID。Session ID 通过Cookie 传输给客户端，客户端保存含有 SessionID 的 Cookie，后续交互通过对 SessionID 的验证。Cookie 侧重信息的存储Session 侧重身份验证。</p>
+<h1 id="禁用Cookie，怎么实现-Session"><a href="#禁用Cookie，怎么实现-Session" class="headerlink" title="禁用Cookie，怎么实现 Session?"></a>禁用Cookie，怎么实现 Session?</h1><p>url重写</p>
+<h1 id="分布式场景下用哪种认证方式-JWT-是怎么实现的"><a href="#分布式场景下用哪种认证方式-JWT-是怎么实现的" class="headerlink" title="分布式场景下用哪种认证方式?JWT 是怎么实现的?"></a>分布式场景下用哪种认证方式?JWT 是怎么实现的?</h1><p>Cookie-Session 机制在分布式环境下会遇到 CAP 不可兼得的问题，而在多方系统中，就更不可能谈什么 Session 层面的数据共享了，哪怕服务端之间能共享数据，客户端的 Cookie 也没法跨域。所以我们不得不重新捡起最初被抛弃的思路，当服务器存在多个，客户端只有一个时，把状态信息存储在客户端，每次随着请求发回服务器去。笔者才说过这样做的缺点是无法携带大量信息，而且有泄漏和篡改的安全风险。信息量受限的问题并没有太好的解决办法，但是要确保信息不被中间人篡改则还是可以实现的，JWT 便是这个问题的标准答案。</p>
+<p>JWT（JSON Web Token）定义于<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7519">RFC 7519</a>标准之中，是目前广泛使用的一种令牌格式，尤其经常与 OAuth2 配合应用于分布式的、涉及多方的应用系统中。介绍 JWT 的具体构成之前，我们先来直观地看一下它是什么样子的，如图 5-13 所示。</p>
+<img src="/2025/01/13/CSInternet02/jwt.b07b0d79.png" class title="img">图 5-13 JWT 令牌结构
+
+<p>以上截图来自 JWT 官网（<a target="_blank" rel="noopener" href="https://jwt.io/">https://jwt.io</a>），数据则是笔者随意编的。右边的 JSON 结构是 JWT 令牌中携带的信息，左边的字符串呈现了 JWT 令牌的本体。它最常见的使用方式是附在名为 Authorization 的 Header 发送给服务端，前缀在<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc6750">RFC 6750</a>中被规定为 Bearer。如果你没有忘记“<a target="_blank" rel="noopener" href="https://icyfenix.cn/architect-perspective/general-architecture/system-security/authentication.html#%E8%AE%A4%E8%AF%81%E7%9A%84%E6%A0%87%E5%87%86">认证方案</a>”与“<a target="_blank" rel="noopener" href="https://icyfenix.cn/architect-perspective/general-architecture/system-security/authorization.html#oauth2">OAuth 2</a>”的内容，那看到 Authorization 这个 Header 与 Bearer 这个前缀时，便应意识到它是 HTTP 认证框架中的 OAuth 2 认证方案。如下代码展示了一次采用 JWT 令牌的 HTTP 实际请求：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/restful/products/1</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>icyfenix.cn</span><br><span class="line"><span class="attribute">Connection</span><span class="punctuation">: </span>keep-alive</span><br><span class="line"><span class="attribute">Authorization</span><span class="punctuation">: </span>Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJpY3lmZW5peCIsInNjb3BlIjpbIkFMTCJdLCJleHAiOjE1ODQ5NDg5NDcsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwianRpIjoiOWQ3NzU4NmEtM2Y0Zi00Y2JiLTk5MjQtZmUyZjc3ZGZhMzNkIiwiY2xpZW50X2lkIjoiYm9va3N0b3JlX2Zyb250ZW5kIiwidXNlcm5hbWUiOiJpY3lmZW5peCJ9.539WMzbjv63wBtx4ytYYw_Fo1ECG_9vsgAn8bheflL8</span><br></pre></td></tr></table></figure>
+
+<p>图 5-13 中右边的状态信息是对令牌使用 Base64URL 转码后得到的明文，请特别注意是明文，JWT 只解决防篡改的问题，并不解决防泄漏的问题，因此令牌默认是不加密的。尽管你自己要加密也并不难做到，接收时自行解密即可，但这样做其实没有太大意义，原因笔者将在下一节“<a target="_blank" rel="noopener" href="https://icyfenix.cn/architect-perspective/general-architecture/system-security/confidentiality.html">保密</a>”中去解释。</p>
+<p>从明文中可以看到 JWT 令牌是以 JSON 结构（毕竟名字就叫 JSON Web Token）存储的，结构总体上可划分为三个部分，每个部分间用点号<code>.</code>分隔开。</p>
+<p>第一部分是<strong>令牌头</strong>（Header），内容如下所示：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;alg&quot;</span><span class="punctuation">:</span> <span class="string">&quot;HS256&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;typ&quot;</span><span class="punctuation">:</span> <span class="string">&quot;JWT&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>它描述了令牌的类型（统一为 typ:JWT）以及令牌签名的算法，示例中 HS256 为 HMAC SHA256 算法的缩写，其他各种系统支持的签名算法可以参考<a target="_blank" rel="noopener" href="https://jwt.io/%E7%BD%91%E7%AB%99%E6%89%80%E5%88%97%E3%80%82">https://jwt.io/网站所列。</a></p>
+<p>额外知识：散列消息认证码</p>
+<p>在本节及后面其他关于安全的内容中，经常会在某种哈希算法前出现“HMAC”的前缀，这是指散列消息认证码（Hash-based Message Authentication Code，HMAC）。可以简单将它理解为一种带有密钥的哈希摘要算法，实现形式上通常是把密钥以加盐方式混入，与内容一起做哈希摘要。</p>
+<p>HMAC 哈希与普通哈希算法的差别是普通的哈希算法通过 Hash 函数结果易变性保证了原有内容未被篡改，HMAC 不仅保证了内容未被篡改过，还保证了该哈希确实是由密钥的持有人所生成的。如图 5-14 所示。</p>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnoAAAFbCAMAAAB1bNMwAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDE0IDc5LjE1MTQ4MSwgMjAxMy8wMy8xMy0xMjowOToxNSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo5Mzk2RjlFRURBQzAxMUVBODQ5QjgxRjUyQTJERjNDMiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo5Mzk2RjlFRkRBQzAxMUVBODQ5QjgxRjUyQTJERjNDMiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjkzOTZGOUVDREFDMDExRUE4NDlCODFGNTJBMkRGM0MyIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjkzOTZGOUVEREFDMDExRUE4NDlCODFGNTJBMkRGM0MyIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+ky7Y0AAAAYBQTFRFaaBUttGr4ezddahiMjIySkpKqKionMGOXl5ezuDHyd3C5e7h3t7e9vn1sc6mqcmdbGxsUpI50tLSb6Rbxdu9zN/F7+/vosSV+fn5S44yhYWFsLCw6PDk1uXRmL6K2ujV0eLLpcaYkpKSirV5wtm6YZtLWpdDxMTE9Pjz2OfTlLyGY51NPj4+tra2+vv6jo6OrcuhgrBwVpU+krqC2NjYutSxenp6lr2IXZlGY2Nj5/DjZp5Qjrh+caVeRIkpcnJym5ub3+raQognurq67vTrf65tbKJXjLd8/P38r8yk8fbvUVFR6/LoWVlZ0+PNrsyi8vfweatmRYorP4Uk1OTOfa1qQYgnSIsuTpA1g7FyXppHgK9vdqljP4YkP4YjNzc3z+DIn8OSzMzM9/f3vdWzh7R2v9e2P4cky97E6vLne6xp7/XtlLuF7PPq6fHmYZxLVJM7k7uEj7mAx9y/4OvcdKdgQIck5+fnPoYk7Ozs8/PzgbBv3+vbjLZ7wde4////DHxMqAAAAIB0Uk5T/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////wA4BUtnAAAX9UlEQVR42uydi1sTSdbGuRSSGMLFYJgQgRAhgs6wDjsEB5FxWUGdcXQcZlZ0ODskMIh4v8xl99Ov/vWtqr5fohHTne7O+z6PTaq641Pp/uXUOZWqU10cgtqiLtwCCOhBQA+CgB4E9CAI6EFAD4KAHgT0IAjoxUDZXR9lY9DwdDotjiV1nEun51RVyTyRWPRqzWo36p+k+68/yKU/toZi8Ah6qV8cbxKJ4xmiM+IP0UVx7KfeJKOXoyYVefTeiUZu2VssC6sxQm/WQu9CZ6CXa0YxQK8mSMutWOUV0eiHNaAXYfSaejqxQO8S0eUeo9hzmUQF0AN6YaCXOyCanddK87NESzmgB/TCQY+fLFBFxoa8VKHCKI86egfPNa/0odtNtaqFLteSh54cfRBPRxxlad9fZ+KA3tOjNwo9fnuRRg45PxyhxZL2vXqzMRFl77QpHSQPPfOzydK0/8fuiQF64hn2a+jxqedUmJkp0OyUbtL7iZYfRbPZl9XX/oOq0fNOQG/EoZigN0m02K2jx1c2aX2dNjOGN7EknL6IPpkmb+qu9nzg60VPaaJalhvo8cc7RDuPbR+um2gM6AG91mvhHl0xwgyt4t2TBceHEyzeAHpAr/USseG+HT33h9sn+gtWL8oRbmzRk4MQd0e5z8eQVaN35TBF1HyEXqnm0VOXpxMbZtyILXrUJT5Cb//rBU9fnB4Tz5cubVHU0PuYH8aNx5Rc9FSEu25XTAZXRNtqFdX4zdqd/cOpNz09/5g63L9Tu7Imayu1Q4ocev1SD2039bw+drehUzRz3vaYHqrLk4Se09eL7biebFt28MuKX+sf3B/MNuMstdvXu0Pac9ggWlbkEd3pnDDjtL+uxQI9qZWD5dzsiGaraX1kNtc/+qzZZ9dm9NKy1S82Nl7Ipu+sru7IT5BGhBsX9HTNTc3MzM99ZIjY3oY/fU7P72pfmZcvtb872/T8KSLceKF3rNGJkFW6KbVlNPwXoiU++vLu3dUlzpdWxd9BfproF6P5W+ryUmLDDKDXrgi3Rn5dz6BRm/wIN+Lo5WOMXt6L3qyQ3vAD4eb5veuFPmVFNF9d3UL0mHmQR6bkOS//MnuZOc/ZC58a4f7mo8hEuN+Pn/gqrug1aLvRcNG+ae/Zadvp1vp6zJRBD3NBxGzX2gBkjBlH643JH1wRH/jz4fK5WKLXoO1mw4eInrpPPiUaCi7M8LDmpMt+kjHHe5zvbBV6Z30UJfSkvqt+8Vkc0fNru9nwx0Sj7veMEj0OCj3GHXw5TSCzmTPDznkv9CkmdnDF6iV+/frEn7FEz2r73Bkpq+E+T8GaDSGary6fa6GvZwHFmN2W2eq9Xp6Py3dc7o4RZrDI6NQx0YtE212/4b7x+Qii0W94IBEuc/t6HqtnlpxXOs0c61j0zsUYvXMu9PppxJOhIzuiFqoFP7jisXqNfUJXiMs+rceNYYfL2DdfLMS0w9Xb7uxwf1ik8943nafFHwLqcJ2mrLHVc9PlQe1TogwbeidtijJ6X5/4T0zDDHfbjYZfpMKU901TBbUYN5gww2HE7FaPMVuYYZzydfy84W4rBlcuRRa9768OxHNwxa/tRsO7yDcr0ZC+nCkA9FxWTzN1PhGuAz2Pj/iJo8oO9O5piip63/3tVDyHlBu0XW94luit37veEmVDsXq+ZDosm/0XDNuZ4/t6sfohrW/83HHb1nb0PG1P0wUhveENm2edV1enA7F6zBsuOH+mcLt2rAHIyUXvs+O3re3oedruiHCzct6Kj5aIfgghwm2LMGmqXSpdlDIavkk7fhft0AWj+eryJE2aitXgSqLQczb8gGjjmfvksw2i7oDCDKAH9HbNCK+w+tp+6vVqwcyZAPSAXnANn5fLOSt/1+ibH1JrNC7M8OSih1nK7ZJnMWT2olwJRLNjPPtOW5tx8Qer+clbDAn02oaezxLwzOD9RaIfRe3i/cGMz2NChAv0WoBeg8QX09tE29Pe5icu8QV8vcg1vGdjo+cYzQd6QK+1DQd6QA/oIcwAekAP6H26OjmNdzIi3Bd+q1jtGvJfYt12dfDmBQnx9V5qCW0ban6NXkaz5Z27ZUtC0OOLKqFtA52+T7QY6UeAjariix7/vVFC29f9MqHt7xzoRRK9JGxK6kho+yybfaYS2m6uawltOdCLJnqJ2Iq5UULbypeDkd+DvlPRS84G9N6EtssHK3F4BJ26AX3yNJeZmMjMxajB6bScGFBSx7l0ek5VlcwTQA+KsIAeBPQgoAdBQA8CehAE9CCgB0FADwJ6EAT0IKAXpNh7SlAQN5s19zRY56Dn3i4husqnGOsb4LxY3ePGsZzK62dksSg+hKjYqzJWjNbNtu6wb5Ji5s5gnFT0/BI0s8ibvnxK4DSQGrCjl69W61ygVhT/ygJEDbhydS+fqkfre+7IG8ucKWSZWcGaMX2xRo9zb+LwyPe5kjpFlw29YlkraOW9quItPzwQuW+6DTc/y/ZRG6MkCD3X5oCRtnqc2ztcwZoGpFbWmaun8pG74T6b4lmbhDr3DE261WM2Q6e7IJFvdl08H2nWitqjEugNDOeNTlaCOdCnrqhXT0TP12vkzzHHtgKdYPWsHoC5N4GOssoyzrCsXlEAVlelvar4Uxcnxb86kxRGytdjjBs78/gML3SU1WPc63zEo+0ihDDRk4GtZgkVeUoi5FAdbrkcLfCsWMMzotBhVs/+99M2Ow1NxbLu0pnoaQZPQKbCWwO9uuyGjX44Ot91m9VzGTifPVQ40ItUhNtX1Fw6Ez0NL2HkyprNU31wKi/HWszoIzroWSMojLu3veOuLfI6xurFpMNV/WvdinC/0vDKp06ojld0s0VtzFkOKdd51NBjjk3gXYMNdvQ+NOIQf/ScOzzjt7QgnT1bRGf9qOF4HKYpZMwOadLQg2ItoAcBPQjoQRDQg4AeBAE9COhBENCDgB4EAT0I6EEQ0IOAHgT0cAsgoAcBPQgCehDQgyCgBwE9CAJ6ENCDIKAHAT0IAnoQ0IOAHgQBPQjoQRDQg4AeBAE9COhBENCDgB4EAT0I6EEQ0IOAHgT0IAjoQUAPgoAeBPQgCOhBQK89qjWrXTxgoNdS5ahJAT2g12r0cs0I6AG91qNXa+YyoAf0gB4E9CCgd1ztCgn0xFGW9v11BugBvdajZ4avsjTtH9n2AD2gFwZ6Iw4BPaAHXw8CehDQA3pQQiJcoAf02hRm3AB6QK+NEe66XRhcAXqh+HoY1wN6bULvtL+uAT2ghwgXQoQLAb0WhhlAD+gBPajTItzffIQIF+iFgB4GV4Bem9A76yOgB/QCRw++HtCLcpjBWiKwAvSAHtDrpA4X6AE9J3onbQJ6QC/UCNfUJaAH9MJF754moAf0ohdmAD2gB/SgOKPXnklTQA/oOX09oAf0gB4E9IAe0EOYAQE9oAf0EOFC8PWAHtADekAP6AE9oIcwA+gBPaAH9BDhAj34ehDQA3pAD+hBHYFe6JuSAj2gp6EX+lbMQA/oSbVhA3qgB/TaJKAH9IAe0AN6ENADekAP6EFAD+gBPaAHAT2gB/SAHgT0gB7QA3pADwoPveyuj7IxuB/pdFocS+o4l07PqaqSeaIT0GPvKcUAve6//nDPtvljaygG972X+sXxplohc4boDJfTIy+KYz/1dhp6AW8zEBB67wRrW3bwZGE1RujNWuhd6CD0HKwxDUMWkOkLCL2aIC23YpVXckQPa0AvDhaPWZaPBQdegOhdIrrcYxR7LpOoAHpxQ0++CMzZCwy93AHR7LxWmp8lWsoBvVigx2yGTtHB4mb1cvxkgSoyNuSlChVGedTRO3igeaUP3W6qVS10oZZ89AxTZ7IRmzDj6dEbhR6/vUgjh5wfjtBiSVtu92ZjIqo3vdbsupiDZKPH7L1soNvotf7/Fc+wX0OPTz2nwsxMgWanuIZeP9Hyo2je9Asq88MHVaMHSff1uCPM4PEJMyaJFrt19PjKJq2v02aG6+gtCacvok+myWV+ux/OiQP02oNemqiW5QZ6/PEO0c5jbqDHeTfRWEzQm8tMTGTmOhu9GHW4C/foihFmaBXvnixwG3pcsHgjBuidXh7RXLuR5dMdh55JW6ysnogN9+3oWdLQ2yf6K/pWb6mL/m0FFl1LHYNeqJi3GD05CHF3lPvkapNVo3flMEXEbkG6V8qGXklY5jVavp3JZjO3h3r/tUU7JRt66vI00IscetQl6Ortf73g6YvTY71ye98tihp6rmwig+u0tlyhSb3YT/fWaH3QQk8J6EUQvd1aRT6b9c3anf3DqTc9Pf+YOty/U7uyJmsrtUOKHHr9Ug8N9Gri2zPPx2hR/8YUaGxefJ1qBnoP1eVAL4ro8ezglxW/wdgH9wezzThLbfX1hA28K/5k6EgrX6T1bzm/a9g5+HqRRk9q5WA5NzuyrjG3PjKb6x991uyzayd6Uz/SeVV+apzoUeXz9OMU0IsFerrmpmZm5uc+cnSinejt0JFZ9Whw0Prp5Yh2gF6c0PMqeuiVbkptqYYv0Zo+24Znbo5tqZkrmubXaEk1f0tdXgJ6QK+lEW4X3Rv7Vu9oZZ2FHl9WPwEiwm0zegMxRi/vRW9WSDV8lIR3uq45ez2zl2zoZcYq6zSqmq+uDhs99/wl5jnqf1nC0fv1u+oXcUXv+/ETXzVq+FnK9Rcoo1edsdC7pkzd2Vb6egOpAf1YZnX5lUj1yYpin/a9HuhjrLrnQU97Ysz2G6tx5K75xQlFT37Yz1NXY4mebPpw+Zxvw7dpmi/oC+d+mBi1Wb2jxcm/03ZA6A2Xxas6k9DtjY8XuSoJHMuCPZ0uO1LMZuY8qyc6AT2hX/vG/xtH9KSE3f7M3fA5ottmhdPXE5/qNtFcMOiNDwsvoDguK+rVcylR2KsWlSGsW5OGmcPOOT8M9y8mGD1l/L45FUv05Dfn6xN/ygGgM1Ky4RkyO1tvmKGdFc1Xl8+1Er0T1bowd/+UFeWi5E0/aVg2h0vXsMBiZ/VaoeIx0WMR0Ckrwp0gsmVIWMg40csSTbQwwpXOnJDoZcvFYpkPjJ8SuOWHB7go8Hoqb+9UraWxrlXZDjPHOhG9qzFG71wj9G4EjJ5l9YoD43vFsnxZF9gNiO7XhZ4z1PV4dsx9Ozujw2V943sx7XAZ++aLhSh0uMX88KlqXbzcq+qdiLPD5R4zxxpNI45R9qZPRO/z6kBMwwzGvj7xn+bDDB5kmFFUkYZ4KQ2eCDiqe1qYIY+KLGZ1p8ydHsA5sMfiQ9+noPfr8Ll4Dq4IfX/V7zszQlZKom9v/78TvSEa4UGhV2dl+VK6eVqdGlwpim7XFeE60HN5fixe7t6x0fs1dSKeQ8pyYOVvp/wbvmybPKDsXo+teETLgaEnw9qB1CkZ3EpjV3YNKTtjCeYc2rND2QG+3ndXG5yJPnp94y5bnaYLQqrhp6lgzVUZKhAVLCv4qECnVfPV1eH+kOb8mcLt2jG/y5OK3n8bnok+ep+5K5zTB5aN6gmt1kyXgOkDkUCPxxg9j0oXpcg9aeo6bWcy23RdL5qTpkhdjklTQK/FDd8xsyOoxZvWos4uTBUFeoGiV1pXSzO4yuDx9i0ZC9Pu0noJ6AG9ANHjg6QvznikOXVa2HGeaJADPaDXWnkXQx4pf+/Wz0Q/31J+3hEWQwK9INBzLQFP/0hrWiq2Wwq8R8tr9GPaaj4iXKDXKvTciS+mdogKvdNa4ovp3gLRzpSt+Uh8AfSCa/hSl33pOtL9AL3Q0ON89Oy2xt322dGPbD7QA3qf2PBOTO0I9CKB3nGbD/SA3kcJabzjjt4Lmn7/BUP0IpI3ApsXxB29l1pC24aaX6OX0bwT2LIl5ujxRZXQtoFO3ycjZWJE1eEbVcUaPf57o4S2r/tlQtvfOdCDgkGPOxLaPstmn6mEtpvrWkJbDvSgoNBrmNC28uVg5PegB3qxRk/Kk9B2+WAlDvcDG9DHHj1dvr8IRFnptJwYUFLHuXR6TlWVzBNALzbodaKAHtADekAP6EFAD+gBPaAH9HAPgB7QA3pADwJ6QA/oAT0I6AE9oAf0knEL3vOSeerN+9Ywe2cC0Lt2cn9wenpw/+TjaKGn9hRRxyLTkk2rPb4G+or6acZStj3w6kzLzFpWeYLVMZ/Scgb3MVZW71d/5RvrYUNny3ztTs5uZ47Zc8U69iRLHno9QzlrotvOYCaa6KXkxgWCIFlRHFe7GCgCixZ7dbnzV1GwZ0OvXq3mtf8hnyqqbUq4lkHYytkfInvMb4NF7mfumJPZRKLX80ohV6h0dVUK6uWrniiiVx1W23rJivxwXdUrtrTc+0qSOkWXhd5e9Zx5XpS1jP3Gn/Z1uH4bnnQaercm7xHNrpqLa05PXia6N3kreuiVywKh8j9lRb26Vy4bJ22q65ts2tATkBWN5OiiXNdeF6t7bWDOmfvf1tM66pjXLiYSvYlLRFdmnHUzV4gqM1FBT3tcEj2BTb46IHETEEq75e0yy7rrV9beJdArlo1OVnTP0mNUVwiO2+Pr8aZ8PftmKGoXlYZxRnzROyR63u2t7p41EltGyerlq/l69U/ptAnvba9a9/XWBKt2X29vXO2AyI14Q+76Kv4VBXemiQwxwve3eoZZc+1WoYcZjSPfOKNXI7rvG9KubJqpLaODnqBN20azqJ6gsIGpuu9bihZ6dXVpKm9GulztXCI7XJuPGKqj18jqudGz4t0Eomem8vXRL0SHEUNPRRripTR4+tY3ViCrxa11PewwT5SNXYYlkAZ6w/m6Qi/sHte9l7HjnJ0xxrxDLYlCb4bol8Znz9t2EIkIegN9ytJp4akkTA2u2DrOonwpywZ6uptXLqv9mLQ3yZfyP6yn8iGbPLvVc9o25tx82+3rJc3q3arQ5vvO36dLj6KFngRHvNStnBzP8xtSlmUDPT2Srfed69P6aDmkrEZgUixcV49xL3rcPsznuCDhHe4kzb53terj5/Sk7eglSsy8CeZQiyvecO48yz5872KJXs896n7/Fd1EPwG9aCuW6L2iKx+65AptxAI9fT9rVgZ6cVCGSBs1Ppw+KmxfXu3xj0Mm4oAerF7MBlYuq7//p88aKPgN4822dnAP6AE9LncllHvBzQvojvpHu2sForPei1apC+gBvdbqMcltpm+sUUXbkvXthtqXcOU3uTvwEyOyHSV6CvSAXkt1UmXWum5Lcy3YW1nYJHolXxnhBdFJoAf0Wqp9KkijtnY4+jI3qQzfswLl1IzRTXnI5ZSXV3h/nmygB/SOEWVUOJ+m2oyKMVY0x06oW5g8qqmXr0RdpaUTWIAe0JPUiUafpVoX5XYr+q8W3bXajDweqJdE9+VO6NNAD+i1Hr0c1eSGOzXK+VxxIKdNAT2gF0iHq6zeTi1nWT2bXtCDt+hwgV4wYYbw9d4qX4+bvp5NgjyEGUCv5VKDK6NEF3dFhMvNCNemI0EeBleAXst1TQ0pX7ftnLihB7p2CTavAT2g11rl5I8XN9aIXqui/muGS6tWAMJaIrAC9PiQmj6gfsOt7arfcH02UZylIaAH9FqsKX3SlDFzZdNn3ugMUQ+eLtBrtTb0qaJyvt6F674rvq+oXzQgoNda/UQfniB/D0YP6AWgJx9eFjSJZwv0AtCjDy+GvIVnC/SCUOhLwCGgpyvsxBcQ0DMUcrofCOiZkknO7ng2as/eCSbJGQT0LMnUjpUxR/bklbFKQKkdIaBnk0poSzvmEN+BnCFPTx7hqQK9wOVN473xE54p0Asj1qi9sm9ekBu6XkOEAfTCCXNzti1brqklG3imQC8s9OwCekAP6EFADwJ6AaK3uwv0gF4b0LsxSfTlM6AH9MJG7yc1vqJ+xAB6QC9E9IbWiZb2SS1LA3pALzT0Mj8TXX7K+be9RL9ngB7QCw29EXPi3k2ibaAH9MJCj+iBuR/uT12EqXpALzT03i1YxYWXQA/ohcWea1HkEsgDehAE9CCgB0FADwJ6ENCDIKAHAT0IAnoQ0IMgoAcBvfaJ+byCgF7A1Dk3FmBmHZ4q0Ave4DHuoM5WBwG9oPlj9v4W6AG90LBjJnXK6qHDBXohoccsw8dg9YBeiL6e6eEBPaAXaozrinfR4QK9UE2fK+IFekAvlB7XYk13/YAe0AsdPQarB/TCcvUcuyTrIy3w9YAeBAE9COhBENCDgB4E9CAI6EFAD4IC0v8EGACKuwnZWfMXeAAAAABJRU5ErkJggg==" alt="hmac"></p>
+<p>图 5-14 HMAC 哈希与普通哈希算法的差别</p>
+<p>令牌的第二部分是<strong>负载</strong>（Payload），这是令牌真正需要向服务端传递的信息。针对认证问题，负载至少应该包含能够告知服务端“这个用户是谁”的信息，针对授权问题，令牌至少应该包含能够告知服务端“这个用户拥有什么角色&#x2F;权限”的信息。JWT 的负载部分是可以完全自定义的，根据具体要解决的问题不同，设计自己所需要的信息，只是总容量不能太大，毕竟要受到 HTTP Header 大小的限制。一个 JWT 负载的例子如下所示：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;username&quot;</span><span class="punctuation">:</span> <span class="string">&quot;icyfenix&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;authorities&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;ROLE_USER&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;ROLE_ADMIN&quot;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;scope&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;ALL&quot;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;exp&quot;</span><span class="punctuation">:</span> <span class="number">1584948947</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;jti&quot;</span><span class="punctuation">:</span> <span class="string">&quot;9d77586a-3f4f-4cbb-9924-fe2f77dfa33d&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;client_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;bookstore_frontend&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>而 JWT 在 RFC 7519 中推荐（非强制约束）了七项声明名称（Claim Name），如有需要用到这些内容，建议字段名与官方的保持一致：</p>
+<ul>
+<li>iss（Issuer）：签发人。</li>
+<li>exp（Expiration Time）：令牌过期时间。</li>
+<li>sub（Subject）：主题。</li>
+<li>aud （Audience）：令牌受众。</li>
+<li>nbf （Not Before）：令牌生效时间。</li>
+<li>iat （Issued At）：令牌签发时间。</li>
+<li>jti （JWT ID）：令牌编号。</li>
+</ul>
+<p>此外在 RFC 8225、RFC 8417、RFC 8485 等规范文档，以及 OpenID 等协议中，都定义有约定好公有含义的名称，内容比较多，笔者就不贴出来了，可以参考<a target="_blank" rel="noopener" href="https://www.iana.org/assignments/jwt/jwt.xhtml">IANA JSON Web Token Registry</a>。</p>
+<p>令牌的第三部分是<strong>签名</strong>（Signature），签名的意思是：使用在对象头中公开的特定签名算法，通过特定的密钥（Secret，由服务器进行保密，不能公开）对前面两部分内容进行加密计算，以例子里使用的 JWT 默认的 HMAC SHA256 算法为例，将通过以下公式产生签名值：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HMACSHA256(base64UrlEncode(header) + <span class="string">&quot;.&quot;</span> + base64UrlEncode(payload) , secret)</span><br></pre></td></tr></table></figure>
+
+<p>签名的意义在于确保负载中的信息是可信的、没有被篡改的，也没有在传输过程中丢失任何信息。因为被签名的内容哪怕发生了一个字节的变动，也会导致整个签名发生显著变化。此外，由于签名这件事情只能由认证授权服务器完成（只有它知道 Secret），任何人都无法在篡改后重新计算出合法的签名值，所以服务端才能够完全信任客户端传上来的 JWT 中的负载信息。</p>
+<p>JWT 默认的签名算法 HMAC SHA256 是一种带密钥的哈希摘要算法，加密与验证过程均只能由中心化的授权服务来提供，所以这种方式一般只适合于授权服务与应用服务处于同一个进程中的单体应用。在多方系统或者授权服务与资源服务分离的分布式应用中，通常会采用非对称加密算法来进行签名，这时候除了授权服务端持有的可以用于签名的私钥外，还会对其他服务器公开一个公钥，公开方式一般遵循<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7517">JSON Web Key 规范</a>。公钥不能用来签名，但是能被其他服务用于验证签名是否由私钥所签发的。这样其他服务器也能不依赖授权服务器、无须远程通信即可独立判断 JWT 令牌中的信息的真伪。</p>
+<h1 id="重放攻击是什么？为什么说JWT相比于Cookie-Session更容易遭受重放攻击？"><a href="#重放攻击是什么？为什么说JWT相比于Cookie-Session更容易遭受重放攻击？" class="headerlink" title="重放攻击是什么？为什么说JWT相比于Cookie-Session更容易遭受重放攻击？"></a>重放攻击是什么？为什么说JWT相比于Cookie-Session更容易遭受重放攻击？</h1><p>重放攻击（Replay Attack）是一种网络攻击方式，攻击者通过截获并重新发送之前的有效数据包来冒充合法用户。</p>
+<p>1.JWT 容易受到重放攻击的原因：</p>
+<ul>
+<li>JWT 是自包含的，服务器不保存任何状态</li>
+<li>Token 在过期之前都是有效的</li>
+<li>相同的 Token 可以用于多次请求</li>
+<li>服务器无法直接废除已颁发的 Token</li>
+</ul>
+<p>2.Cookie-Session 的防御机制：</p>
+<ul>
+<li>服务器维护 Session 状态</li>
+<li>可以随时使某个 Session 失效</li>
+<li>可以记录和检测异常的访问模式</li>
+<li>支持动态刷新会话状态</li>
+</ul>
+<p>因为 Session 中的数据控制在服务端手上，应对重放攻击会相对主动一些。要在 JWT 层面解决重放攻击需要付出比较大的代价，无论是加入全局序列号（HTTPS 协议的思路）、Nonce 字符串（HTTP Digest 验证的思路）、挑战应答码（当下网银动态令牌的思路）、还是缩短令牌有效期强制频繁刷新令牌，在真正应用起来时都很麻烦。</p>
+<p>因此，JWT和Cookie-Session并没有先进和落后之分，都需要看情况分别使用。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0krblog.yqbirdmp.com">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0krblog.yqbirdmp.com/2025/01/13/CSInternet02/">https://0krblog.yqbirdmp.com/2025/01/13/CSInternet02/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0krblog.yqbirdmp.com" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/01/24/2025%E7%BE%8E%E8%B5%9B%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1B%E9%A2%98/" title=""><img class="cover" src="/statics/landscape002.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2"></div></div><div class="info-2"><div class="info-item-1">2025美赛数学建模B题    对于问题二的解答，我们决定在第一问建立的模型基础上进行优化。首先，由于需要对其他受旅游影响过度的城市做出评价，我们决定调整与环境模型建立中相关的参数a,b,c。其次，为了区分每个城市受旅游影响的程度，我们决定优化成本函数c(t)，利用多层次分析法（AHP），从水资源成本、垃圾处理成本、交通设施成本、物价影响成本四个方面进行建模。 A. 主要模型框架  游客流量容量模型(日常&#x2F;季节性动态) 经济投入产出模型(收入和成本) 环境影响评估模型 社会承载力模型 系统整合层   组成模型详情  A. 游客流量容量模型  关键变量： 每日邮轮到达量 游客高峰数量 基础设施容量限制 季节性模式   约束条件： 港口容量 交通基础设施 景点容量   建议方法：排队论 + 整数规划  B. 经济模型  关键变量： 直接旅游收入 基础设施维护成本 环境治理支出 本地商业影响   约束条件： 基础设施投资需求 环境保护成本 本地经济稳定性指标   建议方法：动态投入产出模型  C....</div></div></div></a><a class="pagination-related" href="/2025/01/12/CSInternet/" title="CSInternet"><img class="cover" src="/statics/landscape004.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">CSInternet</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%94%AE%E5%85%A5%E7%BD%91%E5%9D%80%E5%86%8D%E6%8C%89%E4%B8%8B%E5%9B%9E%E8%BD%A6%EF%BC%8C%E5%90%8E%E9%9D%A2%E7%A9%B6%E7%AB%9F%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88"><span class="toc-number">1.</span> <span class="toc-text">键入网址再按下回车，后面究竟发生了什么?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HTTP-%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F%E9%95%BF%E4%BB%80%E4%B9%88%E6%A0%B7-%E6%98%AF%E5%A6%82%E4%BD%95%E5%88%86%E5%89%B2%E7%9A%84"><span class="toc-number">2.</span> <span class="toc-text">HTTP 报文格式长什么样?是如何分割的?</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E8%A1%8C"><span class="toc-number">2.1.</span> <span class="toc-text">请求行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%93%8D%E5%BA%94%E8%A1%8C"><span class="toc-number">2.2.</span> <span class="toc-text">响应行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E2%80%93%E6%89%A9%E5%B1%95%E8%A7%84%E5%88%99"><span class="toc-number">2.3.</span> <span class="toc-text">头部字段–扩展规则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E2%80%93%E5%B8%B8%E7%94%A8%E5%A4%B4%E5%AD%97%E6%AE%B5%E5%88%86%E7%B1%BB"><span class="toc-number">2.4.</span> <span class="toc-text">头部字段–常用头字段分类</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HTTP-%E6%8F%90%E4%BE%9B%E4%BA%86%E5%93%AA%E4%BA%9B%E6%96%B9%E6%B3%95-GET%E5%92%8CPOST%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">3.</span> <span class="toc-text">HTTP 提供了哪些方法?GET和POST的区别是什么?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#URI%E5%92%8CURL%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB-%E5%9F%9F%E5%90%8D%E7%9A%84%E7%AB%AF%E5%8F%A3%E6%98%AF%E6%80%8E%E4%B9%88%E8%AF%86%E5%88%AB%E7%9A%84"><span class="toc-number">4.</span> <span class="toc-text">URI和URL有什么区别?域名的端口是怎么识别的?</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#URI-%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90"><span class="toc-number">4.1.</span> <span class="toc-text">URI 的基本组成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#URL%E5%AE%8C%E6%95%B4%E5%BD%A2%E6%80%81"><span class="toc-number">4.2.</span> <span class="toc-text">URL完整形态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#URL%E8%BD%AC%E4%B9%89%E7%BC%96%E7%A0%81"><span class="toc-number">4.3.</span> <span class="toc-text">URL转义编码</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HTTP-%E6%9C%89%E5%93%AA%E4%BA%9B%E7%8A%B6%E6%80%81%E7%A0%81-%E5%88%86%E5%88%AB%E4%BB%A3%E8%A1%A8%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D"><span class="toc-number">5.</span> <span class="toc-text">HTTP 有哪些状态码?分别代表什么意思?</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%C3%97%C3%97"><span class="toc-number">5.1.</span> <span class="toc-text">1××</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%C3%97%C3%97"><span class="toc-number">5.2.</span> <span class="toc-text">2××</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%C3%97%C3%97"><span class="toc-number">5.3.</span> <span class="toc-text">3××</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%C3%97%C3%97"><span class="toc-number">5.4.</span> <span class="toc-text">4××</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5%C3%97%C3%97"><span class="toc-number">5.5.</span> <span class="toc-text">5××</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%86%E8%A7%A3-HTTP-%E9%87%8C%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%9E%8B"><span class="toc-number">6.</span> <span class="toc-text">了解 HTTP 里的数据类型和语言类型</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%86%E8%A7%A3-HTTP-%E6%95%B0%E6%8D%AE%E5%8E%8B%E7%BC%A9%E4%B8%8E%E5%88%86%E5%9D%97%E4%BC%A0%E8%BE%93"><span class="toc-number">7.</span> <span class="toc-text">了解 HTTP 数据压缩与分块传输</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%86%E8%A7%A3%E4%B8%B4%E6%97%B6%E5%92%8C%E6%B0%B8%E4%B9%85%E9%87%8D%E5%AE%9A%E5%90%91"><span class="toc-number">8.</span> <span class="toc-text">了解临时和永久重定向</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HTTP-%E9%95%BF%E8%BF%9E%E6%8E%A5%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84"><span class="toc-number">9.</span> <span class="toc-text">HTTP 长连接是怎么实现的?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HTTP-1-1-%E9%98%9F%E5%A4%B4%E9%98%BB%E5%A1%9E%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">10.</span> <span class="toc-text">HTTP&#x2F;1.1 队头阻塞是什么?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%98%9F%E5%A4%B4%E9%98%BB%E5%A1%9E%E5%8F%AA%E4%BC%9A%E5%8F%91%E7%94%9F%E5%9C%A8-HTTP-1-1%E7%9A%84%E9%95%BF%E8%BF%9E%E6%8E%A5%E4%B8%AD%E5%90%97"><span class="toc-number">11.</span> <span class="toc-text">队头阻塞只会发生在 HTTP&#x2F;1.1的长连接中吗?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HTTP-%E6%97%A0%E7%8A%B6%E6%80%81%E5%8D%8F%E8%AE%AE%E6%98%AF%E4%BF%9D%E8%AF%81%E7%94%A8%E6%88%B7%E7%99%BB%E9%99%86%E7%8A%B6%E6%80%81%E7%9A%84"><span class="toc-number">12.</span> <span class="toc-text">HTTP 无状态协议是保证用户登陆状态的?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Cookie-%E3%80%81Session-%E5%92%8C-Token-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="toc-number">13.</span> <span class="toc-text">Cookie 、Session 和 Token 有什么区别?</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E7%AE%80%E5%8D%95%E7%9A%84%E4%BA%A4%E4%BA%92%E6%B5%81%E7%A8%8B"><span class="toc-number">13.0.1.</span> <span class="toc-text">3.2 简单的交互流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-Session%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="toc-number">13.0.2.</span> <span class="toc-text">3.3 Session的实现方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">13.0.3.</span> <span class="toc-text">3.4 存在的问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Token%E6%96%B9%E6%A1%88"><span class="toc-number">13.1.</span> <span class="toc-text">4. Token方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E7%AE%80%E5%8D%95%E7%9A%84%E4%BA%A4%E4%BA%92%E6%B5%81%E7%A8%8B"><span class="toc-number">13.1.1.</span> <span class="toc-text">4.1 简单的交互流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-Token%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3"><span class="toc-number">13.1.2.</span> <span class="toc-text">4.2 Token的设计思想</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-Token%E6%96%B9%E6%A1%88%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">13.1.3.</span> <span class="toc-text">4.3 Token方案的特点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A6%81%E7%94%A8Cookie%EF%BC%8C%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0-Session"><span class="toc-number">14.</span> <span class="toc-text">禁用Cookie，怎么实现 Session?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%94%A8%E5%93%AA%E7%A7%8D%E8%AE%A4%E8%AF%81%E6%96%B9%E5%BC%8F-JWT-%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84"><span class="toc-number">15.</span> <span class="toc-text">分布式场景下用哪种认证方式?JWT 是怎么实现的?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%87%8D%E6%94%BE%E6%94%BB%E5%87%BB%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%B4JWT%E7%9B%B8%E6%AF%94%E4%BA%8ECookie-Session%E6%9B%B4%E5%AE%B9%E6%98%93%E9%81%AD%E5%8F%97%E9%87%8D%E6%94%BE%E6%94%BB%E5%87%BB%EF%BC%9F"><span class="toc-number">16.</span> <span class="toc-text">重放攻击是什么？为什么说JWT相比于Cookie-Session更容易遭受重放攻击？</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/03/09/GameTheroy/" title="GameTheroy"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="GameTheroy"/></a><div class="content"><a class="title" href="/2025/03/09/GameTheroy/" title="GameTheroy">GameTheroy</a><time datetime="2025-03-09T08:45:50.000Z" title="发表于 2025-03-09 16:45:50">2025-03-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/06/MCUTuTorial01/" title="MCUTuTorial01"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MCUTuTorial01"/></a><div class="content"><a class="title" href="/2025/03/06/MCUTuTorial01/" title="MCUTuTorial01">MCUTuTorial01</a><time datetime="2025-03-06T05:46:58.000Z" title="发表于 2025-03-06 13:46:58">2025-03-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial14/" title="JavaTutorial14"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial14"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial14/" title="JavaTutorial14">JavaTutorial14</a><time datetime="2025-03-02T08:16:48.000Z" title="发表于 2025-03-02 16:16:48">2025-03-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial13/" title="JavaTutorial13"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial13"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial13/" title="JavaTutorial13">JavaTutorial13</a><time datetime="2025-03-02T08:16:41.000Z" title="发表于 2025-03-02 16:16:41">2025-03-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial12/" title="JavaTutorial12"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial12"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial12/" title="JavaTutorial12">JavaTutorial12</a><time datetime="2025-03-02T08:16:35.000Z" title="发表于 2025-03-02 16:16:35">2025-03-02</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
