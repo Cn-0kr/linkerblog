@@ -1,0 +1,580 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>CSInternet12 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="本文分享的是IP协议相关内容，其中重点讲解ICMP和ARP协议，以及关于IP地址的一些基础知识。 IP协议IP 在 TCP&#x2F;IP 参考模型中处于第三层，也就是网络层。 网络层的主要作用是：实现主机与主机之间的通信，也叫点对点（end to end）通信。   有的小伙伴分不清 IP（网络层） 和 MAC （数据链路层）之间的区别和关系。 其实很容易区分，在上面我们知道 IP 的作用是主机">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSInternet12">
+<meta property="og:url" content="https://0kr.xin/2025/04/29/CSInternet12/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="本文分享的是IP协议相关内容，其中重点讲解ICMP和ARP协议，以及关于IP地址的一些基础知识。 IP协议IP 在 TCP&#x2F;IP 参考模型中处于第三层，也就是网络层。 网络层的主要作用是：实现主机与主机之间的通信，也叫点对点（end to end）通信。   有的小伙伴分不清 IP（网络层） 和 MAC （数据链路层）之间的区别和关系。 其实很容易区分，在上面我们知道 IP 的作用是主机">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape002.jpg">
+<meta property="article:published_time" content="2025-04-29T12:32:51.000Z">
+<meta property="article:modified_time" content="2025-05-07T01:35:45.918Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape002.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2025/04/29/CSInternet12/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CSInternet12',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-05-07 09:35:45'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape002.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">CSInternet12</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">CSInternet12</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-04-29T12:32:51.000Z" title="发表于 2025-04-29 20:32:51">2025-04-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-07T01:35:45.918Z" title="更新于 2025-05-07 09:35:45">2025-05-07</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">6.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>20分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>本文分享的是IP协议相关内容，其中重点讲解ICMP和ARP协议，以及关于IP地址的一些基础知识。</p>
+<h1 id="IP协议"><a href="#IP协议" class="headerlink" title="IP协议"></a>IP协议</h1><p>IP 在 TCP&#x2F;IP 参考模型中处于第三层，也就是<strong>网络层</strong>。</p>
+<p>网络层的主要作用是：<strong>实现主机与主机之间的通信，也叫点对点（end to end）通信。</strong></p>
+<img src="/2025/04/29/CSInternet12/2.jpg" class title="IP 的作用">
+
+<p>有的小伙伴分不清 IP（网络层） 和 MAC （数据链路层）之间的区别和关系。</p>
+<p>其实很容易区分，在上面我们知道 IP 的作用是主机之间通信用的，而 MAC 的作用则是实现「直连」的两个设备之间通信，而IP 则负责在「没有直连」的两个网络之间进行通信传输。</p>
+<p>在区间内移动相当于数据链路层，充当区间内两个节点传输的功能，区间内的出发点好比源 MAC 地址,目标地点好比目的 MAC 地址。整个行程表就相当于网络层，充当远程定位的功能，行程的开始好比源 IP，行程的终点好比目的IP地址。</p>
+<h2 id="传统的分类地址（A、B、C、D、E类）"><a href="#传统的分类地址（A、B、C、D、E类）" class="headerlink" title="传统的分类地址（A、B、C、D、E类）"></a>传统的分类地址（A、B、C、D、E类）</h2><img src="/2025/04/29/CSInternet12/7.jpg" class title="IP 地址分类">
+
+<p>IPv4地址由32位二进制数组成，通常以四组点分十进制数表示（如192.168.1.1）。根据最初的设计，IP地址被分为五类：</p>
+<ol>
+<li><strong>A类地址</strong><ul>
+<li>范围：0.0.0.0 - 127.255.255.255</li>
+<li>第一位固定为0</li>
+<li>网络号占7位，主机号占24位</li>
+<li>最大主机数：16,777,214个</li>
+<li>主要分配给：大型组织和政府机构</li>
+</ul>
+</li>
+<li><strong>B类地址</strong><ul>
+<li>范围：128.0.0.0 - 191.255.255.255</li>
+<li>前两位固定为10</li>
+<li>网络号占14位，主机号占16位</li>
+<li>最大主机数：65,534个</li>
+<li>主要分配给：中型组织</li>
+</ul>
+</li>
+<li><strong>C类地址</strong><ul>
+<li>范围：192.0.0.0 - 223.255.255.255</li>
+<li>前三位固定为110</li>
+<li>网络号占21位，主机号占8位</li>
+<li>最大主机数：254个</li>
+<li>主要分配给：小型组织</li>
+</ul>
+</li>
+<li><strong>D类地址</strong><ul>
+<li>范围：224.0.0.0 - 239.255.255.255</li>
+<li>用于多播（Multicast）</li>
+</ul>
+</li>
+<li><strong>E类地址</strong><ul>
+<li>范围：240.0.0.0 - 255.255.255.255</li>
+<li>保留用于研究</li>
+</ul>
+</li>
+</ol>
+<h3 id="分类地址的缺点"><a href="#分类地址的缺点" class="headerlink" title="分类地址的缺点"></a>分类地址的缺点</h3><p>尽管分类地址系统设计简单明了，但随着互联网的快速发展，其缺点变得越来越明显：</p>
+<ol>
+<li><strong>地址空间浪费</strong>：例如，一家只需要500台主机的公司获得了B类地址，但实际上只使用了不到1%的分配地址，造成了大量浪费。</li>
+<li><strong>路由表膨胀</strong>：路由器需要存储越来越多的路由条目，导致性能下降和内存消耗增加。</li>
+<li><strong>缺乏灵活性</strong>：地址分配过于刚性，无法满足不同规模网络的需求。</li>
+</ol>
+<h2 id="无分类地址-CIDR"><a href="#无分类地址-CIDR" class="headerlink" title="无分类地址 CIDR"></a>无分类地址 CIDR</h2><p>为了解决分类寻址的问题，1993年引入了无分类域间路由（Classless Inter-Domain Routing，CIDR）技术。CIDR打破了传统的A、B、C类地址的界限，允许更灵活地分配IP地址块。</p>
+<h3 id="CIDR表示法"><a href="#CIDR表示法" class="headerlink" title="CIDR表示法"></a>CIDR表示法</h3><p>CIDR使用”前缀长度”表示法：IP地址&#x2F;网络前缀长度。例如：</p>
+<ul>
+<li>192.168.100.0&#x2F;24 表示前24位是网络部分，后8位是主机部分</li>
+<li>可分配的主机数：2^(32-前缀长度) - 2</li>
+</ul>
+<img src="/2025/04/29/CSInternet12/15-1746577822420-5.jpg" class>
+
+<h3 id="CIDR的优势"><a href="#CIDR的优势" class="headerlink" title="CIDR的优势"></a>CIDR的优势</h3><ol>
+<li><strong>地址分配更加精确</strong>：网络管理员可以根据实际需要分配恰当大小的地址块，就像城市规划师可以根据实际人口需求设计不同大小的住宅区。</li>
+<li><strong>路由聚合</strong>：多个小地址块可以合并为一个大地址块进行路由通告，减少了路由表的大小。这就像邮政系统可以将同一个小区的邮件一次性交给小区管理员，而不需要分别记录每家每户的地址。</li>
+<li><strong>解决了地址耗尽问题</strong>：通过更高效的地址分配，延缓了IPv4地址耗尽的速度。</li>
+</ol>
+<h2 id="公有IP与私有IP"><a href="#公有IP与私有IP" class="headerlink" title="公有IP与私有IP"></a>公有IP与私有IP</h2><p>在 A、B、C 分类地址，实际上有分公有 IP 地址和私有 IP 地址。</p>
+<img src="/2025/04/29/CSInternet12/22.jpg" class>
+
+<p>平时我们办公室、家里、学校用的 IP 地址，一般都是私有 IP 地址。因为这些地址允许组织内部的 IT 人员自己管理、自己分配，而且可以重复。因此，你学校的某个私有IP 地址和我学校的可以是一样的。</p>
+<p>就像每个小区都有自己的楼编号和门牌号，你小区家可以叫1栋 101号，我小区家也可以叫1栋 101，没有任何问题。但一旦出了小区，就需要带上宛平南路 600 号(公网IP 地址)，是国家统一分配的，不能两个小区都叫宛平南路 600 。</p>
+<p>所以，公有 IP地址是有个组织统一分配的，假设你要开一个博客网站，那么你就需要去申请购买一个公有 IP，这样全世界的人才能访问。并且公有IP 地址基本上要在整个互联网范围内保持唯一。</p>
+<h3 id="公有IP地址"><a href="#公有IP地址" class="headerlink" title="公有IP地址"></a>公有IP地址</h3><p>公有IP地址（也称为全球IP地址）是Internet上的唯一标识符，由全球互联网号码分配机构（IANA）及其区域注册商管控。就像城市中的正式门牌号码，每个地址都必须是唯一的，并且在全球范围内可路由。</p>
+<img src="/2025/04/29/CSInternet12/24.jpg" class>
+
+<h3 id="私有IP地址"><a href="#私有IP地址" class="headerlink" title="私有IP地址"></a>私有IP地址</h3><p>随着互联网的发展，IP地址资源越来越紧张。为了节约地址资源，RFC 1918定义了三个私有IP地址段：</p>
+<ol>
+<li>10.0.0.0 - 10.255.255.255 (10.0.0.0&#x2F;8)</li>
+<li>172.16.0.0 - 172.31.255.255 (172.16.0.0&#x2F;12)</li>
+<li>192.168.0.0 - 192.168.255.255 (192.168.0.0&#x2F;16)</li>
+</ol>
+<p>私有IP地址只能在内部网络中使用，不能直接用于互联网通信。这就像小区内部的房间号，仅在该小区内有效。</p>
+<h2 id="IP地址与路由控制"><a href="#IP地址与路由控制" class="headerlink" title="IP地址与路由控制"></a>IP地址与路由控制</h2><h3 id="4-1-路由的基本概念"><a href="#4-1-路由的基本概念" class="headerlink" title="4.1 路由的基本概念"></a>4.1 路由的基本概念</h3><p>路由是指数据包从源到目的地的路径选择过程。路由器通过维护路由表来决定数据包的下一跳去向。</p>
+<h3 id="4-2-默认网关"><a href="#4-2-默认网关" class="headerlink" title="4.2 默认网关"></a>4.2 默认网关</h3><p>默认网关是本地网络与其他网络之间的接口。当主机需要与非本地网络通信时，数据包会被发送到默认网关，再由网关转发。</p>
+<p>这就像你不知道如何前往某个陌生城市时，会先到达本地的交通枢纽（如火车站或机场），然后转乘到目的地。</p>
+<h3 id="4-3-路由表与路由协议"><a href="#4-3-路由表与路由协议" class="headerlink" title="4.3 路由表与路由协议"></a>4.3 路由表与路由协议</h3><p>路由表包含了网络目的地和下一跳的映射关系。路由协议如RIP、OSPF和BGP则负责路由器之间交换路由信息，动态更新路由表。</p>
+<p>这些协议就像导航系统，不断更新道路状况，确保数据包能够选择最优路径到达目的地。</p>
+<img src="/2025/04/29/CSInternet12/25.jpg" class title="IP 地址与路由控制">
+
+<h2 id="IP分片与重组"><a href="#IP分片与重组" class="headerlink" title="IP分片与重组"></a>IP分片与重组</h2><p>最大传输单元（Maximum Transmission Unit, MTU）是数据链路层能够传输的最大数据包大小。不同类型的网络有不同的MTU值：</p>
+<ul>
+<li>以太网通常为1500字节</li>
+<li>PPPoE通常为1492字节</li>
+</ul>
+<p>每种数据链路的最大传输单元 MTu 都是不相同的，如 FDDI 数据链路 MTU 4352、以太网的 MTU 是1500 字节等。</p>
+<p>当 IP 数据包大小大于 MTU 时，IP 数据包就会被分片。<em>经过分片之后的IP 数据报在被重组的时候，只能由目标主机进行，路由器是不会进行重组的。</em></p>
+<p>假设发送方发送一个 4000 字节的大数据报，若要传输在以太网链路，则需要把数据报分片成3个小数据报进行传输，再交由接收方重组成大数据报。</p>
+<img src="/2025/04/29/CSInternet12/26.jpg" class title="分片与重组">
+
+<p>在分片传输中，一旦某个分片丢失，则会造成整个IP数据报作废，所以TCP引入了 MSS，也就是<strong>在 TCP层进行分片不由 IP 层分片；对于 UDP， 我们则尽量不要发送一个大于 MTU 的数据报文。</strong></p>
+<h2 id="IPv6基本认识"><a href="#IPv6基本认识" class="headerlink" title="IPv6基本认识"></a>IPv6基本认识</h2><p>随着全球互联网的爆炸性增长，IPv4的4.3亿个地址（2^32）远远不够用。IPv6应运而生，提供了2^128个地址，数量几乎是无限的。</p>
+<p>如果将IPv4地址比作一粒沙子，那么IPv6地址的数量比地球上所有的沙子还要多得多。</p>
+<h3 id="IPv6的特点"><a href="#IPv6的特点" class="headerlink" title="IPv6的特点"></a>IPv6的特点</h3><ol>
+<li><strong>更大的地址空间</strong>：128位地址长度，理论上可以为地球上的每粒沙子分配一个IP地址</li>
+<li><strong>简化的头部格式</strong>：提高了路由器处理效率</li>
+<li><strong>内置安全性</strong>：IPsec成为标准组件</li>
+<li><strong>自动配置能力</strong>：无需DHCP服务器，设备可以自动生成地址</li>
+<li><strong>更好的QoS支持</strong>：流标签字段提供了更好的服务质量控制</li>
+</ol>
+<h3 id="IPv6地址表示"><a href="#IPv6地址表示" class="headerlink" title="IPv6地址表示"></a>IPv6地址表示</h3><p>IPv6地址使用8组4个十六进制数字表示，如： <code>2001:0db8:85a3:0000:0000:8a2e:0370:7334</code></p>
+<p>可以使用以下规则简化：</p>
+<ol>
+<li>每组前导零可以省略：<code>2001:db8:85a3:0:0:8a2e:370:7334</code></li>
+<li>连续的零组可以用双冒号替代（但只能使用一次）：<code>2001:db8:85a3::8a2e:370:7334</code></li>
+</ol>
+<h2 id="IPv4首部与IPv6首部"><a href="#IPv4首部与IPv6首部" class="headerlink" title="IPv4首部与IPv6首部"></a>IPv4首部与IPv6首部</h2><img src="/2025/04/29/CSInternet12/31.jpg" class title="IPv4 首部与 IPv6 首部的差异">
+
+<p>IPv4首部包含至少20字节的信息，包括：</p>
+<ul>
+<li>版本、首部长度、服务类型、总长度</li>
+<li>标识、标志、片偏移</li>
+<li>生存时间(TTL)、协议、首部校验和</li>
+<li>源IP地址和目的IP地址</li>
+<li>可选项和填充</li>
+</ul>
+<p>IPv6首部固定为40字节，设计更加简洁：</p>
+<ul>
+<li>版本、通信量类别、流标签</li>
+<li>有效载荷长度、下一个首部、跳数限制</li>
+<li>源地址(16字节)</li>
+<li>目的地址(16字节)</li>
+</ul>
+<h3 id="主要区别"><a href="#主要区别" class="headerlink" title="主要区别"></a>主要区别</h3><ol>
+<li><strong>简化设计</strong>：IPv6移除了许多IPv4首部字段，如校验和(<strong>校验工作交给上层协议</strong>)和分片相关字段(分片由源端处理)</li>
+<li><strong>扩展首部</strong>：IPv6使用扩展首部机制代替IPv4的选项字段，提高了处理效率</li>
+<li><strong>更高效的路由</strong>：固定长度的基本首部使路由器处理更快速</li>
+<li><strong>更好的扩展性</strong>：IPv6设计考虑了未来扩展</li>
+</ol>
+<h1 id="ICMP"><a href="#ICMP" class="headerlink" title="ICMP"></a>ICMP</h1><h2 id="定义与报文格式"><a href="#定义与报文格式" class="headerlink" title="定义与报文格式"></a>定义与报文格式</h2><p>ICMP是 Internet Control Message Protocol 的缩写，即互联网控制消息协议。它是互联网协议族的核心协议之一。它用于 TCP&#x2F;IP 网络中发送控制消息，提供可能发生在通信环境中的各种问题反馈，通过这些信息，使网络管理者可以对所发生的问题作出诊断，然后采取适当的措施解决问题。</p>
+<p>虽然 ICMP 是网络层协议，但是它不像 IP 协议和 ARP 协议一样直接传递给数据链路层，而是先封装成 IP 数据包然后再传递给数据链路层。所以在 IP 数据包中如果协议类型字段的值是 1 的话，就表示 IP 数据是 ICMP 报文。IP 数据包就是靠这个协议类型字段来区分不同的数据包的。如下图 WireShark 抓包所示：</p>
+<img src="/2025/04/29/CSInternet12/image-20250504084225653.png" class>
+
+<p>从 ICMP 的报文格式来说，ICMP 是 IP 的上层协议。但是 ICMP 是分担了 IP 的一部分功能。所以，他也被认为是与 IP 同层的协议。下面一起来看一下 ICMP 数据包格式和报文内容吧。具体参考下图：</p>
+<img src="/2025/04/29/CSInternet12/v2-ef5b42aff92acc5a8873d946d48177e4_1440w.jpg" class>
+
+
+
+<h2 id="协议类型"><a href="#协议类型" class="headerlink" title="协议类型"></a>协议类型</h2><p>ICMP 包头的<strong>类型</strong>字段，大致可以分为两大类：</p>
+<ul>
+<li>一类是用于诊断的查询消息，也就是「<strong>查询报文类型</strong>」</li>
+<li>另一类是通知出错原因的错误消息，也就是「<strong>差错报文类型</strong>」</li>
+</ul>
+<img src="/2025/04/29/CSInternet12/image-20250505105340142.png" class>
+
+<h3 id="询问报文"><a href="#询问报文" class="headerlink" title="询问报文"></a>询问报文</h3><p>常用的ICMP询问报文有以下两种：</p>
+<ul>
+<li>回送请求和回答：ICMP回送请求报文是由主机或路由器向一个特定的目的主机发出的询问。收到此报文的主机必须给源主机或路由器发送ICMP回送回答报文这种询问报文用来测试目的站是否可达及了解其有关状态。</li>
+</ul>
+<p>可以向对端主机发送回送请求的消息(ICMP Echo Request Message，类型 8)，也可以接收对端主机发回来的回送应答消息(ICMP Echo Reply Message ，类型 0)。</p>
+<img src="/2025/04/29/CSInternet12/8.jpg" class title="ICMP 回送请求和回送应答报文">
+
+<p>相比原生的 ICMP，这里多了两个字段。标识符用以区分是哪个应用程序发ICMP包，比如用进程PID作为标识符；序列号从 8开始，每发送一次新的回送请求就会加 1，可以用来确认网络包是否有丢失。</p>
+<p>在选项数据中， ping还会存放发送请求的时间值，来计算往返时间，说明路程的长短。</p>
+<ul>
+<li>时间戳请求和回答：ICMP时间戳请求报文是请某个主机或路由器回答当前的日期和时间。在ICMP时间戳回答报文中有一个32位的字段，其中写入的整数代表从1900年1月1日起到当前时刻一共有多少秒。</li>
+</ul>
+<h3 id="差错报文"><a href="#差错报文" class="headerlink" title="差错报文"></a>差错报文</h3><p>事先说明，以下情况不应发送ICMP差错报告报文：</p>
+<ul>
+<li>对ICMP差错报告报文不再发送ICMP差错报告报文</li>
+<li>对第一个分片的数据报片的所有后续数据报片都不发送ICMP差错报告报文</li>
+<li>对具有多播地址的数据报都不发送ICMP差错报告报文</li>
+<li>对具有特殊地址(如127.0.0.0或0.0.0.0)的数据报不发送ICMP差错报告报文</li>
+</ul>
+<p>而差错报文一共有以下五种，下面分别进行介绍：</p>
+<h4 id="1-终点不可达"><a href="#1-终点不可达" class="headerlink" title="1.终点不可达"></a>1.终点不可达</h4><p>当路由器或主机不能交付数据报时，就向源点发送终点不可达报文。具体可再根据ICMP的代码字段细分为目的网络不可达目的主机不可达、目的协议不可达、目的端口不可达、目的网络未知、目的主机未知等13种错误。</p>
+<img src="/2025/04/29/CSInternet12/image-20250505151430881.png" class>
+
+<h4 id="2-源点抑制"><a href="#2-源点抑制" class="headerlink" title="2.源点抑制"></a>2.源点抑制</h4><p>当路由器或主机由于拥塞而丢弃数据报时，就向源点发送源点抑制报文，使源点知道应当把数据报的发送速率放慢。</p>
+<img src="/2025/04/29/CSInternet12/image-20250505111708336.png" class>
+
+<h4 id="3-超时"><a href="#3-超时" class="headerlink" title="3.超时"></a>3.超时</h4><p>当路由器收到一个目的IP地址不是自己的IP数据报，会将其生存时间TTL字段的值减1。</p>
+<ul>
+<li>若结果不为0，则将该IP数据报转发出去；</li>
+<li>若结果为0，除了丢奔该IP数据报外，还要向源点发送时间超过报文。</li>
+</ul>
+<img src="/2025/04/29/CSInternet12/image-20250505151535914.png" class>
+
+<p>另外，当终点在预先规定的时间内不能收到一个数据报的全部数据报片时，就把已收到的数据报片都丢弃，也会向源点发送时间超过报文。</p>
+<h4 id="4-参数问题"><a href="#4-参数问题" class="headerlink" title="4.参数问题"></a>4.参数问题</h4><p>当路由器或目的主机收到IP数据报后，根据其首部中的检验和字段发现首部在传输过程中出现了误码，就丢弃该数据报，并向源点发送参数问题报文。</p>
+<h4 id="5-重定向"><a href="#5-重定向" class="headerlink" title="5.重定向"></a>5.重定向</h4><p>路由器把改变路由报文发送给主机，让主机知道下次应将数据报发送给另外的路由器(可通过更好的路由)。</p>
+<img src="/2025/04/29/CSInternet12/image-20250505210942626.png" class>
+
+<h2 id="ICMP应用"><a href="#ICMP应用" class="headerlink" title="ICMP应用"></a>ICMP应用</h2><h3 id="PING（分组网间探测，Packet-InterNet-Groper）"><a href="#PING（分组网间探测，Packet-InterNet-Groper）" class="headerlink" title="PING（分组网间探测，Packet InterNet Groper）"></a>PING（分组网间探测，Packet InterNet Groper）</h3><blockquote>
+<p>文章该部分来自：<a target="_blank" rel="noopener" href="https://xiaolincoding.com/network/4_ip/ping.html#%E5%B7%AE%E9%94%99%E6%8A%A5%E6%96%87%E7%B1%BB%E5%9E%8B">https://xiaolincoding.com/network/4_ip/ping.html#%E5%B7%AE%E9%94%99%E6%8A%A5%E6%96%87%E7%B1%BB%E5%9E%8B</a></p>
+</blockquote>
+<p>ping 命令执行的时候，源主机首先会构建一个 <strong>ICMP 回送请求消息</strong>数据包。</p>
+<p>ICMP 数据包内包含多个字段，最重要的是两个:</p>
+<ul>
+<li>第一个是类型，对于回送请求消息而言该字段为8;</li>
+<li>另外一个是序号，主要用于区分连续 ping 的时候发出的多个数据包。</li>
+</ul>
+<p>每发出一个请求数据包，序号会自动加1。为了能够计算往返时间 RTT，它会在报文的数据部分插入发送时间。</p>
+<p>然后，由 ICMP 协议将这个数据包连同地址 192.168.1.2 一起交给 IP 层。IP 层将以 192.168.1.2 作为目的地址，本机 IP 地址作为源地址，协议字段设置为1表示是 ICMP协议，再加上一些其他控制信息，构建一个 IP 数据包。</p>
+<p>接下来，需要加入 MAC 头。如果在本地 ARP 映射表中查找出 IP 地址 192.168.1.2 所对应的 MAC 地址，则可以直接使用；如果没有，则需要发送 ARP协议查询 MAC 地址，获得 MAC 地址后，由数据链路层构建一个数据帧，目的地址是 IP 层传过来的 MAC 地址，源地址则是本机的 MAC 地址；还要附加上一些控制信息，依据以太网的介质访问规则，将它们传送出去。</p>
+<img src="/2025/04/29/CSInternet12/15.jpg" class title="主机 A 的 MAC 层数据包">
+
+<p>接收后检查该数据帧，将IP 数据包从帧中提取出来，交给本机的 IP 层。同样，IP 层检查后，将有用的信息提取后交给 ICMP 协议。</p>
+<p>主机 B 会构建一个 ICMP 回送响应消息数据包，回送响应数据包的类型字段为 0，序号为接收到的请求数据包中的序号，然后再发送出去给主机 A。</p>
+<img src="/2025/04/29/CSInternet12/16.jpg" class title="主机 B 的 ICMP 回送响应报文">
+
+<p>整个过程如下：</p>
+<img src="/2025/04/29/CSInternet12/17.png" class title="主机 A ping 主机 B 期间发送的事情">
+
+<p>当然这只是最简单的，同一个局域网里面的情况。如果跨网段的话，还会涉及网关的转发、路由器的转发等等。</p>
+<p>但是对于 ICMP 的头来讲，是没什么影响的。会影响的是根据目标 IP 地址，选择路由的下一跳，还有每经过一个路由器到达一个新的局域网，需要换 MAC 头里面的 MAC 地址。</p>
+<p>说了这么多，可以看出 ping 这个程序是<strong>使用了 ICMP 里面的 ECHO REQUEST（类型为 8 ）和 ECHO REPLY （类型为 0）</strong>。</p>
+<h3 id="跟踪路由（traceroute）"><a href="#跟踪路由（traceroute）" class="headerlink" title="跟踪路由（traceroute）"></a>跟踪路由（traceroute）</h3><p>该命令用来测试IP数据报从源主机到达目的主机要经过哪些路由器。</p>
+<p>在Windows版本中，</p>
+<ul>
+<li>tracert命令</li>
+<li>应用层直接使用网际层ICMP</li>
+<li>使用了ICMP回送请求和回答报文以及差错报告报文</li>
+</ul>
+<p>在Unix版本中，</p>
+<ul>
+<li>traceroute命令</li>
+<li>在运输层使用UDP协议</li>
+<li>仅使用ICMP差错报告报文</li>
+</ul>
+<p>以下是对B站发送tracert命令的截图：</p>
+<img src="/2025/04/29/CSInternet12/image-20250503181813881.png" class>
+
+<p>在这个输出中，前三个跳点正常响应：本地路由器(192.168.10.1)、网关(192.168.1.1)和第一个ISP节点(100.115.0.1)。第4-16跳点显示”请求超时”(*)，这表示这些中间路由器配置为不响应ICMP请求；最后一跳(第17跳)成功到达目标服务器(119.3.70.188，bilibili.com)。</p>
+<p>tracert依然成功的原因是它只需要最终目标响应，或者至少要找到通往目标的路径。中间节点不响应并不意味着数据包无法通过这些节点——它们只是不发送ICMP响应而已。</p>
+<p>至于为什么不发送呢？其实这也是出于网络安全的角度考虑的。黑客常用ping扫描和traceroute工具来发现活跃主机和路由路径，屏蔽ICMP响应可减少这类初步侦察的效果，同时也达到了避免ICMP洪水攻击的效果。</p>
+<h1 id="ARP"><a href="#ARP" class="headerlink" title="ARP"></a>ARP</h1><p>ARP（Address Resolution Protocol，地址解析协议）是一种解决地址问题的协议。以目标IP地址为线索，用来定位下一个应该接收数据分包的网络设备对应的 MAC地址。如果目标主机不在同一个链路上时，可以通过 ARP查找下一跳路由器的MAC地址。不过ARP只适用于IPv4，不能用于 IPv6。IPv6中可以用ICMPv6 替代 ARP 发送邻居探索消息。</p>
+<h2 id="请求响应过程"><a href="#请求响应过程" class="headerlink" title="请求响应过程"></a>请求响应过程</h2><h3 id="1-ARP-请求"><a href="#1-ARP-请求" class="headerlink" title="1. ARP 请求"></a>1. ARP 请求</h3><p>当设备需要与目标设备通信时，如果不知道目标设备的 MAC 地址，它会发送一个 ARP 请求广播包，询问”谁拥有这个 IP 地址？”。</p>
+<img src="/2025/04/29/CSInternet12/arp-n-1.png" class>
+
+<ul>
+<li>发送方广播 ARP 请求包，询问目标 IP 地址对应的 MAC 地址。</li>
+<li>局域网中的所有设备都会收到该请求。</li>
+</ul>
+<h3 id="2-ARP-响应"><a href="#2-ARP-响应" class="headerlink" title="2. ARP 响应"></a>2. ARP 响应</h3><p>如果某个设备发现自己的 IP 地址与 ARP 请求中的目标 IP 地址匹配，它会发送一个 ARP 响应包，告知自己的 MAC 地址。</p>
+<img src="/2025/04/29/CSInternet12/arp-n-2.png" class title="img">
+
+<ul>
+<li>接收方发送 ARP 响应包，告知自己的 MAC 地址。</li>
+<li>ARP 响应包是单播的，只发送给请求方。</li>
+</ul>
+<h3 id="3-ARP-缓存"><a href="#3-ARP-缓存" class="headerlink" title="3. ARP 缓存"></a>3. ARP 缓存</h3><p>发送方在收到 ARP 响应后，会将 IP 地址和 MAC 地址的映射关系存储在本地 ARP 缓存中，以便后续通信时直接使用。</p>
+<img src="/2025/04/29/CSInternet12/arp-n-3.png" class title="img">
+
+<p>不过，MAC地址的缓存是有一定期限的。超过这个期限，缓存的内容将被清除。这使得MAC地址与IP地址对应关系即使发生了变化，也依然能够将数据包正确地发送给目标地址。</p>
+<img src="/2025/04/29/CSInternet12/image-20250505225533856.png" class title="ARP包格式">
+
+<h2 id="ARP-的关键特性"><a href="#ARP-的关键特性" class="headerlink" title="ARP 的关键特性"></a>ARP 的关键特性</h2><ol>
+<li><strong>IP 地址到 MAC 地址的映射</strong>：<ul>
+<li>将网络层地址解析为数据链路层地址。</li>
+</ul>
+</li>
+<li><strong>广播请求和单播响应</strong>：<ul>
+<li>使用广播发送 ARP 请求，使用单播发送 ARP 响应。</li>
+</ul>
+</li>
+<li><strong>ARP 缓存</strong>：<ul>
+<li>存储 IP 地址和 MAC 地址的映射关系，减少重复的 ARP 请求。</li>
+</ul>
+</li>
+<li><strong>局域网内使用</strong>：<ul>
+<li>ARP 主要用于局域网中，不适用于跨网络通信。</li>
+</ul>
+</li>
+</ol>
+<h2 id="ARP-的安全性"><a href="#ARP-的安全性" class="headerlink" title="ARP 的安全性"></a>ARP 的安全性</h2><p>显然由于广播请求的特性，ARP 本身是不安全的，容易受到以下攻击：</p>
+<ol>
+<li>ARP 欺骗（ARP Spoofing）：<ul>
+<li>攻击者伪造 ARP 响应，将自己的 MAC 地址与目标 IP 地址关联。</li>
+</ul>
+</li>
+<li>ARP 泛洪（ARP Flooding）：<ul>
+<li>攻击者发送大量伪造的 ARP 请求，耗尽网络资源。</li>
+</ul>
+</li>
+</ol>
+<p>为了提高安全性，可以使用以下防护措施：</p>
+<ol>
+<li><strong>静态 ARP 表</strong>：手动配置 IP 地址和 MAC 地址的映射关系。</li>
+<li><strong>ARP 检测</strong>：监控网络中的 ARP 流量，检测异常行为。</li>
+<li><strong>网络隔离</strong>：使用 VLAN 或子网隔离设备，减少 ARP 攻击的影响。</li>
+</ol>
+<h1 id="综合实践"><a href="#综合实践" class="headerlink" title="综合实践"></a>综合实践</h1><blockquote>
+<p>设计一个简单的家庭网络方案，包括公有IP、私有IP分配以及NAT配置。</p>
+</blockquote>
+<h2 id="1-网络需求分析"><a href="#1-网络需求分析" class="headerlink" title="1. 网络需求分析"></a>1. 网络需求分析</h2><p>首先，让我们假设一个普通家庭的网络需求：</p>
+<ul>
+<li>1台路由器（连接互联网）</li>
+<li>1台台式电脑（有线连接）</li>
+<li>2台笔记本电脑（无线连接）</li>
+<li>2部智能手机（无线连接）</li>
+<li>1台智能电视（无线连接）</li>
+<li>1台打印机（无线连接）</li>
+<li>潜在的访客设备和未来可能增加的设备</li>
+</ul>
+<h2 id="2-公有IP地址配置"><a href="#2-公有IP地址配置" class="headerlink" title="2. 公有IP地址配置"></a>2. 公有IP地址配置</h2><ul>
+<li><strong>公有IP获取方式</strong>：通过ISP（网络服务提供商）获得，通常为动态分配的单个公有IPv4地址</li>
+<li><strong>假设分配的公有IP</strong>：203.0.113.25（这是一个保留给文档使用的示例IP地址）</li>
+</ul>
+<h2 id="3-私有IP地址规划"><a href="#3-私有IP地址规划" class="headerlink" title="3. 私有IP地址规划"></a>3. 私有IP地址规划</h2><p>我们选择使用192.168.1.0&#x2F;24网段作为家庭内部网络：</p>
+<ul>
+<li>网络地址：192.168.1.0</li>
+<li>广播地址：192.168.1.255</li>
+<li>可用IP范围：192.168.1.1 - 192.168.1.254</li>
+<li>子网掩码：255.255.255.0</li>
+</ul>
+<p>具体IP分配方案：</p>
+<ul>
+<li><p><strong>路由器WAN口</strong>：203.0.113.25（公有IP，由ISP分配）</p>
+</li>
+<li><p><strong>路由器LAN口</strong>：192.168.1.1（作为内网默认网关）</p>
+</li>
+<li><p>固定设备IP分配</p>
+<p>：</p>
+<ul>
+<li>台式电脑：192.168.1.10</li>
+<li>智能电视：192.168.1.20</li>
+<li>打印机：192.168.1.30</li>
+</ul>
+</li>
+<li><p><strong>DHCP动态分配区域</strong>：192.168.1.100 - 192.168.1.200（用于笔记本、手机和访客设备）</p>
+</li>
+</ul>
+<h2 id="4-NAT配置"><a href="#4-NAT配置" class="headerlink" title="4. NAT配置"></a>4. NAT配置</h2><p>在家用路由器中配置NAT（网络地址转换）：</p>
+<ol>
+<li><strong>基本NAT设置</strong>：<ul>
+<li>启用NAT功能（大多数家用路由器默认启用）</li>
+<li>NAT类型：SNAT（源网络地址转换）</li>
+</ul>
+</li>
+<li><strong>端口转发设置</strong>（如有需要）：<ul>
+<li>如果家庭内有需要从外网访问的服务（如网络摄像头），配置特定端口转发</li>
+<li>例如：将外部访问203.0.113.25:8080的请求转发到内部192.168.1.30:80（打印机Web管理界面）</li>
+</ul>
+</li>
+<li><strong>DMZ主机</strong>（可选）：<ul>
+<li>如果有一台设备需要完全暴露给互联网（如游戏主机），可以将其设置为DMZ主机</li>
+<li>例如：将192.168.1.10（台式电脑）设置为DMZ主机</li>
+</ul>
+</li>
+</ol>
+<h2 id="5-安全措施"><a href="#5-安全措施" class="headerlink" title="5. 安全措施"></a>5. 安全措施</h2><ol>
+<li><strong>防火墙设置</strong>：<ul>
+<li>启用路由器自带防火墙</li>
+<li>仅开放必要的入站端口</li>
+<li>设置状态检测功能</li>
+</ul>
+</li>
+<li><strong>无线安全</strong>：<ul>
+<li>使用WPA3加密（如果设备不支持，则使用WPA2-PSK）</li>
+<li>设置强密码，避免使用常见词组</li>
+<li>可考虑隐藏SSID（虽然这只是基本防护）</li>
+</ul>
+</li>
+<li><strong>访客网络</strong>：<ul>
+<li>设置独立的访客WiFi网络（192.168.2.0&#x2F;24）</li>
+<li>限制访客网络只能访问互联网，不能访问主网络中的其他设备</li>
+</ul>
+</li>
+</ol>
+<h2 id="6-网络拓扑图"><a href="#6-网络拓扑图" class="headerlink" title="6. 网络拓扑图"></a>6. 网络拓扑图</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">                   互联网</span><br><span class="line">                      │</span><br><span class="line">                      │ (公有IP: 203.0.113.25)</span><br><span class="line">                      │</span><br><span class="line">             ┌─────────────────┐</span><br><span class="line">             │    路由器      │</span><br><span class="line">             │  192.168.1.1   │</span><br><span class="line">             └─────────────────┘</span><br><span class="line">          ／      │       │      ＼</span><br><span class="line">         ／       │       │       ＼</span><br><span class="line">┌─────────────┐   │   ┌─────────┐   ┌──────────┐</span><br><span class="line">│  台式电脑   │   │   │智能电视 │   │ 打印机   │</span><br><span class="line">│192.168.1.10 │   │   │192.168.1.20│   │192.168.1.30│</span><br><span class="line">└─────────────┘   │   └─────────┘   └──────────┘</span><br><span class="line">                  │</span><br><span class="line">          ┌───────────────┐</span><br><span class="line">          │ 无线接入点    │</span><br><span class="line">          │(内置于路由器) │</span><br><span class="line">          └───────────────┘</span><br><span class="line">           /      |      \</span><br><span class="line">          /       |       \</span><br><span class="line">┌────────────┐ ┌────────────┐ ┌────────────┐</span><br><span class="line">│ 笔记本1    │ │ 笔记本2    │ │ 智能手机   │</span><br><span class="line">│DHCP分配    │ │DHCP分配    │ │DHCP分配    │</span><br><span class="line">└────────────┘ └────────────┘ └────────────┘</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-实施步骤"><a href="#7-实施步骤" class="headerlink" title="7. 实施步骤"></a>7. 实施步骤</h2><ol>
+<li>连接路由器WAN口到ISP提供的网络接入设备（光猫&#x2F;调制解调器）</li>
+<li>配置路由器LAN口IP为192.168.1.1</li>
+<li>配置DHCP服务，IP分配范围设为192.168.1.100-192.168.1.200</li>
+<li>为固定设备手动设置静态IP或在路由器中设置MAC地址绑定</li>
+<li>配置WiFi设置（SSID、密码、安全模式）</li>
+<li>设置防火墙规则和必要的端口转发</li>
+<li>测试内网连接和互联网访问</li>
+</ol>
+<p>这个方案适用于大多数家庭网络需求，具有足够的灵活性和扩展性，同时通过NAT和基本安全措施提供了必要的安全保障。随着IoT设备增加，可能需要考虑分VLAN或增加更严格的网络隔离策略。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2025/04/29/CSInternet12/">https://0kr.xin/2025/04/29/CSInternet12/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/04/29/CSInternet13/" title="CSInternet13"><img class="cover" src="/statics/landscape002.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">CSInternet13</div></div><div class="info-2"><div class="info-item-1">网络传输场景 https://cloud.tencent.com/developer/article/1783804  涉及到的三张表分别是：  1）交换机中有 MAC 地址表用于映射 MAC 地址和它的端口； 2）路由器中有路由表用于映射 IP 地址(段)和它的端口； 3）电脑和路由器中都有 ARP 缓存表用于缓存 IP 和 MAC 地址的映射关系。  这三张表是怎么来的：  1）MAC 地址表是通过以太网内各节点之间不断通过交换机通信，不断完善起来的； 2）路由表是各种路由算法 + 人工配置逐步完善起来的； 3）ARP 缓存表是不断通过 ARP 协议的请求逐步完善起来的。  每个人最终查看的都是mac地址是不是发送给自己的。 所以给路由器的话，arp缓存表和路由表都是要查的。原因是交换器里只有Mac地址和端口的对应表，即Mac地址表，没有转换ip地址和mac地址的能力。 电脑要干的事：  1）首先我要知道我的 IP 以及对方的 IP； 2）通过子网掩码判断我们是否在同一个子网； 3）在同一个子网就通过 arp 获取对方 mac 地址直接扔出去； 4）不在同一个子网就通过...</div></div></div></a><a class="pagination-related" href="/2025/04/29/CSInternet11/" title="CSInternet11"><img class="cover" src="/statics/landscape003.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">CSInternet11</div></div><div class="info-2"><div class="info-item-1">本篇讲述了TCP中的半连接和全连接队列、网络编程面试题，以及如何基于UDP实现TCP。 半连接和全连接队列网络编程面试题如何基于UDP实现TCP</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#IP%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.</span> <span class="toc-text">IP协议</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%A0%E7%BB%9F%E7%9A%84%E5%88%86%E7%B1%BB%E5%9C%B0%E5%9D%80%EF%BC%88A%E3%80%81B%E3%80%81C%E3%80%81D%E3%80%81E%E7%B1%BB%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">传统的分类地址（A、B、C、D、E类）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E7%B1%BB%E5%9C%B0%E5%9D%80%E7%9A%84%E7%BC%BA%E7%82%B9"><span class="toc-number">1.1.1.</span> <span class="toc-text">分类地址的缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A0%E5%88%86%E7%B1%BB%E5%9C%B0%E5%9D%80-CIDR"><span class="toc-number">1.2.</span> <span class="toc-text">无分类地址 CIDR</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CIDR%E8%A1%A8%E7%A4%BA%E6%B3%95"><span class="toc-number">1.2.1.</span> <span class="toc-text">CIDR表示法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CIDR%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">1.2.2.</span> <span class="toc-text">CIDR的优势</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AC%E6%9C%89IP%E4%B8%8E%E7%A7%81%E6%9C%89IP"><span class="toc-number">1.3.</span> <span class="toc-text">公有IP与私有IP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AC%E6%9C%89IP%E5%9C%B0%E5%9D%80"><span class="toc-number">1.3.1.</span> <span class="toc-text">公有IP地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A7%81%E6%9C%89IP%E5%9C%B0%E5%9D%80"><span class="toc-number">1.3.2.</span> <span class="toc-text">私有IP地址</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IP%E5%9C%B0%E5%9D%80%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6"><span class="toc-number">1.4.</span> <span class="toc-text">IP地址与路由控制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E8%B7%AF%E7%94%B1%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1 路由的基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E9%BB%98%E8%AE%A4%E7%BD%91%E5%85%B3"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2 默认网关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E8%B7%AF%E7%94%B1%E8%A1%A8%E4%B8%8E%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.4.3.</span> <span class="toc-text">4.3 路由表与路由协议</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IP%E5%88%86%E7%89%87%E4%B8%8E%E9%87%8D%E7%BB%84"><span class="toc-number">1.5.</span> <span class="toc-text">IP分片与重组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IPv6%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%86"><span class="toc-number">1.6.</span> <span class="toc-text">IPv6基本认识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IPv6%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">1.6.1.</span> <span class="toc-text">IPv6的特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IPv6%E5%9C%B0%E5%9D%80%E8%A1%A8%E7%A4%BA"><span class="toc-number">1.6.2.</span> <span class="toc-text">IPv6地址表示</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IPv4%E9%A6%96%E9%83%A8%E4%B8%8EIPv6%E9%A6%96%E9%83%A8"><span class="toc-number">1.7.</span> <span class="toc-text">IPv4首部与IPv6首部</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E5%8C%BA%E5%88%AB"><span class="toc-number">1.7.1.</span> <span class="toc-text">主要区别</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ICMP"><span class="toc-number">2.</span> <span class="toc-text">ICMP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E4%B8%8E%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F"><span class="toc-number">2.1.</span> <span class="toc-text">定义与报文格式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%8F%E8%AE%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">2.2.</span> <span class="toc-text">协议类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%A2%E9%97%AE%E6%8A%A5%E6%96%87"><span class="toc-number">2.2.1.</span> <span class="toc-text">询问报文</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%AE%E9%94%99%E6%8A%A5%E6%96%87"><span class="toc-number">2.2.2.</span> <span class="toc-text">差错报文</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%BB%88%E7%82%B9%E4%B8%8D%E5%8F%AF%E8%BE%BE"><span class="toc-number">2.2.2.1.</span> <span class="toc-text">1.终点不可达</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%BA%90%E7%82%B9%E6%8A%91%E5%88%B6"><span class="toc-number">2.2.2.2.</span> <span class="toc-text">2.源点抑制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E8%B6%85%E6%97%B6"><span class="toc-number">2.2.2.3.</span> <span class="toc-text">3.超时</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%8F%82%E6%95%B0%E9%97%AE%E9%A2%98"><span class="toc-number">2.2.2.4.</span> <span class="toc-text">4.参数问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E9%87%8D%E5%AE%9A%E5%90%91"><span class="toc-number">2.2.2.5.</span> <span class="toc-text">5.重定向</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ICMP%E5%BA%94%E7%94%A8"><span class="toc-number">2.3.</span> <span class="toc-text">ICMP应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PING%EF%BC%88%E5%88%86%E7%BB%84%E7%BD%91%E9%97%B4%E6%8E%A2%E6%B5%8B%EF%BC%8CPacket-InterNet-Groper%EF%BC%89"><span class="toc-number">2.3.1.</span> <span class="toc-text">PING（分组网间探测，Packet InterNet Groper）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%9F%E8%B8%AA%E8%B7%AF%E7%94%B1%EF%BC%88traceroute%EF%BC%89"><span class="toc-number">2.3.2.</span> <span class="toc-text">跟踪路由（traceroute）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ARP"><span class="toc-number">3.</span> <span class="toc-text">ARP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E8%BF%87%E7%A8%8B"><span class="toc-number">3.1.</span> <span class="toc-text">请求响应过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-ARP-%E8%AF%B7%E6%B1%82"><span class="toc-number">3.1.1.</span> <span class="toc-text">1. ARP 请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-ARP-%E5%93%8D%E5%BA%94"><span class="toc-number">3.1.2.</span> <span class="toc-text">2. ARP 响应</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-ARP-%E7%BC%93%E5%AD%98"><span class="toc-number">3.1.3.</span> <span class="toc-text">3. ARP 缓存</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ARP-%E7%9A%84%E5%85%B3%E9%94%AE%E7%89%B9%E6%80%A7"><span class="toc-number">3.2.</span> <span class="toc-text">ARP 的关键特性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ARP-%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7"><span class="toc-number">3.3.</span> <span class="toc-text">ARP 的安全性</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BB%BC%E5%90%88%E5%AE%9E%E8%B7%B5"><span class="toc-number">4.</span> <span class="toc-text">综合实践</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%BD%91%E7%BB%9C%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90"><span class="toc-number">4.1.</span> <span class="toc-text">1. 网络需求分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%85%AC%E6%9C%89IP%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE"><span class="toc-number">4.2.</span> <span class="toc-text">2. 公有IP地址配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E7%A7%81%E6%9C%89IP%E5%9C%B0%E5%9D%80%E8%A7%84%E5%88%92"><span class="toc-number">4.3.</span> <span class="toc-text">3. 私有IP地址规划</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-NAT%E9%85%8D%E7%BD%AE"><span class="toc-number">4.4.</span> <span class="toc-text">4. NAT配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%AE%89%E5%85%A8%E6%8E%AA%E6%96%BD"><span class="toc-number">4.5.</span> <span class="toc-text">5. 安全措施</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91%E5%9B%BE"><span class="toc-number">4.6.</span> <span class="toc-text">6. 网络拓扑图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E5%AE%9E%E6%96%BD%E6%AD%A5%E9%AA%A4"><span class="toc-number">4.7.</span> <span class="toc-text">7. 实施步骤</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

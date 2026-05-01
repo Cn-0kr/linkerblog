@@ -1,0 +1,257 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Algorithms02 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="不再遗忘——KMP算法详解Leetcode28. 讲述了这样一个问题：   也许你早已听闻kmp算法的大名，甚至和我一样学习过敲过很多次了，可是时间一长总是会忘。我很不甘心，于是在这篇知乎回答的基础上（https:&#x2F;&#x2F;www.zhihu.com&#x2F;question&#x2F;21923021&#x2F;answer&#x2F;281346746 ，答主海纳）对代码进行了改进，在文章中也添加了自己的理解。话不多说，我们这就开始。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Algorithms02">
+<meta property="og:url" content="https://0kr.xin/2025/05/27/Algorithms02/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="不再遗忘——KMP算法详解Leetcode28. 讲述了这样一个问题：   也许你早已听闻kmp算法的大名，甚至和我一样学习过敲过很多次了，可是时间一长总是会忘。我很不甘心，于是在这篇知乎回答的基础上（https:&#x2F;&#x2F;www.zhihu.com&#x2F;question&#x2F;21923021&#x2F;answer&#x2F;281346746 ，答主海纳）对代码进行了改进，在文章中也添加了自己的理解。话不多说，我们这就开始。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape004.jpg">
+<meta property="article:published_time" content="2025-05-27T11:28:02.000Z">
+<meta property="article:modified_time" content="2025-09-26T02:56:08.001Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape004.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2025/05/27/Algorithms02/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Algorithms02',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-09-26 10:56:08'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape004.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">Algorithms02</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Algorithms02</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-05-27T11:28:02.000Z" title="发表于 2025-05-27 19:28:02">2025-05-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-09-26T02:56:08.001Z" title="更新于 2025-09-26 10:56:08">2025-09-26</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="不再遗忘——KMP算法详解"><a href="#不再遗忘——KMP算法详解" class="headerlink" title="不再遗忘——KMP算法详解"></a>不再遗忘——KMP算法详解</h1><p>Leetcode28. 讲述了这样一个问题：</p>
+<img src="/2025/05/27/Algorithms02/image-20250926095430211.png" class>
+
+<p>也许你早已听闻kmp算法的大名，甚至和我一样学习过敲过很多次了，可是时间一长总是会忘。我很不甘心，于是在这篇知乎回答的基础上（<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/21923021/answer/281346746">https://www.zhihu.com/question/21923021/answer/281346746</a> ，答主海纳）对代码进行了改进，在文章中也添加了自己的理解。话不多说，我们这就开始。</p>
+<h2 id="1-朴素算法"><a href="#1-朴素算法" class="headerlink" title="1.朴素算法"></a>1.朴素算法</h2><p>如果你压根不知道什么kmp，只凭原始本能进行暴力枚举呢？这当然是可以的。为了方便表述，我们把题目中haystack代表的字符串定为主串，needle代表的字符串定为匹配串。那么最直观的解法是：枚举主串中的每个字符作为「发起点」，每次从主串的「发起点」和匹配串的「首位」开始尝试匹配：</p>
+<ul>
+<li>若匹配成功：继续匹配，主串和匹配串索引同时向前。</li>
+<li>若匹配失败：枚举主串的下一个「发起点」，<strong>匹配串索引重新移到「首位」，并重新尝试匹配。（重点注意此处与kmp的不同）</strong></li>
+</ul>
+<p>叽里咕噜说再多，其实也就是两层循环的事：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">strStr</span><span class="params">(string s, string p)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = s.<span class="built_in">size</span>(), m = p.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt;= n - m; i++)&#123;</span><br><span class="line">            <span class="type">int</span> j = i, k = <span class="number">0</span>; </span><br><span class="line">            <span class="keyword">while</span>(k &lt; m <span class="keyword">and</span> s[j] == p[k])&#123;</span><br><span class="line">                j++;</span><br><span class="line">                k++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(k == m) <span class="keyword">return</span> i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">作者：宫水三叶</span><br><span class="line">链接：https:<span class="comment">//leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/solutions/575568/shua-chuan-lc-shuang-bai-po-su-jie-fa-km-tb86/</span></span><br></pre></td></tr></table></figure>
+
+<p>在时间复杂度上，内层匹配复杂度为 <em>O</em>(<em>m</em>)，外层遍历复杂度为 <em>O</em>(<em>n</em>−<em>m</em>)，总体就是<em>O</em>((<em>n</em>−<em>m</em>)∗<em>m</em>)。</p>
+<h2 id="2-kmp算法"><a href="#2-kmp算法" class="headerlink" title="2.kmp算法"></a>2.kmp算法</h2><p>显然暴力算法既不优雅时间又长，改进势在必行。但是在说kmp算法之前，我们必须先了解字符串前后缀的概念：</p>
+<p><strong>如果字符串A和B，存在A&#x3D;BS，其中S是任意的非空字符串，那就称B为A的前缀。</strong>例如，”Harry”的前缀包括{”H”, ”Ha”, ”Har”, ”Harr”}，我们把所有前缀组成的集合，称为字符串的前缀集合。同样可以定义后缀A&#x3D;SB， 其中S是任意的非空字符串，那就称B为A的后缀，例如，”Potter”的后缀包括{”otter”, ”tter”, ”ter”, ”er”, ”r”}，然后把所有后缀组成的集合，称为字符串的后缀集合。要注意的是，字符串本身并不是自己的后缀。</p>
+<p>我们知道，很多字符串本身拥有大量的字符重合。比如下面的图1.12，在这两个字符串的匹配过程中，abab经常作为常客出现，若是每次匹配失败都要把整个匹配串重新遍历核对一遍，那真是太不划算了！那么有没有一种改进方法，让循环能够从已经核对无误的字符处开始匹配呢？</p>
+<img src="/2025/05/27/Algorithms02/image-20250926101922616.png" class>
+
+<p>你一定想到，若是主串后缀和匹配串前缀有某种记录相同匹配个数的方法，就能大大减少时间了。没错，部分匹配表(Partial Match Table，简称PMT)它来了！</p>
+<img src="/2025/05/27/Algorithms02/image-20250926102503210.png" class title="value指的是PMT中该字符的值">
+
+<p><strong>PMT中的值是字符串的前缀集合与后缀集合的交集中最长元素的长度</strong>。例如，对于”aba”，它的前缀集合为{”a”, ”ab”}，后缀 集合为{”ba”, ”a”}。两个集合的交集为{”a”}，那么长度最长的元素就是字符串”a”了，长度为1，所以对于”aba”而言，它在PMT表中对应的值就是1。再比如，对于字符串”ababa”，它的前缀集合为{”a”, ”ab”, ”aba”, ”abab”}，它的后缀集合为{”baba”, ”aba”, ”ba”, ”a”}， 两个集合的交集为{”a”, ”aba”}，其中最长的元素为”aba”，长度为3。 你可以自行练习算出图中其他子串的PMT值。</p>
+<p>好了，解释清楚这个表是什么之后，我们再来看如何使用这个表来加速字符串的查找，以及这样用的道理是什么。回到图 1.12 ，要在主串”ababababca”中查找匹配串”abababca”。如果在 j 处字符不匹配，那么由于前边所说的匹配串 PMT 的性质，主串中 i 指针之前的 PMT[j −1] 位就一定与匹配串的第 0 位至第 PMT[j−1] 位是相同的。这是因为主串在 i 位失配，也就意味着主串从 i−j 到 i 这一段是与匹配串的 0 到 j 这一段是完全相同的。而我们上面也解释了，匹配串从 0 到 j−1 ，在这个例子中就是”ababab”，其前缀集合与后缀集合的交集的最长元素为”abab”， 长度为4。所以就可以断言，主串中i指针之前的 4 位一定与匹配串的第0位至第 4 位是相同的，即长度为 4 的后缀与前缀相同。这样一来，我们就可以将这些字符段的比较省略掉。具体的做法是，保持i指针不动，然后将j指针指向匹配串的PMT[j −1]位即可。</p>
+<p>简言之，以图中的例子来说，在 i 处失配，那么主字符串和模式字符串的前边6位就是相同的。又因为模式字符串的前6位，它的前4位前缀和后4位后缀是相同的，所以我们推知主字符串i之前的4位和模式字符串开头的4位是相同的。就是图中的灰色部分。那这部分就不用再比较了。</p>
+<img src="/2025/05/27/Algorithms02/image-20250926103223175.png" class>
+
+<p>思路已经明确，但是如果匹配串在 j 位 失配，那么 j 指针回溯的位置的其实是第 j −1 位的 PMT 值。为了编程的方便， 我们不直接使用PMT数组，<strong>而是将PMT数组向后偏移一位。我们把新得到的这个数组称为next数组</strong>。下面给出根据next数组进行字符串匹配加速的字符串匹配程序。其中要注意的一个技巧是，在把PMT进行向右偏移时，第0位的值，我们将其设成了-1，这只是为了编程的方便，并没有其他的意义。在本节的例子中，next数组如下表所示。</p>
+<img src="/2025/05/27/Algorithms02/image-20250926103518159.png" class>
+
+<p>需要注意的是，next数组的值的含义仍然是匹配串索引的位置，不要误解成其他意思。若我们已知了匹配串的next数组，本题也就变得很简单了：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">strStr</span><span class="params">(string haystack, string needle)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> m = haystack.<span class="built_in">length</span>();</span><br><span class="line">        <span class="type">int</span> n = needle.<span class="built_in">length</span>();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (n == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 构建next数组（使用更简洁的版本）</span></span><br><span class="line"> 		<span class="comment">//……………………………………</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">// KMP主体算法</span></span><br><span class="line">        <span class="type">int</span> i = <span class="number">0</span>;  <span class="comment">// haystack的索引</span></span><br><span class="line">        <span class="type">int</span> j = <span class="number">0</span>;  <span class="comment">// needle的索引</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span> (i &lt; m &amp;&amp; j &lt; n) &#123;</span><br><span class="line">            <span class="comment">// j == -1 表示needle的第一个字符就不匹配，需要将i后移</span></span><br><span class="line">            <span class="comment">// 或者当前字符匹配成功</span></span><br><span class="line">            <span class="keyword">if</span> (j == <span class="number">-1</span> || haystack[i] == needle[j]) &#123;</span><br><span class="line">                i++;</span><br><span class="line">                j++;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 字符不匹配，j回退到next[j]位置</span></span><br><span class="line">                j = next[j];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 如果j等于n，说明needle完全匹配</span></span><br><span class="line">        <span class="keyword">if</span> (j == n) &#123;</span><br><span class="line">            <span class="keyword">return</span> i - n;  <span class="comment">// 返回匹配的起始位置</span></span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;  <span class="comment">// 没有找到匹配</span></span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">/*记忆思路：如果匹配成功，两个索引都往前走；如果匹配失败，匹配串索引通过next数组回到前面的某一位置*/</span></span><br></pre></td></tr></table></figure>
+
+<p>那么next数组怎么得来呢？很简单，只要看成匹配串和自己匹配就可以啦！</p>
+<p>具体来说，就是从匹配串的第一位(注意，不包括第0位)开始对自身进行匹配运算。 在任一位置，能匹配的最长长度就是当前位置的next值。如下图所示。</p>
+<img src="/2025/05/27/Algorithms02/image-20250926104320874.png" class>
+
+<img src="/2025/05/27/Algorithms02/image-20250926104332888.png" class>
+
+<img src="/2025/05/27/Algorithms02/image-20250926104345326.png" class>
+
+<img src="/2025/05/27/Algorithms02/image-20250926104359300.png" class>
+
+<img src="/2025/05/27/Algorithms02/image-20250926104410081.png" class>
+
+<p>求解next数组的程序如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">getNext</span><span class="params">(string p, vector&lt;<span class="type">int</span>&gt;&amp; next)</span> </span>&#123;</span><br><span class="line">    next[<span class="number">0</span>] = <span class="number">-1</span>;  <span class="comment">// 初始化为-1，表示没有真前缀</span></span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>;     <span class="comment">// 当前计算next值的位置</span></span><br><span class="line">    <span class="type">int</span> j = <span class="number">-1</span>;    <span class="comment">// 最长相等前后缀的长度（也是回退位置）</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i &lt; (<span class="type">int</span>)p.<span class="built_in">length</span>()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (j == <span class="number">-1</span> || p[i] == p[j]) &#123;</span><br><span class="line">            <span class="comment">// j == -1：表示已经回退到最开始，没有可匹配的前缀</span></span><br><span class="line">            <span class="comment">// p[i] == p[j]：当前字符与前缀的下一个字符相等</span></span><br><span class="line">            ++i;</span><br><span class="line">            ++j;</span><br><span class="line">            next[i] = j;  <span class="comment">// next[i+1] = j+1</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 当前字符不匹配，j回退</span></span><br><span class="line">            j = next[j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*记忆思路：如果匹配成功，两个索引都往前走，并给next数组赋值；如果匹配失败，匹配串索引通过next数组回到前面的某一位置*/</span></span><br></pre></td></tr></table></figure>
+
+<p>总程序如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">getNext</span><span class="params">(string p, vector&lt;<span class="type">int</span>&gt;&amp; next)</span> </span>&#123;</span><br><span class="line">        next[<span class="number">0</span>] = <span class="number">-1</span>;  <span class="comment">// 初始化为-1，表示没有真前缀</span></span><br><span class="line">        <span class="type">int</span> i = <span class="number">0</span>;     <span class="comment">// 当前计算next值的位置</span></span><br><span class="line">        <span class="type">int</span> j = <span class="number">-1</span>;    <span class="comment">// 最长相等前后缀的长度（也是回退位置）</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span> (i &lt; (<span class="type">int</span>)p.<span class="built_in">length</span>()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (j == <span class="number">-1</span> || p[i] == p[j]) &#123;</span><br><span class="line">                <span class="comment">// j == -1：表示已经回退到最开始，没有可匹配的前缀</span></span><br><span class="line">                <span class="comment">// p[i] == p[j]：当前字符与前缀的下一个字符相等</span></span><br><span class="line">                ++i;</span><br><span class="line">                ++j;</span><br><span class="line">                next[i] = j;  <span class="comment">// next[i+1] = j+1</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 当前字符不匹配，j回退</span></span><br><span class="line">                j = next[j];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">strStr</span><span class="params">(string haystack, string needle)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> m = haystack.<span class="built_in">length</span>();</span><br><span class="line">        <span class="type">int</span> n = needle.<span class="built_in">length</span>();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (n == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 构建next数组（使用更简洁的版本）</span></span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">next</span><span class="params">(n + <span class="number">1</span>)</span></span>;</span><br><span class="line">        <span class="built_in">getNext</span>(needle, next);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// KMP主体算法</span></span><br><span class="line">        <span class="type">int</span> i = <span class="number">0</span>;  <span class="comment">// haystack的索引</span></span><br><span class="line">        <span class="type">int</span> j = <span class="number">0</span>;  <span class="comment">// needle的索引</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span> (i &lt; m &amp;&amp; j &lt; n) &#123;</span><br><span class="line">            <span class="comment">// j == -1 表示needle的第一个字符就不匹配，需要将i后移</span></span><br><span class="line">            <span class="comment">// 或者当前字符匹配成功</span></span><br><span class="line">            <span class="keyword">if</span> (j == <span class="number">-1</span> || haystack[i] == needle[j]) &#123;</span><br><span class="line">                i++;</span><br><span class="line">                j++;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 字符不匹配，j回退到next[j]位置</span></span><br><span class="line">                j = next[j];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 如果j等于n，说明needle完全匹配</span></span><br><span class="line">        <span class="keyword">if</span> (j == n) &#123;</span><br><span class="line">            <span class="keyword">return</span> i - n;  <span class="comment">// 返回匹配的起始位置</span></span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;  <span class="comment">// 没有找到匹配</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>在时间复杂度上，整个next数组构建时间为<em>O</em>(<em>m</em>)，匹配过程扫描完整个原串时间最多为 <em>O</em>(<em>n</em>)，整体为<em>O</em>(<em>m</em>+<em>n</em>)，快了不止一点。</p>
+<p>讲解完毕，希望能够帮到您！😋</p>
+<h2 id="3-参考文献"><a href="#3-参考文献" class="headerlink" title="3.参考文献"></a>3.参考文献</h2><ol>
+<li>如何更好地理解和掌握 KMP 算法? <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/21923021/answer/281346746">https://www.zhihu.com/question/21923021/answer/281346746</a></li>
+<li>【宫水三叶】简单题学 KMP 算法 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/solutions/575568/shua-chuan-lc-shuang-bai-po-su-jie-fa-km-tb86/">https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/solutions/575568/shua-chuan-lc-shuang-bai-po-su-jie-fa-km-tb86/</a></li>
+</ol>
+<p>附：LeetCode28. 原题链接：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/description/">https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/description/</a></p>
+<p>拓展题LeetCode459. ：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/repeated-substring-pattern/description/">https://leetcode.cn/problems/repeated-substring-pattern/description/</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2025/05/27/Algorithms02/">https://0kr.xin/2025/05/27/Algorithms02/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape004.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/05/27/Algorithms03/" title="Algorithms03"><img class="cover" src="/statics/landscape004.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Algorithms03</div></div><div class="info-2"><div class="info-item-1">1二叉树各种算法 </div></div></div></a><a class="pagination-related" href="/2025/05/27/Algorithms01/" title="Algorithms01"><img class="cover" src="/statics/landscape001.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Algorithms01</div></div><div class="info-2"><div class="info-item-1">1 这里直接等效为：根据有限数组找到容量正好为11的背包，那么很容易就想到这里重量&#x3D;价值。 不用再更改讲义了，请直接回答我：为什么重量&#x3D;价值，判断条件是 dp[target] &#x3D;&#x3D; target；而重量&#x3D;1时，判断条件是dp[k] &#x3D;&#x3D; sum&#x2F;2？ 好问题！这个区别的核心在于dp数组的含义完全不同： 🎯 情况1：重量&#x3D;价值&#x3D;nums[i]1dp[j] = 容量为j的背包，能装的最大价值   选择数字 [1, 5] 时： 重量总和 &#x3D; 1 + 5 &#x3D; 6 价值总和 &#x3D; 1 + 5 &#x3D; 6 所以 dp[6] &#x3D; 6    判断逻辑： dp[target] &#x3D;&#x3D; target  dp的下标target &#x3D; 我们想要的数字之和 dp的值target &#x3D; 实际选中的数字之和 相等说明：我们真的选到了和为target的数字组合  🔄...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8D%E5%86%8D%E9%81%97%E5%BF%98%E2%80%94%E2%80%94KMP%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text">不再遗忘——KMP算法详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%9C%B4%E7%B4%A0%E7%AE%97%E6%B3%95"><span class="toc-number">1.1.</span> <span class="toc-text">1.朴素算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-kmp%E7%AE%97%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">2.kmp算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="toc-number">1.3.</span> <span class="toc-text">3.参考文献</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

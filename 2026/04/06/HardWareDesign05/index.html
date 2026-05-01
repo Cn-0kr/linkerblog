@@ -1,0 +1,637 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>HardWareDesign05 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="前言在现在的硬件电路设计中，大部分运算放大器都已经被集成进芯片中使用。什么情况下会在自己设计电路时使用运放？  好问题！虽然很多功能确实被集成了，但独立运放在以下场景仍然很常见： 1. 传感器信号调理 这是最经典的场景。传感器输出往往是微弱的模拟信号，需要放大和滤波后才能送给ADC。 例子：热电偶测温。热电偶输出只有几十μV&#x2F;°C，你需要一个高精度仪表放大器（本质是运放组合）把信号放大到">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HardWareDesign05">
+<meta property="og:url" content="https://0kr.xin/2026/04/06/HardWareDesign05/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="前言在现在的硬件电路设计中，大部分运算放大器都已经被集成进芯片中使用。什么情况下会在自己设计电路时使用运放？  好问题！虽然很多功能确实被集成了，但独立运放在以下场景仍然很常见： 1. 传感器信号调理 这是最经典的场景。传感器输出往往是微弱的模拟信号，需要放大和滤波后才能送给ADC。 例子：热电偶测温。热电偶输出只有几十μV&#x2F;°C，你需要一个高精度仪表放大器（本质是运放组合）把信号放大到">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape003.jpg">
+<meta property="article:published_time" content="2026-04-06T06:51:02.000Z">
+<meta property="article:modified_time" content="2026-04-09T10:37:08.328Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape003.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2026/04/06/HardWareDesign05/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'HardWareDesign05',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-04-09 18:37:08'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape003.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">HardWareDesign05</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">HardWareDesign05</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-09T10:37:08.328Z" title="更新于 2026-04-09 18:37:08">2026-04-09</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">6.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>21分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在现在的硬件电路设计中，大部分运算放大器都已经被集成进芯片中使用。什么情况下会在自己设计电路时使用运放？</p>
+<hr>
+<p>好问题！虽然很多功能确实被集成了，但独立运放在以下场景仍然很常见：</p>
+<p><strong>1. 传感器信号调理</strong></p>
+<p>这是最经典的场景。传感器输出往往是微弱的模拟信号，需要放大和滤波后才能送给ADC。</p>
+<p>例子：热电偶测温。热电偶输出只有几十μV&#x2F;°C，你需要一个高精度仪表放大器（本质是运放组合）把信号放大到ADC可读的0~3.3V范围。集成方案虽然有（如MAX31855），但如果你要自定义量程、滤波特性或多通道复用，就得自己用运放搭。</p>
+<p><strong>2. 有源滤波器</strong></p>
+<p>当你需要特定截止频率和阶数的模拟滤波器时，用运放+RC网络搭建是标准做法。</p>
+<p>例子：音频采集前的抗混叠低通滤波器。假设ADC采样率48kHz，你需要在24kHz处有陡峭衰减。用两级Sallen-Key拓扑（每级一个运放），配合电阻电容就能实现四阶巴特沃斯低通，这比数字滤波更适合在ADC前端做。</p>
+<p><strong>3. 电压基准&#x2F;偏置生成</strong></p>
+<p>例子：你有一个3.3V供电系统，但某个ADC需要1.65V的中点偏置作为参考。用一个运放接成电压跟随器（增益&#x3D;1），输入端用两个等值电阻从3.3V和GND分压得到1.65V，运放输出就能提供低阻抗、稳定的1.65V，可以同时驱动多个负载。如果只用电阻分压，负载一变电压就飘了。</p>
+<blockquote>
+<p><strong>为什么不能只用电阻分压？</strong></p>
+<p>电阻分压本身确实能产生1.65V，但它的输出阻抗很高。假设你用两个100kΩ分压，输出阻抗就是50kΩ（两个电阻并联）。这时如果负载吸走哪怕几十μA的电流，输出电压就会被明显拉低，而且负载电流一变化，电压就跟着晃。</p>
+<p>用运放做跟随器，输出阻抗降到mΩ级别，负载怎么变都不影响输出电压。这就是运放在这里的价值——<strong>阻抗变换</strong>。</p>
+<p>你可能会想：那我把分压电阻换成很小的值（比如100Ω），输出阻抗不就低了吗？可以，但那样静态电流就变成了3.3V&#x2F;200Ω &#x3D; 16.5mA，白白浪费功耗。运放跟随器的静态电流通常只有几百μA甚至更低。</p>
+</blockquote>
+<img src="/2026/04/06/HardWareDesign05/image-20260409002212052.png" class>
+
+<blockquote>
+<p>1.根据Vmid的电压电流不用考虑吗？根据kcl，不是V1+Vmid才是Vin的电流吗？是因为忽略不计了？ </p>
+<p>2.静态功耗怎么算的？这个式子怎么来的？ </p>
+<p>3.什么是rail-to-rail？</p>
+</blockquote>
+<p><strong>1). Vmid节点的KCL分析</strong></p>
+<p>你说得对，严格按KCL，Vmid节点的电流关系是：</p>
+<p>流过R1的电流 &#x3D; 流过R2的电流 + 流入运放+端的电流</p>
+<p>即 (VCC - Vmid)&#x2F;R1 &#x3D; Vmid&#x2F;R2 + I_in(+)</p>
+<p>关键在于：运放输入端的偏置电流（I_in）极小，典型值在pA~nA级别。比如MCP6001的输入偏置电流是1pA。而流过R1&#x2F;R2的电流是 3.3V&#x2F;200kΩ &#x3D; 16.5μA，差了<strong>好几个数量级</strong>。所以那一项直接忽略，Vmid就按理想分压算。</p>
+<p>这正是运放在这里的价值——它的高输入阻抗让分压网络”感觉不到”后面有东西接着。如果换成一个输入阻抗只有10kΩ的负载直接接在分压点，KCL里那个负载电流就不能忽略了，Vmid就会偏离1.65V。</p>
+<hr>
+<p><strong>2). 静态功耗怎么算的</strong></p>
+<p>静态功耗指的是这个偏置电路在没有信号时持续消耗的电流。电流路径只有一条：从3.3V → R1 → R2 → GND，串联总阻值200kΩ。</p>
+<p>I &#x3D; VCC &#x2F; (R1 + R2) &#x3D; 3.3V &#x2F; 200kΩ &#x3D; 16.5μA</p>
+<p>功耗 P &#x3D; VCC × I &#x3D; 3.3V × 16.5μA ≈ 54μW</p>
+<p>这就是为什么选100kΩ而不是1kΩ——如果用1kΩ，电流变成1.65mA，白白多耗100倍的电。当然运放自身也有静态电流（MCP6001约100μA），但分压网络这部分是你能控制的。</p>
+<hr>
+<p><strong>3). 什么是rail-to-rail</strong></p>
+<p>“Rail”指的是运放的供电轨，就是VCC和GND（或V+和V-）。</p>
+<p>普通运放的输出<strong>到不了</strong>供电轨。比如供电0<del>3.3V的普通运放，输出可能只能摆到0.2V</del>3.1V，两头各”够不到”一截。这是因为内部输出级晶体管需要一定的压降才能工作。</p>
+<p><strong>Rail-to-rail输出</strong>意味着输出可以非常接近两条供电轨，比如0.01V~3.29V。对你这个电路来说，输出1.65V在正中间，普通运放也够用。但如果将来你的偏置需要接近0V或3.3V，非rail-to-rail的运放就输出不到了。</p>
+<p>还有一种叫<strong>rail-to-rail输入输出（RRIO）</strong>，意思是输入端也能接受从轨到轨的全范围信号。选型时看到”RRIO”就是最通用的，不用操心边界问题。</p>
+<p><strong>4. 电流检测与转换</strong></p>
+<p>例子：检测电机电流。在电源回路串一个小采样电阻（比如10mΩ），电阻两端的压差只有几十mV。用一个差分放大器（运放搭的）把这个差分信号放大到MCU的ADC能读的范围，同时抑制共模噪声。这在电机驱动、电池管理中非常常见。</p>
+<img src="/2026/04/06/HardWareDesign05/image-20260406163541932.png" class title="通过运算放大器测量Rs两端的电压反推采样电阻的电流">
+
+<p><strong>5. DAC输出缓冲&#x2F;调整</strong></p>
+<p>例子：MCU内置DAC输出0<del>3.3V，但你需要驱动一个需要±5V摆幅的负载。用一个运放接成反相放大+偏移电路，就能把0</del>3.3V映射到-5V~+5V，同时提供足够的驱动电流。</p>
+<img src="/2026/04/06/HardWareDesign05/image-20260409002904966.png" class>
+
+<p>总结规律：只要你需要对<strong>模拟信号</strong>做”放大、偏移、阻抗变换、滤波、加减运算”这类操作，而且现成集成芯片的参数（增益、带宽、精度、通道数）不能满足你的具体需求时，就该自己用运放搭电路。越是定制化的模拟前端，越离不开独立运放。</p>
+<p>现在开始，了解运放的基本内容。</p>
+<h1 id="运算放大器（Op-Amp）学习指南"><a href="#运算放大器（Op-Amp）学习指南" class="headerlink" title="运算放大器（Op-Amp）学习指南"></a>运算放大器（Op-Amp）学习指南</h1><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://claude.ai/chat/6b8b26e3-1b27-4159-8482-ed6dc52e5d2d#%E4%B8%80%E8%BF%90%E6%94%BE%E5%9F%BA%E6%9C%AC%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86">运放基本工作原理</a> — 理想运放模型 &#x2F; 虚短虚断</li>
+<li><a target="_blank" rel="noopener" href="https://claude.ai/chat/6b8b26e3-1b27-4159-8482-ed6dc52e5d2d#%E4%BA%8C%E8%B4%9F%E5%8F%8D%E9%A6%88%E4%B8%8E%E5%88%86%E6%9E%90%E6%96%B9%E6%B3%95">负反馈与分析方法</a> — 四种反馈类型 &#x2F; 虚短虚断分析法</li>
+<li><a target="_blank" rel="noopener" href="https://claude.ai/chat/6b8b26e3-1b27-4159-8482-ed6dc52e5d2d#%E4%B8%89%E5%B8%B8%E8%A7%81%E8%BF%90%E6%94%BE%E7%94%B5%E8%B7%AF">常见运放电路</a> — 同相 &#x2F; 反相 &#x2F; 差分 &#x2F; 仪表放大器 &#x2F; 跟随器</li>
+<li><a target="_blank" rel="noopener" href="https://claude.ai/chat/6b8b26e3-1b27-4159-8482-ed6dc52e5d2d#%E5%9B%9B%E6%94%BE%E5%A4%A7%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95">放大电路设计方法</a> — 从需求到选型的完整流程</li>
+<li><a target="_blank" rel="noopener" href="https://claude.ai/chat/6b8b26e3-1b27-4159-8482-ed6dc52e5d2d#%E4%BA%94%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">使用注意事项</a> — 输入偏置 &#x2F; GBW &#x2F; R2R &#x2F; 稳定性</li>
+<li><a target="_blank" rel="noopener" href="https://claude.ai/chat/6b8b26e3-1b27-4159-8482-ed6dc52e5d2d#%E5%85%AD%E8%A1%A5%E5%85%85%E4%B8%93%E9%A2%98">补充专题</a> — 噪声与电容滤波 &#x2F; 共模干扰</li>
+</ol>
+<hr>
+<h2 id="一、运放基本工作原理"><a href="#一、运放基本工作原理" class="headerlink" title="一、运放基本工作原理"></a>一、运放基本工作原理</h2><h3 id="1-1-运放是什么"><a href="#1-1-运放是什么" class="headerlink" title="1.1 运放是什么"></a>1.1 运放是什么</h3><p>运算放大器本质上是一个<strong>差分电压放大器</strong>：它有两个输入端（同相输入 V+ 和反相输入 V−），一个输出端 V_out。它把两个输入端之间的微小电压差放大：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">V_out = A_OL × (V+ − V−)</span><br></pre></td></tr></table></figure>
+
+<p>其中 A_OL 是开环增益（Open-Loop Gain），典型值为 10万<del>100万倍（100</del>120 dB）。这个增益大到什么程度？如果 V+ 和 V− 之间差 0.01mV，输出就会直接打到供电轨。所以开环状态下运放几乎不可用——必须加反馈。</p>
+<h3 id="1-2-理想运放模型"><a href="#1-2-理想运放模型" class="headerlink" title="1.2 理想运放模型"></a>1.2 理想运放模型</h3><p>实际分析电路时，我们使用<strong>理想运放</strong>假设。理想运放有三个关键特性：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>理想值</th>
+<th>实际典型值</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>开环增益 A_OL</td>
+<td>∞</td>
+<td>10⁵ ~ 10⁶</td>
+<td>极小输入差就能产生很大输出</td>
+</tr>
+<tr>
+<td>输入阻抗 Z_in</td>
+<td>∞</td>
+<td>MΩ ~ TΩ</td>
+<td>输入端不吸电流</td>
+</tr>
+<tr>
+<td>输出阻抗 Z_out</td>
+<td>0</td>
+<td>几十 Ω</td>
+<td>输出端能驱动任何负载</td>
+</tr>
+</tbody></table>
+<h3 id="1-3-虚短与虚断"><a href="#1-3-虚短与虚断" class="headerlink" title="1.3 虚短与虚断"></a>1.3 虚短与虚断</h3><p>由理想运放的特性，在<strong>负反馈</strong>条件下可以推导出两条核心分析规则：</p>
+<p><strong>虚短：V+ &#x3D; V−</strong> 因为 A_OL → ∞，而 V_out 有限，所以 (V+ − V−) &#x3D; V_out &#x2F; A_OL → 0。两个输入端电压相等，像短路了一样——但并没有真正短路。</p>
+<p><strong>虚断：I+ &#x3D; I− &#x3D; 0</strong> 因为 Z_in → ∞，没有电流流入运放的输入端。输入端像断路了一样——但并没有真正断开。</p>
+<blockquote>
+<p>⚠ <strong>关键前提：</strong> 虚短虚断只在<strong>负反馈</strong>下成立。如果没有负反馈（或误接成正反馈），运放输出会饱和到供电轨，虚短条件不再成立。判断方法：输出信号是否经过某条路径回到了 V− 端？如果是，就是负反馈。</p>
+</blockquote>
+<hr>
+<h2 id="二、负反馈与分析方法"><a href="#二、负反馈与分析方法" class="headerlink" title="二、负反馈与分析方法"></a>二、负反馈与分析方法</h2><h3 id="2-1-什么是负反馈"><a href="#2-1-什么是负反馈" class="headerlink" title="2.1 什么是负反馈"></a>2.1 什么是负反馈</h3><p>负反馈的核心思想：把输出的一部分”送回”反相输入端，让运放自动纠偏。如果输出偏高了，V− 也跟着升高，输入差 (V+ − V−) 减小，输出就被拉回来。这形成了一个自稳定的闭环。</p>
+<p>负反馈带来的好处：增益由外部电阻决定（而非运放自身），线性度大幅提高，输出阻抗降低，带宽增大。</p>
+<h3 id="2-2-四种负反馈类型"><a href="#2-2-四种负反馈类型" class="headerlink" title="2.2 四种负反馈类型"></a>2.2 四种负反馈类型</h3><p>按照反馈信号取自输出端的方式（电压&#x2F;电流）和送回输入端的方式（串联&#x2F;并联），组合成四种类型：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>反馈取样</th>
+<th>反馈方式</th>
+<th>稳定的量</th>
+<th>典型电路</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>电压串联</td>
+<td>输出电压</td>
+<td>串联到 V−</td>
+<td>电压增益</td>
+<td>同相放大器</td>
+</tr>
+<tr>
+<td>电压并联</td>
+<td>输出电压</td>
+<td>并联到 V−</td>
+<td>转阻增益</td>
+<td>反相放大器</td>
+</tr>
+<tr>
+<td>电流串联</td>
+<td>输出电流</td>
+<td>串联到 V−</td>
+<td>跨导增益</td>
+<td>（较少见）</td>
+</tr>
+<tr>
+<td>电流并联</td>
+<td>输出电流</td>
+<td>并联到 V−</td>
+<td>电流增益</td>
+<td>（较少见）</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>💡 <strong>初学者只需掌握前两种。</strong> 绝大多数运放应用电路都是电压串联（同相）或电压并联（反相）反馈。</p>
+</blockquote>
+<h3 id="2-3-虚短虚断分析法（万能步骤）"><a href="#2-3-虚短虚断分析法（万能步骤）" class="headerlink" title="2.3 虚短虚断分析法（万能步骤）"></a>2.3 虚短虚断分析法（万能步骤）</h3><p>面对任何运放电路，只要确认是负反馈，都可以按以下三步分析：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Step 1: 虚短 → 列出 V+ = V−</span><br><span class="line">Step 2: 虚断 → 在 V+ 和 V− 节点列 KCL（运放输入电流为0）</span><br><span class="line">Step 3: 联立方程 → 解出 V_out 与 V_in 的关系</span><br></pre></td></tr></table></figure>
+
+<p>下一章每个电路都会用这个方法走一遍。</p>
+<hr>
+<h2 id="三、常见运放电路"><a href="#三、常见运放电路" class="headerlink" title="三、常见运放电路"></a>三、常见运放电路</h2><h3 id="3-1-电压跟随器（增益-1）"><a href="#3-1-电压跟随器（增益-1）" class="headerlink" title="3.1 电压跟随器（增益 &#x3D; 1）"></a>3.1 电压跟随器（增益 &#x3D; 1）</h3><p>最简单的运放电路——输出直接连回 V−，没有任何电阻。</p>
+<img src="/2026/04/06/HardWareDesign05/image-20260409003233105.png" class>
+
+<p><strong>分析：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">虚短：V+ = V−</span><br><span class="line">V+ = V_in</span><br><span class="line">V− = V_out （直接相连）</span><br><span class="line">∴ V_out = V_in　　增益 G = 1</span><br></pre></td></tr></table></figure>
+
+<p><strong>应用场景：</strong> 两个 100kΩ 分压产生 1.65V 直流偏置，通过跟随器驱动多个负载（如ADC输入端、麦克风偏置）。跟随器不改变电压，只做阻抗变换——高阻输入、低阻输出。纯电阻分压的输出阻抗为 R1‖R2 &#x3D; 50kΩ，负载一变电压就飘。加了跟随器后输出阻抗降到 mΩ 级别，负载怎么变电压都不动。</p>
+<p><strong>分压 + 跟随器静态功耗计算：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">I = VCC / (R1 + R2) = 3.3V / 200kΩ = 16.5μA</span><br><span class="line">P = VCC × I = 3.3V × 16.5μA ≈ 54μW</span><br></pre></td></tr></table></figure>
+
+<p>选 100kΩ 而不是 1kΩ 的原因就是省电。分压点可并联 100nF 电容滤噪，截止频率 ≈ 1&#x2F;(2π × 50kΩ × 100nF) ≈ 32Hz。</p>
+<h3 id="3-2-同相放大器（增益-1）"><a href="#3-2-同相放大器（增益-1）" class="headerlink" title="3.2 同相放大器（增益 &gt; 1）"></a>3.2 同相放大器（增益 &gt; 1）</h3><p>信号从 V+ 输入，反馈网络（Rf + Rg）接在 V− 和输出之间。</p>
+<img src="/2026/04/06/HardWareDesign05/image-20260409003248360.png" class>
+
+<p><strong>虚短虚断分析：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">虚短：V+ = V− = V_in</span><br><span class="line">虚断：V− 节点无电流流入运放</span><br><span class="line"></span><br><span class="line">V− 是 Rf 和 Rg 的分压中点：</span><br><span class="line">  V− = V_out × Rg / (Rf + Rg)</span><br><span class="line"></span><br><span class="line">令 V− = V_in：</span><br><span class="line">  V_in = V_out × Rg / (Rf + Rg)</span><br><span class="line"></span><br><span class="line">∴ V_out = V_in × (1 + Rf/Rg)</span><br></pre></td></tr></table></figure>
+
+<p><strong>增益公式：G &#x3D; 1 + Rf &#x2F; Rg</strong></p>
+<p><strong>物理直觉（”漏水管”比喻）：</strong> 运放必须让 V− &#x3D; V_in。Rg 越小，分压衰减越厉害（管子漏得越多），运放就得把 V_out 推得更高（水龙头开更大），才能让到达 V− 的那点电压等于 V_in。所以 Rg 越小 → 增益越大。跟随器是它的特例：Rf&#x3D;0、Rg&#x3D;∞，增益 &#x3D; 1+0 &#x3D; 1。</p>
+<p><strong>应用场景：</strong> MCU DAC 输出 0<del>3.3V → 需要 0</del>5V 驱动执行器。G &#x3D; 5&#x2F;3.3 ≈ 1.5，取 Rf&#x3D;10kΩ、Rg&#x3D;20kΩ，实际输出 3.3×1.5 &#x3D; 4.95V，误差 1%。</p>
+<h3 id="3-3-反相放大器"><a href="#3-3-反相放大器" class="headerlink" title="3.3 反相放大器"></a>3.3 反相放大器</h3><p>信号从 V− 侧通过输入电阻 Rin 送入，V+ 接地。输出信号与输入<strong>反相</strong>（正变负、负变正）。</p>
+<img src="/2026/04/06/HardWareDesign05/image-20260409003300433.png" class>
+
+<p><strong>虚短虚断分析：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">虚短：V+ = V− = 0V　（V+ 接地，所以 V− 也是 0V，称为&quot;虚地&quot;）</span><br><span class="line">虚断：流入 V− 的电流为 0</span><br><span class="line"></span><br><span class="line">在 V− 节点列 KCL：</span><br><span class="line">  (V_in − 0) / Rin = (0 − V_out) / Rf</span><br><span class="line"></span><br><span class="line">∴ V_out = −V_in × Rf / Rin</span><br></pre></td></tr></table></figure>
+
+<p><strong>增益公式：G &#x3D; −Rf &#x2F; Rin</strong>（负号表示反相）</p>
+<p><strong>应用场景：加法器&#x2F;混音器。</strong> V− 是虚地，多个信号可以通过各自的电阻同时接到 V− 上，电流直接叠加：V_out &#x3D; −Rf × (V1&#x2F;R1 + V2&#x2F;R2 + V3&#x2F;R3)。典型例子是音频混音台——三路麦克风信号分别通过不同电阻接到同一个运放的 V− 端，调节各路电阻就能调各路音量。同相放大器做不了这个，因为 V+ 端没有”虚地”这个条件。</p>
+<p><strong>同相 vs 反相对比：</strong></p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>同相放大器</th>
+<th>反相放大器</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>输入阻抗</td>
+<td>极高（≈运放输入阻抗）</td>
+<td>&#x3D; Rin（可控）</td>
+</tr>
+<tr>
+<td>最低增益</td>
+<td>1（无法衰减）</td>
+<td>可以 &lt; 1（衰减）</td>
+</tr>
+<tr>
+<td>信号相位</td>
+<td>不反相</td>
+<td>反相</td>
+</tr>
+<tr>
+<td>V− 状态</td>
+<td>跟随 V_in</td>
+<td>虚地（0V）</td>
+</tr>
+<tr>
+<td>特有能力</td>
+<td>高阻抗缓冲</td>
+<td>加法器、虚地节点</td>
+</tr>
+</tbody></table>
+<h3 id="3-4-差分放大器"><a href="#3-4-差分放大器" class="headerlink" title="3.4 差分放大器"></a>3.4 差分放大器</h3><p>同时利用 V+ 和 V−，放大两个信号之间的<strong>差值</strong>，抑制共模信号。</p>
+<img src="/2026/04/06/HardWareDesign05/image-20260409003318964.png" class>
+
+<p>当 R1&#x3D;R2, Rf&#x3D;R3 时：<strong>V_out &#x3D; (Rf&#x2F;R1) × (V2 − V1)</strong></p>
+<p><strong>应用场景：</strong> 电桥称重传感器。传感器两根输出线上有用信号只有几mV的差值，但同时叠加了相同的工频干扰。差分放大器只放大差值，共同的干扰被减掉。</p>
+<blockquote>
+<p>⚠ <strong>局限：</strong> 共模抑制比（CMRR）严重依赖电阻匹配。四个电阻有 1% 偏差，CMRR 只有约 46dB。需要更高精度时，使用仪表放大器。</p>
+</blockquote>
+<h3 id="3-5-仪表放大器（INA）"><a href="#3-5-仪表放大器（INA）" class="headerlink" title="3.5 仪表放大器（INA）"></a>3.5 仪表放大器（INA）</h3><p>由<strong>三个运放</strong>组成：前两个做高阻抗同相缓冲 + 增益，第三个做差分。只需一个电阻 R_G 就能调节增益，且差分电阻在芯片内部精密匹配。</p>
+<img src="/2026/04/06/HardWareDesign05/image-20260409003340899.png" class>
+
+<p><strong>增益公式：G &#x3D; 1 + 2R &#x2F; R_G</strong></p>
+<p><strong>相比普通差分放大器的优势：</strong></p>
+<ul>
+<li>输入阻抗极高（前级是同相跟随器），不给信号源加负担</li>
+<li>电阻在芯片内部激光微调，CMRR 可达 100dB+</li>
+<li>只改一个 R_G 就能调增益，无需同时换多个电阻</li>
+</ul>
+<p><strong>应用场景：</strong></p>
+<ul>
+<li><strong>心电图（ECG）采集：</strong> 人体电极信号只有 ~1mV，共模干扰（50Hz工频）可达几V，INA 的高 CMRR 能把干扰抑制到可忽略的程度</li>
+<li><strong>工业称重&#x2F;压力传感器：</strong> 几米到几十米线缆传输微弱信号，电磁环境恶劣</li>
+<li><strong>电池管理系统（BMS）：</strong> 检测串联电池组中单节电池的电压，共模电压可达几十伏</li>
+</ul>
+<blockquote>
+<p>💡 实际使用中，仪表放大器通常直接买集成芯片（如 INA128、AD620、INA333），内部电阻已经精密匹配。</p>
+</blockquote>
+<hr>
+<h2 id="四、放大电路设计方法"><a href="#四、放大电路设计方法" class="headerlink" title="四、放大电路设计方法"></a>四、放大电路设计方法</h2><h3 id="4-1-从需求到电路的设计流程"><a href="#4-1-从需求到电路的设计流程" class="headerlink" title="4.1 从需求到电路的设计流程"></a>4.1 从需求到电路的设计流程</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Step 1: 明确输入信号范围（幅度、频率、阻抗）</span><br><span class="line">Step 2: 明确输出要求（幅度、驱动能力、精度）</span><br><span class="line">Step 3: 选择拓扑（同相/反相/差分）</span><br><span class="line">Step 4: 计算电阻值 → 确定增益</span><br><span class="line">Step 5: 选择运放芯片 → 验证参数</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/04/06/HardWareDesign05/image-20260409183615497.png" class>
+
+<h3 id="4-2-设计实例：DAC-03-3V-→-05V"><a href="#4-2-设计实例：DAC-03-3V-→-05V" class="headerlink" title="4.2 设计实例：DAC 03.3V → 05V"></a>4.2 设计实例：DAC 0<del>3.3V → 0</del>5V</h3><p><strong>Step 1 — 输入信号：</strong> MCU DAC 输出，0~3.3V 直流&#x2F;低频模拟信号，输出阻抗较低（几百Ω）。</p>
+<p><strong>Step 2 — 输出要求：</strong> 0~5V，驱动执行器（阻抗 ~10kΩ），精度要求 ±2%。</p>
+<p><strong>Step 3 — 选择拓扑：</strong> 需要放大且不反相 → 同相放大器。</p>
+<p><strong>Step 4 — 计算电阻：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">目标增益 G = 5 / 3.3 = 1.515</span><br><span class="line"></span><br><span class="line">同相公式：G = 1 + Rf/Rg</span><br><span class="line">Rf/Rg = 0.515</span><br><span class="line"></span><br><span class="line">选 Rg = 20kΩ, Rf = 10kΩ（标准阻值）</span><br><span class="line">实际增益 = 1 + 10k/20k = 1.5</span><br><span class="line">实际最大输出 = 3.3 × 1.5 = 4.95V</span><br><span class="line">误差 = (5 − 4.95)/5 = 1%  ✓</span><br></pre></td></tr></table></figure>
+
+<p><strong>Step 5 — 选择运放：</strong></p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>需求</th>
+<th>选型依据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>供电电压</td>
+<td>≥ 5V</td>
+<td>输出需达 5V，用 5V 单电源需 R2R 输出</td>
+</tr>
+<tr>
+<td>GBW</td>
+<td>≥ 增益 × 信号频率 × 10</td>
+<td>若信号 10kHz，GBW ≥ 150kHz，很容易满足</td>
+</tr>
+<tr>
+<td>输入失调电压</td>
+<td>根据精度</td>
+<td>±2% → 允许 ±66mV 失调 → 大多数运放满足</td>
+</tr>
+<tr>
+<td>输出驱动</td>
+<td>≥ 0.5mA</td>
+<td>10kΩ 负载 @ 5V &#x3D; 0.5mA</td>
+</tr>
+</tbody></table>
+<p>推荐型号（低成本场景）：MCP6001（单通道，~0.2元），OPA340（精度更高），TLV9001（微功耗）。</p>
+<h3 id="4-3-电阻取值经验"><a href="#4-3-电阻取值经验" class="headerlink" title="4.3 电阻取值经验"></a>4.3 电阻取值经验</h3><p>运放反馈电阻一般选 <strong>1kΩ ~ 100kΩ</strong> 范围：</p>
+<table>
+<thead>
+<tr>
+<th>电阻太小（&lt; 1kΩ）</th>
+<th>电阻太大（&gt; 1MΩ）</th>
+<th>推荐范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>运放输出电流大，可能过载</td>
+<td>输入偏置电流产生明显误差</td>
+<td>10kΩ ~ 100kΩ：功耗低、噪声适中</td>
+</tr>
+<tr>
+<td>功耗高</td>
+<td>高频寄生电容影响大、噪声大</td>
+<td>1kΩ ~ 10kΩ：适合高速电路</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="五、使用注意事项"><a href="#五、使用注意事项" class="headerlink" title="五、使用注意事项"></a>五、使用注意事项</h2><h3 id="5-1-输入偏置电流与失调"><a href="#5-1-输入偏置电流与失调" class="headerlink" title="5.1 输入偏置电流与失调"></a>5.1 输入偏置电流与失调</h3><p><strong>输入偏置电流（Input Bias Current）：</strong> 理想运放输入电流为 0，但实际运放有 pA~μA 级的偏置电流。这个电流流过外部电阻会产生额外的压降，导致输出偏差。</p>
+<blockquote>
+<p>⚠ <strong>补偿方法：</strong> 在 V+ 端串联一个电阻，阻值等于 V− 端看到的等效电阻（Rf ‖ Rin），使两端偏置电流产生的压降抵消。这也是为什么很多教科书电路在 V+ 端会多出一个”看起来没用”的电阻。</p>
+</blockquote>
+<p><strong>输入失调电压（Input Offset Voltage）：</strong> 运放内部不完美导致的固有误差。典型值 0.1mV~5mV，精密运放可做到 &lt;10μV。对低增益电路影响小，对高增益电路影响大（失调会被同比放大）。</p>
+<h3 id="5-2-增益带宽积（GBW）"><a href="#5-2-增益带宽积（GBW）" class="headerlink" title="5.2 增益带宽积（GBW）"></a>5.2 增益带宽积（GBW）</h3><p><strong>带宽</strong>就是运放能正常放大信号的频率范围。超过这个范围，增益就开始下降。</p>
+<p><strong>开环带宽</strong>极窄——运放的开环增益虽然有 10 万倍，但这个增益只在极低频率（几 Hz 到几十 Hz）才成立。频率一高，开环增益就以 −20dB&#x2F;decade 的速度下降。</p>
+<p><strong>闭环带宽</strong>是加了反馈之后的带宽。反馈用增益换带宽——增益降低了，但可用的频率范围变宽了。</p>
+<p><strong>GBW（增益带宽积）</strong> 就是这个交换关系的常数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">GBW = 闭环增益 × 闭环带宽 = 常数</span><br><span class="line"></span><br><span class="line">例：GBW = 1MHz 的运放</span><br><span class="line">  增益 = 1    → 带宽 1MHz</span><br><span class="line">  增益 = 10   → 带宽 100kHz</span><br><span class="line">  增益 = 100  → 带宽 10kHz</span><br></pre></td></tr></table></figure>
+
+<p>像一块固定面积的橡皮泥——拉得越高（增益），就越窄（带宽）。</p>
+<p><strong>选型裕量：</strong> 在接近 GBW 极限时，增益已经开始滚降并产生相移。实际选型要留 5<del>10 倍裕量：**GBW ≥ 目标增益 × 信号最高频率 × (5</del>10)**。</p>
+<h3 id="5-3-压摆率（Slew-Rate）"><a href="#5-3-压摆率（Slew-Rate）" class="headerlink" title="5.3 压摆率（Slew Rate）"></a>5.3 压摆率（Slew Rate）</h3><p>压摆率是运放输出电压能变化的最大速度，单位 V&#x2F;μs。如果信号变化太快，运放跟不上，输出会变成三角波。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">对于正弦信号：SR_min = 2π × f × V_peak</span><br><span class="line"></span><br><span class="line">例：1kHz, 5Vpp 正弦信号</span><br><span class="line">  SR_min = 2π × 1000 × 2.5 = 0.016 V/μs</span><br><span class="line">  → 大多数运放轻松满足（典型 0.5~50 V/μs）</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-4-供电与-Rail-to-Rail"><a href="#5-4-供电与-Rail-to-Rail" class="headerlink" title="5.4 供电与 Rail-to-Rail"></a>5.4 供电与 Rail-to-Rail</h3><p><strong>Rail</strong> 指的是运放的供电轨（VCC 和 GND）。普通运放的输出<strong>到不了</strong>供电轨——比如供电 0<del>3.3V 的普通运放，输出可能只能摆到 0.2V</del>3.1V，两头各有一截死区。这是因为内部输出级晶体管需要一定的压降才能工作。</p>
+<p><strong>Rail-to-Rail 输出</strong>意味着输出可以非常接近两条供电轨（&lt;50mV 差距）。</p>
+<p><strong>为什么单电源系统几乎必选 R2R：</strong> 单电源下，运放供电就是比如 0V 和 3.3V。如果运放输出只能到 0.3V<del>2.8V，ADC 量程 0</del>3.3V 的边缘区域就读不到了——传感器在那个区间的变化你看不见。而且如果偏置需要接近 0V 或 3.3V（某些传感器需要），非 R2R 运放直接输出不了。双电源系统（如 ±5V）信号通常在 0V 附近摆动，离供电轨很远，没这个问题。</p>
+<p>还有一种叫 <strong>RRIO（Rail-to-Rail 输入输出）</strong>，意思是输入端也能接受从轨到轨的全范围信号。选型时看到 RRIO 就是最通用的。</p>
+<p><strong>供电注意事项：</strong> 在供电引脚旁放置 100nF 去耦电容（越近越好），抑制高频噪声。单电源系统中，运放无法处理 0V 以下的信号——这就是为什么需要加直流偏置。</p>
+<h3 id="5-5-稳定性与容性负载"><a href="#5-5-稳定性与容性负载" class="headerlink" title="5.5 稳定性与容性负载"></a>5.5 稳定性与容性负载</h3><p>容性负载（长线缆、大电容）会让运放环路增加相移，可能导致振荡。</p>
+<p><strong>原理：</strong> 运放的负反馈能稳定工作，靠的是反馈信号回到 V− 时，和输出之间的总相移不超过 180°。超过 180° 后，负反馈变成正反馈——输出越高 → 反馈让它更高 → 自激振荡。电容的物理特性是电流超前电压 90°，这个额外相移加上运放自身在高频已有的相移，很容易凑够 180°。</p>
+<p><strong>解决方案：</strong> 在运放输出引脚和负载之间串一个小电阻（10~100Ω）。关键是<strong>反馈要从电阻前面（运放输出引脚侧）取</strong>，不是从负载端取。这样容性负载的相移不会进入反馈环路。R_iso 和容性负载形成 RC 低通，把相移最严重的高频分量衰减掉。</p>
+<p>也可以选择标注”unity-gain stable”（单位增益稳定）的运放，它们内部做了频率补偿，对容性负载更宽容。</p>
+<h3 id="5-6-选型参数优先级"><a href="#5-6-选型参数优先级" class="headerlink" title="5.6 选型参数优先级"></a>5.6 选型参数优先级</h3><p><strong>从最先考虑到最后：</strong></p>
+<table>
+<thead>
+<tr>
+<th>优先级</th>
+<th>参数</th>
+<th>什么时候成为瓶颈</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>①</td>
+<td>供电电压 + R2R</td>
+<td>硬约束，不满足直接不能用</td>
+</tr>
+<tr>
+<td>②</td>
+<td>GBW</td>
+<td>信号频率较高时（&gt;10kHz）才需要仔细看</td>
+</tr>
+<tr>
+<td>③</td>
+<td>输出驱动能力</td>
+<td>负载 &lt; 1kΩ 或驱动长线缆时</td>
+</tr>
+<tr>
+<td>④</td>
+<td>输入失调电压</td>
+<td>高增益（&gt;100×）或高精度（&lt;0.1%）场景</td>
+</tr>
+<tr>
+<td>⑤</td>
+<td>偏置电流 &#x2F; 压摆率 &#x2F; 噪声</td>
+<td>极端场景：超高阻抗源、高速信号、μV级信号</td>
+</tr>
+</tbody></table>
+<h3 id="5-7-“最保险”的运放电路模板"><a href="#5-7-“最保险”的运放电路模板" class="headerlink" title="5.7 “最保险”的运放电路模板"></a>5.7 “最保险”的运放电路模板</h3><p>五条规则做到，90% 的运放电路都不会出问题：</p>
+<ol>
+<li>V+ 端加补偿电阻（&#x3D; Rf ‖ Rg），补偿偏置电流</li>
+<li>Rf 上并联小电容，滤除高频噪声（注意：是 Rf 上，不是 Rg 上——详见第六章）</li>
+<li>供电引脚紧贴放 100nF 去耦电容</li>
+<li>输出端如果接长线或大电容，串 10~47Ω 隔离电阻（反馈从电阻前取）</li>
+<li>反馈电阻选 10k~100k 范围</li>
+</ol>
+<img src="/2026/04/06/HardWareDesign05/image-20260409183705473.png" class>
+
+<hr>
+<h2 id="六、补充专题"><a href="#六、补充专题" class="headerlink" title="六、补充专题"></a>六、补充专题</h2><h3 id="6-1-电阻噪声与电容滤波"><a href="#6-1-电阻噪声与电容滤波" class="headerlink" title="6.1 电阻噪声与电容滤波"></a>6.1 电阻噪声与电容滤波</h3><p><strong>噪声从哪来：</strong> 电阻本身就是噪声源。只要温度不是绝对零度，电阻内部的电子就在做热运动，产生随机的微小电压波动——热噪声（Johnson-Nyquist noise）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">V_noise = √(4kTRΔf)</span><br><span class="line"></span><br><span class="line">k = 玻尔兹曼常数, T = 温度(K), R = 电阻值, Δf = 带宽</span><br></pre></td></tr></table></figure>
+
+<p><strong>R 越大，噪声电压越大。</strong> 这就是”电阻大省电但噪声大”的根本原因——不是外部干扰，是电阻自身的物理属性。</p>
+<p>如果想要抑制高频噪声，可以选择并联电容。</p>
+<img src="/2026/04/06/HardWareDesign05/image-20260409004246989.png" class>
+
+<p><strong>电容应该并联在 Rf 上，而不是 Rg 上。</strong> 原因如下：</p>
+<p>电容的本质是”高频短路、低频开路”。在同相放大器 G &#x3D; 1 + Rf&#x2F;Rg 中：</p>
+<ul>
+<li><strong>Cf 并联 Rg（错误）：</strong> 高频时 Cf 短路 Rg → Rg→0 → G &#x3D; 1 + Rf&#x2F;0 → ∞。高频增益暴增，噪声被疯狂放大，与初衷完全相反。</li>
+<li><strong>Cf 并联 Rf（正确）：</strong> 高频时 Cf 短路 Rf → Rf→0 → G &#x3D; 1 + 0&#x2F;Rg &#x3D; 1。高频增益降到 1，噪声不再被放大。</li>
+</ul>
+<p>这本质上把同相放大器变成了一个<strong>低通滤波器</strong>，截止频率：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">f_c = 1 / (2π × Rf × Cf)</span><br><span class="line"></span><br><span class="line">例：Rf = 10kΩ，想在 16kHz 以上开始衰减</span><br><span class="line">  Cf = 1/(2π × 10k × 16k) ≈ 1nF</span><br></pre></td></tr></table></figure>
+
+<p>低于 f_c 信号正常放大，高于 f_c 增益逐渐滚降到 1。</p>
+<h3 id="6-2-共模干扰"><a href="#6-2-共模干扰" class="headerlink" title="6.2 共模干扰"></a>6.2 共模干扰</h3><p><strong>什么是共模干扰：</strong> 假设你用两根线从远处传感器引信号到电路板。有用信号是两根线之间的电压差（差模信号）。但两根线像天线一样，会同时拾取到相同的电磁干扰——50Hz 工频、电机噪声、开关电源纹波等。这个两根线上共同存在、方向相同的干扰，就叫共模干扰。</p>
+<p>例子：线A &#x3D; 1.001V，线B &#x3D; 0.999V，有用信号 &#x3D; 2mV。叠加 0.5V 共模干扰后，线A &#x3D; 1.501V，线B &#x3D; 1.499V，差值仍然是 2mV——共模干扰不改变差模信号本身。</p>
+<p><strong>为什么必须抑制：</strong> 如果用单端放大器只看线A（1.501V），有用信号和干扰混在一起，放大后干扰远大于信号。差分放大器只看 A−B &#x3D; 2mV，共同的 0.5V 被减掉，放大后全是有用信号。</p>
+<p><strong>共模干扰的具体危害：</strong></p>
+<ul>
+<li><strong>测量不准：</strong> 传感器信号只有几 mV，干扰可能几百 mV，泄露 1% 就够让测量偏差几十%</li>
+<li><strong>ADC 读数跳动：</strong> 50Hz 干扰泄露后 ADC 读数以 50Hz 周期波动，表现为”晃”</li>
+<li><strong>误触发：</strong> 比较器电路中，干扰可能让信号越过阈值导致误报警</li>
+<li><strong>损坏器件：</strong> 极端情况（雷击、工业环境）共模电压可达几百伏，超出运放输入范围</li>
+</ul>
+<p><strong>需要差分&#x2F;INA 的典型场景：</strong></p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>信号特点</th>
+<th>为什么需要</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>工业传感器（称重&#x2F;压力&#x2F;温度）</td>
+<td>几 mV 信号，几米~几十米线缆，周围有电机变频器</td>
+<td>线缆长、环境差、信号弱</td>
+</tr>
+<tr>
+<td>医疗电子（心电&#x2F;脑电）</td>
+<td>μV~mV 信号，人体是大天线拾取 50Hz</td>
+<td>信号极弱，干扰比信号大几千倍</td>
+</tr>
+<tr>
+<td>电机驱动电流检测</td>
+<td>采样电阻两端几十 mV，骑在几十~几百伏母线上</td>
+<td>共模电压极高</td>
+</tr>
+<tr>
+<td>专业音频（XLR 平衡传输）</td>
+<td>几十米线缆，舞台灯光&#x2F;无线干扰</td>
+<td>远距离传输，环境嘈杂</td>
+</tr>
+<tr>
+<td>汽车电子（BMS&#x2F;传感器）</td>
+<td>点火系统、电磁阀产生强脉冲</td>
+<td>电磁环境极恶劣</td>
+</tr>
+</tbody></table>
+<p><strong>简单判断标准： 如果你的电路里有”两根长线从远处引来一个小信号”这种结构，基本就需要差分&#x2F;仪表放大器。如果信号源就在本地 PCB 上、距离很短（比如 DAC 直接接运放），共模干扰通常不是问题，普通同相&#x2F;反相放大器就够了。</strong></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2026/04/06/HardWareDesign05/">https://0kr.xin/2026/04/06/HardWareDesign05/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape003.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img class="cover" src="/statics/landscape002.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">HardWareDesign06</div></div><div class="info-2"><div class="info-item-1">1.前言❶ 运放关键参数解析需要掌握的参数及其物理含义：    参数 英文缩写 含义 典型值范围 为什么重要    增益带宽积 GBW &#x2F; GBP 开环增益×带宽&#x3D;常数，决定在某个增益下电路能工作的最高频率 1MHz～数GHz 放大高频信号时，GBW不够会导致增益衰减   转换速率 SR (Slew Rate) 输出电压最快能变化多快（V&#x2F;μs），大信号下的速度极限 0.5～数千 V&#x2F;μs SR不够时方波变三角波，正弦波被削顶   输入失调电压 Vos 两个输入端之间的固有电压差，导致输出有直流偏移 1μV～10mV 放大微弱信号（mV级）时，Vos可能比信号还大   输入偏置电流 Ib 输入端需要吸入&#x2F;流出的微小电流 fA～μA 高阻源（如光电二极管）驱动时，Ib在电阻上产生误差电压   共模抑制比 CMRR 运放抑制共模干扰的能力（dB） 60～140 dB 差分测量中，CMRR不够会把共模噪声混入输出   电源抑制比 PSRR 电源纹波对输出的影响抑制能力 60～120...</div></div></div></a><a class="pagination-related" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img class="cover" src="/statics/landscape003.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">HardWareDesign04</div></div><div class="info-2"><div class="info-item-1">1.MOS管使用注意事项   一、SOA（安全工作区）SOA全称 Safe Operating Area，是数据手册中一张以Vce（或Vds）为横轴、Ic（或Id）为纵轴的图，围出一块允许器件工作的区域。超出这个区域，器件可能立即烧毁或寿命急剧缩短。为什么会超出SOA？ 想象一个三极管正在从截止区切换到饱和区。在切换的中间过程中，它同时承受着较高的Vce和较大的Ic——这段时间虽然很短，但瞬时功耗 P &#x3D; Vce × Ic 可能非常大。如果开关速度慢、频率又高，这个”过渡功耗”会把器件烧掉。SOA图上那条弧线是功耗等值线（P &#x3D; V × I &#x3D; 常数），是一条双曲线。你的器件在任何时刻的工作点（Vce,...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E6%94%BE%E5%A4%A7%E5%99%A8%EF%BC%88Op-Amp%EF%BC%89%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97"><span class="toc-number">2.</span> <span class="toc-text">运算放大器（Op-Amp）学习指南</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95"><span class="toc-number">2.1.</span> <span class="toc-text">目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%BF%90%E6%94%BE%E5%9F%BA%E6%9C%AC%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">2.2.</span> <span class="toc-text">一、运放基本工作原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E8%BF%90%E6%94%BE%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">2.2.1.</span> <span class="toc-text">1.1 运放是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E7%90%86%E6%83%B3%E8%BF%90%E6%94%BE%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.2.2.</span> <span class="toc-text">1.2 理想运放模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E8%99%9A%E7%9F%AD%E4%B8%8E%E8%99%9A%E6%96%AD"><span class="toc-number">2.2.3.</span> <span class="toc-text">1.3 虚短与虚断</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E8%B4%9F%E5%8F%8D%E9%A6%88%E4%B8%8E%E5%88%86%E6%9E%90%E6%96%B9%E6%B3%95"><span class="toc-number">2.3.</span> <span class="toc-text">二、负反馈与分析方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E4%BB%80%E4%B9%88%E6%98%AF%E8%B4%9F%E5%8F%8D%E9%A6%88"><span class="toc-number">2.3.1.</span> <span class="toc-text">2.1 什么是负反馈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E5%9B%9B%E7%A7%8D%E8%B4%9F%E5%8F%8D%E9%A6%88%E7%B1%BB%E5%9E%8B"><span class="toc-number">2.3.2.</span> <span class="toc-text">2.2 四种负反馈类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E8%99%9A%E7%9F%AD%E8%99%9A%E6%96%AD%E5%88%86%E6%9E%90%E6%B3%95%EF%BC%88%E4%B8%87%E8%83%BD%E6%AD%A5%E9%AA%A4%EF%BC%89"><span class="toc-number">2.3.3.</span> <span class="toc-text">2.3 虚短虚断分析法（万能步骤）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%B8%B8%E8%A7%81%E8%BF%90%E6%94%BE%E7%94%B5%E8%B7%AF"><span class="toc-number">2.4.</span> <span class="toc-text">三、常见运放电路</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E7%94%B5%E5%8E%8B%E8%B7%9F%E9%9A%8F%E5%99%A8%EF%BC%88%E5%A2%9E%E7%9B%8A-1%EF%BC%89"><span class="toc-number">2.4.1.</span> <span class="toc-text">3.1 电压跟随器（增益 &#x3D; 1）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%90%8C%E7%9B%B8%E6%94%BE%E5%A4%A7%E5%99%A8%EF%BC%88%E5%A2%9E%E7%9B%8A-1%EF%BC%89"><span class="toc-number">2.4.2.</span> <span class="toc-text">3.2 同相放大器（增益 &gt; 1）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E5%8F%8D%E7%9B%B8%E6%94%BE%E5%A4%A7%E5%99%A8"><span class="toc-number">2.4.3.</span> <span class="toc-text">3.3 反相放大器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E5%B7%AE%E5%88%86%E6%94%BE%E5%A4%A7%E5%99%A8"><span class="toc-number">2.4.4.</span> <span class="toc-text">3.4 差分放大器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E4%BB%AA%E8%A1%A8%E6%94%BE%E5%A4%A7%E5%99%A8%EF%BC%88INA%EF%BC%89"><span class="toc-number">2.4.5.</span> <span class="toc-text">3.5 仪表放大器（INA）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%94%BE%E5%A4%A7%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95"><span class="toc-number">2.5.</span> <span class="toc-text">四、放大电路设计方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E4%BB%8E%E9%9C%80%E6%B1%82%E5%88%B0%E7%94%B5%E8%B7%AF%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B"><span class="toc-number">2.5.1.</span> <span class="toc-text">4.1 从需求到电路的设计流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E8%AE%BE%E8%AE%A1%E5%AE%9E%E4%BE%8B%EF%BC%9ADAC-03-3V-%E2%86%92-05V"><span class="toc-number">2.5.2.</span> <span class="toc-text">4.2 设计实例：DAC 03.3V → 05V</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E7%94%B5%E9%98%BB%E5%8F%96%E5%80%BC%E7%BB%8F%E9%AA%8C"><span class="toc-number">2.5.3.</span> <span class="toc-text">4.3 电阻取值经验</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">2.6.</span> <span class="toc-text">五、使用注意事项</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E8%BE%93%E5%85%A5%E5%81%8F%E7%BD%AE%E7%94%B5%E6%B5%81%E4%B8%8E%E5%A4%B1%E8%B0%83"><span class="toc-number">2.6.1.</span> <span class="toc-text">5.1 输入偏置电流与失调</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E5%A2%9E%E7%9B%8A%E5%B8%A6%E5%AE%BD%E7%A7%AF%EF%BC%88GBW%EF%BC%89"><span class="toc-number">2.6.2.</span> <span class="toc-text">5.2 增益带宽积（GBW）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E5%8E%8B%E6%91%86%E7%8E%87%EF%BC%88Slew-Rate%EF%BC%89"><span class="toc-number">2.6.3.</span> <span class="toc-text">5.3 压摆率（Slew Rate）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-%E4%BE%9B%E7%94%B5%E4%B8%8E-Rail-to-Rail"><span class="toc-number">2.6.4.</span> <span class="toc-text">5.4 供电与 Rail-to-Rail</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-5-%E7%A8%B3%E5%AE%9A%E6%80%A7%E4%B8%8E%E5%AE%B9%E6%80%A7%E8%B4%9F%E8%BD%BD"><span class="toc-number">2.6.5.</span> <span class="toc-text">5.5 稳定性与容性负载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-6-%E9%80%89%E5%9E%8B%E5%8F%82%E6%95%B0%E4%BC%98%E5%85%88%E7%BA%A7"><span class="toc-number">2.6.6.</span> <span class="toc-text">5.6 选型参数优先级</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-7-%E2%80%9C%E6%9C%80%E4%BF%9D%E9%99%A9%E2%80%9D%E7%9A%84%E8%BF%90%E6%94%BE%E7%94%B5%E8%B7%AF%E6%A8%A1%E6%9D%BF"><span class="toc-number">2.6.7.</span> <span class="toc-text">5.7 “最保险”的运放电路模板</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E8%A1%A5%E5%85%85%E4%B8%93%E9%A2%98"><span class="toc-number">2.7.</span> <span class="toc-text">六、补充专题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E7%94%B5%E9%98%BB%E5%99%AA%E5%A3%B0%E4%B8%8E%E7%94%B5%E5%AE%B9%E6%BB%A4%E6%B3%A2"><span class="toc-number">2.7.1.</span> <span class="toc-text">6.1 电阻噪声与电容滤波</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E5%85%B1%E6%A8%A1%E5%B9%B2%E6%89%B0"><span class="toc-number">2.7.2.</span> <span class="toc-text">6.2 共模干扰</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

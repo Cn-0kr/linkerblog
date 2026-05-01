@@ -1,0 +1,375 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>RedisTutorial04 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="缓存Redis由于性能高效，通常可以做数据库存储的缓存，比如给MySQL当缓存就是常见的玩法，具体而言，就是将MYSQL的热点数据存储在Redis中，通常业务都满足二八原则，80%的流量在20%的热点数据之上，所以缓存是可以很大程度提升系统的吞吐量。 一般而言，缓存分为服务器端缓存，和客户端缓存。  服务器端缓存即服务端将数据存入Redis，可以在访问DB之后，将从DB得到数据的缓存起来； 客户端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RedisTutorial04">
+<meta property="og:url" content="https://0kr.xin/2025/04/01/RedisTutorial04/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="缓存Redis由于性能高效，通常可以做数据库存储的缓存，比如给MySQL当缓存就是常见的玩法，具体而言，就是将MYSQL的热点数据存储在Redis中，通常业务都满足二八原则，80%的流量在20%的热点数据之上，所以缓存是可以很大程度提升系统的吞吐量。 一般而言，缓存分为服务器端缓存，和客户端缓存。  服务器端缓存即服务端将数据存入Redis，可以在访问DB之后，将从DB得到数据的缓存起来； 客户端">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape002.jpg">
+<meta property="article:published_time" content="2025-04-01T02:14:47.000Z">
+<meta property="article:modified_time" content="2025-04-12T01:06:29.506Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape002.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2025/04/01/RedisTutorial04/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'RedisTutorial04',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-04-12 09:06:29'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape002.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">RedisTutorial04</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">RedisTutorial04</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-04-01T02:14:47.000Z" title="发表于 2025-04-01 10:14:47">2025-04-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-04-12T01:06:29.506Z" title="更新于 2025-04-12 09:06:29">2025-04-12</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">4.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h1><p>Redis由于性能高效，通常可以做数据库存储的缓存，比如给MySQL当缓存就是常见的玩法，具体而言，就是将MYSQL的热点数据存储在Redis中，通常业务都满足二八原则，80%的流量在20%的热点数据之上，所以缓存是可以很大程度提升系统的吞吐量。</p>
+<p>一般而言，缓存分为服务器端缓存，和客户端缓存。</p>
+<ul>
+<li>服务器端缓存即服务端将数据存入Redis，可以在访问DB之后，将从DB得到数据的缓存起来；</li>
+<li>客户端缓存就是对服务端远程调用之后，将结果存储在客户端，这样下次请求相同数据时就能直接拿到结果，不会再远程调用，提高性能节省网络带宽。</li>
+</ul>
+<p>那么，用服务端还是客户端呢?</p>
+<p>其实是需要分析具体瓶颈在哪里，当然，如果按通常的经验，从服务角度来看，在目前的微服务架构下，每个服务其实都应该缓存一些热点数据，以减轻热点数据频繁请求给自己带来的压力，毕竟微服务也要有一定的互不信任原则。</p>
+<p>至于客户端缓存，这个就更看场景了，频繁请求的数据，就有必要做缓存。</p>
+<p>下面我们以服务端缓存的视角，来进行缓存分析。</p>
+<blockquote>
+<p>剧透：在分析计算机界的框架时，透明往往意味着不可见，而不是我们日常说的单向透明的那种透明，甚至可以说是反义词。所以说，所谓读穿透、写穿透的名字的意味其实是很深的。</p>
+</blockquote>
+<h2 id="缓存模式及其选择"><a href="#缓存模式及其选择" class="headerlink" title="缓存模式及其选择"></a>缓存模式及其选择</h2><h3 id="Cache-Aside-旁路缓存"><a href="#Cache-Aside-旁路缓存" class="headerlink" title="Cache-Aside 旁路缓存"></a>Cache-Aside 旁路缓存</h3><p>Cache Aside，即旁路缓存模式，是最常见的模式，应用服务把缓存当作数据库的旁路，直接和缓存进行交互。读操作的流程如下:</p>
+<ul>
+<li>应用服务收到查询请求后，先查询数据是否在缓存上，如果在，就用缓存数据直接打包返回；</li>
+<li>如果不存在，就去访问数据库，从数据库查询，并放到缓存中。</li>
+</ul>
+<p>关于加载，除了查库后加载这种模式，如果业务有需要，还可以预加载数据到缓存。</p>
+<img src="/2025/04/01/RedisTutorial04/image-20250411215009318.png" class>
+
+<p>说完读操作，我们再看看写操作的流程：</p>
+<img src="/2025/04/01/RedisTutorial04/image-20250411220533188.png" class>
+
+<p>在更新操作的时候，Cache Aside 模式是一般是<strong>先更新数据库，然后直接删除缓存</strong>，为什么不直接更新呢？</p>
+<p>因为更新相比删除会更容易造成时序性问题，举个例子：thread1更新mysql为5 -&gt;thread2更新mysql为3 -&gt;thread2更新缓存为3 -&gt;thread1更新缓存为5，最终正确的数据因为时序性被覆盖了。</p>
+<p>Cache Aside适用于<strong>读多写少</strong>的场景，比如用户信息、新闻报道等，一旦写入缓存，几乎不会进行修改。该模式的缺点是<strong>可能会出现缓存和数据库不一致的情况</strong>，比如更新完数据库还没更新缓存时redis进程挂掉的情况。</p>
+<h3 id="Read-Through-读穿透"><a href="#Read-Through-读穿透" class="headerlink" title="Read Through 读穿透"></a>Read Through 读穿透</h3><p>Read-Through，读穿透模式，和 Cache Aside 模式的区别主要在于应用服务不再和缓存直接交互，而是直接访问数据服务，这个数据服务可以理解为一个<strong>代理</strong>，即单独起这么一个服务，由它来访问数据库和缓存，作为使用者来看，不知道里面到底有没有缓存，数据服务会自己来根据情况查询缓存或者数据库。查询的时候，和Cache Aside一样，也是缓存中有，就用从缓存中获得的数据，没有就查DB，只不过这些由数据服务托管保存，而对应用服务是<strong>透明</strong>的（透明&#x3D;&#x3D;不可见）。</p>
+<p>相比 Cache Aside，<strong>Read Through 的优势是缓存对业务透明，业务代码更简洁。缺点是缓存命中时性能不如CacheAside，相比直接访问缓存，还会多一次服务间调用。</strong></p>
+<img src="/2025/04/01/RedisTutorial04/image-20250411230621342.png" class>
+
+<h3 id="Write-Through-写穿透"><a href="#Write-Through-写穿透" class="headerlink" title="Write Through 写穿透"></a>Write Through 写穿透</h3><p>在Cache Aside中，应用程序需要维护两个数据存储:一个缓存，一个数据库。这对于应用程序来说，更新操作比较麻烦，还要先更新数据库，再去删除缓存。</p>
+<p>WriteThrough模式相当于做了一层封装（实际上就是啥也没改）:</p>
+<img src="/2025/04/01/RedisTutorial04/image-20250411231406719.png" class>
+
+<ul>
+<li>由这个存储服务先写入MySQL，再<strong>同步</strong>写入Redis，这样及时加载或更新了缓存数据。</li>
+<li>可以理解为，应用程序只有一个单独的访问源，而存储服务自己维护访问逻辑。</li>
+</ul>
+<p>在使用Write-Through时要特别注意的是缓存的有效性管理，否则会导致大量的缓存占用内存资源，因为这种模式下只要写入数据就加载了缓存。这里注意区分：Cache Aside是直接删去缓存，而写穿透是写入缓存。</p>
+<h3 id="Write-Behind-异步缓存写入"><a href="#Write-Behind-异步缓存写入" class="headerlink" title="Write-Behind 异步缓存写入"></a>Write-Behind 异步缓存写入</h3><p>Write-Behind 和 Write-Through 相同点都是写入时候会更新数据库、也会更新缓存。不同点在于 <strong>Write-Through 会把数据立即写入数据库中，然后写缓存，安全性很高。而 Write-Behind 是先写缓存，然后异步把数据一起写入数据库，这个异步写操作是 Write-Behind 的最大特点。</strong></p>
+<p>数据库写操作可以用不同的方式完成:</p>
+<ul>
+<li>一种是时间上的灵活性，其中一个方式就是收集写操作并在某一时间点(比如数据库负载低的时候)慢慢写入。</li>
+<li>另一种方式就是合并几个写操作成为一个批量操作，一起批量写入。</li>
+</ul>
+<p>两者是可以根据业务情况结合的。</p>
+<p>异步写操作极大地降低了请求延迟并减轻了数据库的负担，但是代价是安全性不够，比如先写入了Redis，更新操作先放在存储服务内存中，但是还没异步写入MySQL之前，存储服务崩溃了，那么数据也就丢失了。</p>
+<img src="/2025/04/01/RedisTutorial04/image-20250411232615515.png" class>
+
+<h3 id="方案选型"><a href="#方案选型" class="headerlink" title="方案选型"></a>方案选型</h3><p>各有优势，但是Cache-Aside Pattern，旁路缓存模式是最常见，最易用的，在业务开发中，其他模式很少会用到。</p>
+<h2 id="缓存异常"><a href="#缓存异常" class="headerlink" title="缓存异常"></a>缓存异常</h2><p>以下介绍三种缓存异常场景：缓存穿透、缓存击穿和缓存雪崩。</p>
+<h3 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h3><p>缓存穿透是指缓存和数据库中都没有的数据，而用户不断发起请求。由于缓存是不命中时被动写的，并且出于容错考虑，如果从存储层查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到存储层去查询，失去了缓存的意义。</p>
+<p>在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞。</p>
+<img src="/2025/04/01/RedisTutorial04/image-20250411232952043.png" class title="gg😅">
+
+<p>如发起为id为”-1”的数据或id为特别大不存在的数据。这时的用户很可能是攻击者，攻击会导致数据库压力过大。</p>
+<p>解决方案：</p>
+<ol>
+<li>接口层增加校验，如用户鉴权校验，id做基础校验，id&lt;&#x3D;0的直接拦截；</li>
+<li>从缓存取不到的数据，在数据库中也没有取到，这时也可以将key-value对写为key-null，缓存有效时间可以设置短点，如30秒(设置太长会导致正常情况也没法使用)。这样可以防止攻击用户反复用同一个id暴力攻击。</li>
+<li>布隆过滤器。bloom filter 就类似于一个hash set，用于快速判某个元素是否存在于集合中，其典型的应用场景.是快速判断一个key是否存在于某容器，不存在就直接返回。布隆过滤器的关键就在于hash算法和容器大小，可以用布降过滤器来应对，布降过滤器是一种比较巧妙的概率型数据结构，特点是高效地插入和查询，可以用来告诉我们“某样东西一定不存在或者可能存在”。虽然在有假阳性的问题存在，但是在这种场景下仍然能发生巨大作用。</li>
+</ol>
+<img src="/2025/04/01/RedisTutorial04/image-20250412080942033.png" class>
+
+<h3 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h3><p>缓存击穿是指缓存中没有但数据库中有的数据(一般是缓存时间到期)，这时由于并发用户特别多，同时读缓存没读到数据，又同时去数据库去取数据，引起数据库压力瞬间增大，造成过大压力。</p>
+<p>缓存击穿，<strong>一般指是指热键在过期失效的一瞬间，还没来得及重新产生，就有海量数据直达数据库</strong></p>
+<img src="/2025/04/01/RedisTutorial04/image-20250412081049304.png" class>
+
+<p>解决方案：</p>
+<ol>
+<li><p>热点数据支持续期，持续访问的数据可以不断续期，避免因为过期失效而被击穿（可以设置只要有请求来访问，就增加过期时间）</p>
+</li>
+<li><p>发现缓存失效，重建缓存加互斥锁，当线程查询缓存发现缓存不存在就会尝试加锁，线程争抢锁，拿到锁的线程就会进行查询数据库，然后重建缓存。那么这时缓存里就有了数据，其他争抢锁失败的线程拿到锁，发现缓存已经有数据之后，就不会在查询数据库，而是直接查询缓存。</p>
+</li>
+</ol>
+<blockquote>
+<p>更加具体而言：</p>
+<p>可以利用redssion 分布式锁。当线程拿到缓存发现过期了就会尝试加锁，线程争抢锁，拿到锁的线程就会进行查询数据库，然后重建缓存，争抢锁失败的线程，你可以加一个睡眠然后循环重试(redission 直接实现了可重试和可重入还保证了原子性)；</p>
+<p>如果担心线程资源会占用很大，还有一个解决方案就是用逻辑过期来解决缓存击穿，就是给缓存加上过期时间戳而不设置 tl，判断这个逻辑时间是否过期然后加锁重建缓存，注意这里争抢锁失败的线程就不再争抢了，而是直接返回已过期数据，具体解决方案还是得根据应用场景来使用。</p>
+</blockquote>
+<h3 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h3><p>缓存雪崩顾名思义，是指大量的应用请求因为异常无法在Redis缓存中进行处理，像雪崩一样，直接打到数据库。</p>
+<p>这里异常的原因，也可以说雪崩的原因，主要是由于缓存中数据<strong>大批量到过期时间，而查询数据量巨大，引起数据库压力过大甚至宕机</strong>。</p>
+<img src="/2025/04/01/RedisTutorial04/image-20250412082044565.png" class>
+
+
+
+<p>解决方案：</p>
+<ol>
+<li>缓存数据的过期时间设置随机，防止同一时间大量数据过期现象发生。</li>
+<li>和上面一样，重建缓存加互斥锁，当线程拿到缓存发现缓存不存在就会尝试加锁；线程争抢锁，拿到锁的线程就会进行查询<br>数据库，然后重建缓存，争抢锁失败的线程，就让其睡眠然后循环重试。</li>
+</ol>
+<h2 id="一致性保证"><a href="#一致性保证" class="headerlink" title="一致性保证"></a>一致性保证</h2><p>缓存，都知道是持久化数据的冗余存储，但如果缓存加载了数据源的数据，但对应数据要发生变化，怎么办呢？</p>
+<p>前面介绍了几种缓存模式，这里我们以常见、最实用的旁路缓存模式为基础，来进行分析。</p>
+<p>大的方向有三:</p>
+<ol>
+<li><p>更新MySQL即可，不管Redis，完全以过期时间兜底</p>
+</li>
+<li><p>更新MySQL之后，操作Redis，当然要考虑到Redis更新操作可能会因为网络、进程重启等各种原因失败，所以过期时间兜底还是少不了。</p>
+</li>
+<li><p>异步将MySQL的更新刷入到Redis，比如先更新mysql，通过订阅mysql的binlog记录来异步执行更新redis的操作</p>
+</li>
+</ol>
+<h3 id="方向一"><a href="#方向一" class="headerlink" title="方向一"></a>方向一</h3><p>使用redis的过期时间，mysql更新时，redis不做处理，<strong>等待缓存过期失效，再从mysql拉取缓存</strong>。这种方式实现简单，但不一致的时间会比较明显，具体由业务来配置。如果读请求非常频繁，且过期时间设置较长，则会产生很多脏数据，就看业务是否能接受了。</p>
+<p>优点:</p>
+<ul>
+<li>redis原生接口，开发成本低，易于实现:</li>
+<li>管理成本低，出问题的概率会比较小。</li>
+</ul>
+<p>不足:</p>
+<ul>
+<li>完全依赖过期时间，时间太短容易造成缓存频繁失效，太长容易有较长时间不一致，对编程者的业务能力有一定要求。</li>
+</ul>
+<h3 id="方向二"><a href="#方向二" class="headerlink" title="方向二"></a>方向二</h3><p><strong>不光通过key的过期时间兜底，还需要在更新mysql时，同时尝试操作redis</strong>，这里的操作分两种方式，1是更新，直接将结果写入Redis，但实际上很少用更新，而是用<strong>删除</strong>，等待下次访问再加载回来，为什么呢?因为<strong>更新缓存容易带来时序性问题</strong>。</p>
+<p>相比于数据延迟而言，在MySQL中产生脏读或者不可重复读会更让人不能接受，所以一般都选择删除。</p>
+<p>上面有提到，这里是<em>尝试删除</em>，这样说是这一步操作是可能失败了，失败就我们可以忽略，也就是不能让删除成为一个关键路径，影响核心流程。</p>
+<p>因为我们有key本身的过期时间作为保障，所以最终一致性是一定达成的，主动删除redis数据只是为了减少不一致的时间。</p>
+<img src="/2025/04/01/RedisTutorial04/image-20250412084658777.png" class>
+
+<p>优点:</p>
+<ul>
+<li>相对方案一，达成最终一致性的延迟更小；</li>
+<li>实现成本较低，只是在方案一的基础上，增加了删除逻辑。</li>
+</ul>
+<p>不足:</p>
+<ul>
+<li>如果更新mysql成功，删除redis却失败，就退化到了方案一；</li>
+<li>在更新时候需要额外操作Redis，带来了损耗。</li>
+</ul>
+<h3 id="方向三"><a href="#方向三" class="headerlink" title="方向三"></a>方向三</h3><p>这种方法的核心思想是利用数据库的变更日志（binlog）来保持Redis缓存与数据库的一致性。</p>
+<p> 下面图片中描述具体方案是：</p>
+<ul>
+<li>将消费服务作为MySQL的一个slave（从库）</li>
+<li>订阅MySQL的binlog日志，解析日志内容</li>
+<li>将解析结果更新到Redis中</li>
+</ul>
+<img src="/2025/04/01/RedisTutorial04/image-20250412084959617.png" class>
+
+<p>简单来说，这种方法就像是给你的数据库安装了一个”监视器”，当数据库有任何变动时，这个监视器会自动将相同的变动应用到Redis缓存中，从而保持两者的数据一致性。这就是所谓的”Canal组件”（阿里巴巴开源的）的工作方式。</p>
+<p>优点:</p>
+<ul>
+<li>和业务完全解耦，在更新mysql时，不需要做额外操作;</li>
+<li>无时序性问题，可靠性强。</li>
+</ul>
+<p>缺点:</p>
+<ul>
+<li>引入了消息队列这种算比较重的组件，还要单独搭建一个同步服务，维护他们是非常大的额外成本；</li>
+<li>同步服务如果压力比较大，或者崩溃了，那么在较长时间内，redis中都是老旧数据。</li>
+</ul>
+<h3 id="方案选型-1"><a href="#方案选型-1" class="headerlink" title="方案选型"></a>方案选型</h3><ol>
+<li>首先确认产品上对延迟性的要求，如果要求极高，且数据有可能变化，别用缓存，因为<em>用了缓存就意味着你必须能接受一定程序的延迟。</em></li>
+<li>通常来说，过期时间兜底是行之有效的办法，也是应用最普遍的方式，如果希望能一定程度减少缓存不一致的时间，可以考虑增加个删除逻辑，提升一致性。</li>
+<li>从解耦层面来看，可以使用订阅binlog的模式来更新，缺点就是重，比较适合的场景是数据不过期场景(省去系统资源开销)</li>
+</ol>
+<blockquote>
+<p>“数据不过期场景”指的是Redis中的数据需要长期保存，与数据库保持高度一致的场景：</p>
+<ul>
+<li>数据变更频率不高，但一致性要求高</li>
+<li>数据需要长期在缓存中存在，不设置TTL(过期时间)</li>
+<li>缓存数据量较大，重建成本高</li>
+</ul>
+<p>比如说电商平台中，商品信息就是适用数据不过期的，但是用户的购物车信息就不适用。</p>
+<p>所谓的“重”其实也体现在很多方面，比如：</p>
+<ul>
+<li><p>需要额外维护Canal等组件</p>
+</li>
+<li><p>需要处理binlog解析和转换的逻辑</p>
+</li>
+<li><p>对系统资源（CPU、内存、网络）有额外消耗</p>
+</li>
+<li><p>整个链路相对复杂，出问题时排查难度更大</p>
+</li>
+<li><p>…….</p>
+</li>
+</ul>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2025/04/01/RedisTutorial04/">https://0kr.xin/2025/04/01/RedisTutorial04/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/04/01/RedisTutorial05/" title="RedisTutorial05"><img class="cover" src="/statics/landscape002.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">RedisTutorial05</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a><a class="pagination-related" href="/2025/04/01/RedisTutorial03/" title="RedisTutorial03"><img class="cover" src="/statics/landscape004.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">RedisTutorial03</div></div><div class="info-2"><div class="info-item-1">Redis数据持久化持久化介绍持久化是什么Redis是跑在内存里的，当程序重启或者服务崩溃，数据就会丢失，如果业务场景希望重启之后数据还在，就需要持久化，即把数据保存到可永久保存的存储设备中。 持久化方式Redis提供两种方式来持久化: 1.RDB(Redis Database Backup)，记录Redis某个时刻的全部数据，这种方式本质就是数据快照，直接保存二进制数据到磁盘，后续通过加载RDB文件恢复数据。    2.AOF(Append Only...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BC%93%E5%AD%98"><span class="toc-number">1.</span> <span class="toc-text">缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E6%A8%A1%E5%BC%8F%E5%8F%8A%E5%85%B6%E9%80%89%E6%8B%A9"><span class="toc-number">1.1.</span> <span class="toc-text">缓存模式及其选择</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Cache-Aside-%E6%97%81%E8%B7%AF%E7%BC%93%E5%AD%98"><span class="toc-number">1.1.1.</span> <span class="toc-text">Cache-Aside 旁路缓存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Read-Through-%E8%AF%BB%E7%A9%BF%E9%80%8F"><span class="toc-number">1.1.2.</span> <span class="toc-text">Read Through 读穿透</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Write-Through-%E5%86%99%E7%A9%BF%E9%80%8F"><span class="toc-number">1.1.3.</span> <span class="toc-text">Write Through 写穿透</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Write-Behind-%E5%BC%82%E6%AD%A5%E7%BC%93%E5%AD%98%E5%86%99%E5%85%A5"><span class="toc-number">1.1.4.</span> <span class="toc-text">Write-Behind 异步缓存写入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E9%80%89%E5%9E%8B"><span class="toc-number">1.1.5.</span> <span class="toc-text">方案选型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E5%BC%82%E5%B8%B8"><span class="toc-number">1.2.</span> <span class="toc-text">缓存异常</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="toc-number">1.2.1.</span> <span class="toc-text">缓存穿透</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="toc-number">1.2.2.</span> <span class="toc-text">缓存击穿</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="toc-number">1.2.3.</span> <span class="toc-text">缓存雪崩</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E8%87%B4%E6%80%A7%E4%BF%9D%E8%AF%81"><span class="toc-number">1.3.</span> <span class="toc-text">一致性保证</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E5%90%91%E4%B8%80"><span class="toc-number">1.3.1.</span> <span class="toc-text">方向一</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E5%90%91%E4%BA%8C"><span class="toc-number">1.3.2.</span> <span class="toc-text">方向二</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E5%90%91%E4%B8%89"><span class="toc-number">1.3.3.</span> <span class="toc-text">方向三</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E9%80%89%E5%9E%8B-1"><span class="toc-number">1.3.4.</span> <span class="toc-text">方案选型</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

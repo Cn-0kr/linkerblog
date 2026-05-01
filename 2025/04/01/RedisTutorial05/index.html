@@ -1,0 +1,708 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>RedisTutorial05 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="分布式锁在计算机领域，锁可以理解为针对某项资源使用权限的管理，它通常用来控制共享资源，比如一个进程内有多个线程竞争一个数据的使用权限，解决方式之一就是加锁。 分布式锁就是分布式场景下的锁，比如多台不同机器上的进程，去竞争同一项资源，就是分布式锁。  分布式锁的实现机制有两种：主动轮询和监听回调。这里的Redis分布式锁采用的是前者，etcd采用的是后者。  特性具备哪些特性的分布式锁才是一个优秀的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RedisTutorial05">
+<meta property="og:url" content="https://0kr.xin/2025/04/01/RedisTutorial05/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="分布式锁在计算机领域，锁可以理解为针对某项资源使用权限的管理，它通常用来控制共享资源，比如一个进程内有多个线程竞争一个数据的使用权限，解决方式之一就是加锁。 分布式锁就是分布式场景下的锁，比如多台不同机器上的进程，去竞争同一项资源，就是分布式锁。  分布式锁的实现机制有两种：主动轮询和监听回调。这里的Redis分布式锁采用的是前者，etcd采用的是后者。  特性具备哪些特性的分布式锁才是一个优秀的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape002.jpg">
+<meta property="article:published_time" content="2025-04-01T02:14:57.000Z">
+<meta property="article:modified_time" content="2025-04-14T06:36:14.270Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape002.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2025/04/01/RedisTutorial05/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'RedisTutorial05',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-04-14 14:36:14'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape002.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">RedisTutorial05</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">RedisTutorial05</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-04-01T02:14:57.000Z" title="发表于 2025-04-01 10:14:57">2025-04-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-04-14T06:36:14.270Z" title="更新于 2025-04-14 14:36:14">2025-04-14</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">11.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>38分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="分布式锁"><a href="#分布式锁" class="headerlink" title="分布式锁"></a>分布式锁</h1><p>在计算机领域，<strong>锁可以理解为针对某项资源使用权限的管理，它通常用来控制共享资源</strong>，比如一个进程内有多个线程竞争一个数据的使用权限，解决方式之一就是加锁。</p>
+<p>分布式锁就是分布式场景下的锁，比如<strong>多台不同机器上的进程，去竞争同一项资源</strong>，就是分布式锁。</p>
+<blockquote>
+<p>分布式锁的实现机制有两种：主动轮询和监听回调。这里的Redis分布式锁采用的是前者，etcd采用的是后者。</p>
+</blockquote>
+<h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><p>具备哪些特性的分布式锁才是一个优秀的分布式锁？主要从如下几方面来看:</p>
+<ul>
+<li>互斥性：锁的目的是获取资源的使用权，所以只让一个竞争者持有锁，这一点要尽可能保证；</li>
+<li>抗死锁性（活性）：避免锁因为异常永远不被释放。当一个竞争者在持有锁期间内，由于意外崩溃而导致未能主动解锁，其持有的锁也能够被兜底释放，并保证后续其它竞争者也能加锁；</li>
+<li>对称性：同一个锁，加锁和解锁必须是同一个竞争者。不能把其他竞争者持有的锁给释放了；</li>
+<li>可靠性：需要有一定程度的异常处理能力、容灾能力。</li>
+</ul>
+<h2 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h2><p>分布式锁，一般会依托第三方组件来实现，而利用Redis实现则是工作中应用最多的一种。</p>
+<p>今天，就让我们从最基础的步骤开始，依照分布式锁的特性，层层递进，步步完善，将它优化到最优，让大家完整地了解如何用Redis来实现一个分布式锁。</p>
+<h3 id="最简版本"><a href="#最简版本" class="headerlink" title="最简版本"></a>最简版本</h3><p>首先，当然是搭建一个最简单的实现方式，直接用Redis的setnx命令，这个命令的语法是：</p>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setnx key value</span><br></pre></td></tr></table></figure>
+
+<p>如果key不存在，则会将key设置为value，并返回1；如果key存在，不会有任务影响，返回0。</p>
+<p>基于这个特性，我们就可以用setnx实现加锁的目的：通过setnx加锁，加锁之后其他服务无法加锁，用完之后，再通过delete解锁，深藏功与名。</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250413064819720.png" class>
+
+
+
+<h3 id="支持过期时间"><a href="#支持过期时间" class="headerlink" title="支持过期时间"></a>支持过期时间</h3><p>最简化版本有一个问题：如果获取锁的服务挂掉了，那么锁就一直得不到释放，就像石沉大海，杳无音信。所以我们需要一个超时来兜底。</p>
+<p>Redis中有expire命令，用来设置一个key的超时时间。但是setnx和expire不具备原子性，如果setnx获取锁之后，服务挂掉，锁还是变成了死锁。</p>
+<p>很自然，我们会想到，set和expire，有没有原子操作？</p>
+<p>当然有，Redis早就考虑到了这种场景，推出了如下执行语句：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set key value nx ex seconds</span><br></pre></td></tr></table></figure>
+
+<p> nx表示具备setnx特定，ex表示增加了过期时间，最后一个参数就是过期时间的值。这样就解决了分布式锁的抗死锁性的问题。</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250413065525473.png" class>
+
+<p>但是还存在一个问题：会存在服务A释放掉服务B的锁的可能。因此，为了解决对称性，下面引入了owner。</p>
+<blockquote>
+<p>为什么会存在释放别人的锁的情况？</p>
+<p>因为是 redis 超时自动释放的。 A不知道锁释放了，它依然按照原定逻辑，执行完业务之后解锁，而解锁逻辑只是一个 delete 而已，它才不管现在锁是啥情况，也不知道锁现在是被B获取了，直接 delete 删除，也就把B的锁解了。</p>
+</blockquote>
+<h3 id="加上owner"><a href="#加上owner" class="headerlink" title="加上owner"></a>加上owner</h3><p>我们来试想一下如下场景：服务A获取了锁，由于业务流程比较长，或者网络延迟、GC卡顿等原因，导致锁过期，而业务还会继续进行。这时候，业务B已经拿到了锁，准备去执行，这个时候服务A恢复过来并做完了业务，就会释放锁，而B却还在继续执行。</p>
+<p>在真实的分布式场景中，可能存在几十个竞争者，那么上述情况发生概率就很高，导致同一份资源频繁被不同竞争者同时访问，分布式锁也就失去了意义。</p>
+<p><strong>分布式锁需要满足谁申请谁释放原则，不能释放别人的锁，也就是说，分布式锁，是要有归属的。</strong></p>
+<p>所以我们可以进一步给出解决方案：加入一个身份鉴权的判断进行优化。</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250413070503458.png" class>
+
+<p>到这里，除了可靠性以外的分布式锁性质就全部满足了…吗？</p>
+<h3 id="引入Lua"><a href="#引入Lua" class="headerlink" title="引入Lua"></a>引入Lua</h3><p>让我们再梳理一下完整的流程：竞争者获取锁执行任务，执行完毕后检查锁是不是自己的，最后进行释放。</p>
+<p>这下我们发现：执行完毕后，检查锁，再释放，这些操作不是原子化的！可能锁获取时还是自己的，删除时却已经是别人的了。这可怎么办呢?</p>
+<p>为了解决分布式场景下的并发安全的问题，Redis引入了Lua脚本。</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250413070833355.png" class>
+
+<p>Redis+ Lua，可以说是专门为解决原子问题而生。</p>
+<p>有了Lua的特性，Redis才真正在分布式锁、秒杀等场景，有了用武之地，下面便是改造之后的流程：</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250413070917844.png" class>
+
+<h3 id="看门狗-watchdog"><a href="#看门狗-watchdog" class="headerlink" title="看门狗 watchdog"></a>看门狗 watchdog</h3><p>如果业务还没完成，锁却过期了，那么仍会出现不安全问题：</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250413073821922.png" class>
+
+<p>这里就要引出WatchDog机制，WatchDog也叫做看门狗，可以理解为–有一只修狗，每到饭点就会饿，饿了会狗叫，主人听到了，就需要触发一个喂狗的动作。</p>
+<p>看门狗机制在Redis分布式锁里面是这么应用的：</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250413073647401.png" class>
+
+
+
+<p>看门狗可以看作是程序里面的一个线程，定时向Redis进行续期操作，防止锁在业务完成之前过期了。<strong>续期的开始时间可以是超过过期时间的三分之一</strong>，比如9秒的过期时间，那么在第3秒的时候开始续期。</p>
+<p>当然看门狗也有自己的缺点，看门狗也需要消耗一些资源，而且有时候单纯是因为持有锁的线程本身出现问题，导致业务完成时间超出了过期时间，而看门狗背后一直进行的续期操作，会让其他请求方都拿不到锁，这个时候要考虑保证业务安全性，还是保证其他请求继续执行。一般的解决办法有：设置锁最大生命周期，即使有看门狗超过这个阈值也会释放；独立定期检查锁的持有状态；业务层面增加超时控制等等。</p>
+<p>在实际生产环境中，通常不会手写Redis分布式锁，而是使用成熟的框架如Redisson。如果在业务中需要适用场景更复杂的定时逻辑，那还需要自己手写完成。</p>
+<p>其实到了这一步，分布式锁的前三个特性:对称性、安全性、互斥性，就满足了。可以说是一个可用的分布式锁了，能满足大多数场景的需要。</p>
+<h2 id="可靠性保证"><a href="#可靠性保证" class="headerlink" title="可靠性保证"></a>可靠性保证</h2><p>分布式锁的四大特性还剩下可靠性没有解决。</p>
+<p>针对一些异常场景，包括Redis挂掉了、业务执行时间过长、网络波动等情况，我们来一起分析如何处理。</p>
+<p>前面我们谈及的内容，基本是基于单机考虑的，如果Redis挂掉了，那锁就不能获取了。这个问题该如何解决呢？</p>
+<p>一般来说，有两种方法：主从容灾和多级部署。下面我们来分别介绍。</p>
+<h3 id="主从容灾"><a href="#主从容灾" class="headerlink" title="主从容灾"></a>主从容灾</h3><p>最简单的一种方式，就是为Redis配置从节点，当主节点挂了，用从节点顶包。</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250413090810270.png" class>
+
+<blockquote>
+<p>全量同步是指当Slave节点第一次连接Master，或者长时间断开连接后重新连接时，Master会将自己的完整数据集传输给Slave。</p>
+<p>工作流程:</p>
+<ol>
+<li><strong>Slave连接Master</strong>：Slave节点连接到Master节点，发送SYNC或PSYNC命令</li>
+<li><strong>Master生成RDB文件</strong>：Master执行BGSAVE命令，在后台生成RDB全量快照文件</li>
+<li><strong>同时记录新命令</strong>：在生成RDB期间，Master将接收到的写命令存储在复制缓冲区(repl buf)中</li>
+<li><strong>发送RDB文件</strong>：Master将生成的RDB文件发送给Slave</li>
+<li><strong>发送缓冲区命令</strong>：RDB传输完成后，Master将复制缓冲区中的命令发送给Slave</li>
+<li><strong>Slave加载数据</strong>：Slave先加载RDB文件恢复数据库状态，然后执行复制缓冲区中的命令</li>
+</ol>
+<p>增量同步是指在全量同步之后，Master只将新产生的写命令发送给Slave，而不是再次发送整个数据库内容。</p>
+<p>工作流程:</p>
+<ol>
+<li><strong>命令传播</strong>：Master接收到写命令后，先执行命令，然后将命令写入复制缓冲区</li>
+<li><strong>偏移量记录</strong>：Master和Slave都维护一个复制偏移量，记录已经处理的数据量</li>
+<li><strong>发送命令</strong>：Master将写命令异步发送给所有Slave</li>
+<li><strong>Slave执行命令</strong>：Slave接收到命令后执行，并更新自己的偏移量</li>
+<li><strong>断线重连</strong>：如果Slave断线重连，会发送PSYNC命令和自己的复制偏移量</li>
+<li><strong>差异命令同步</strong>：Master根据Slave的偏移量，从复制缓冲区中发送Slave缺少的命令</li>
+</ol>
+</blockquote>
+<p>但是主从切换，需要人工参与，会提高人力成本。不过Redis已经有成熟的解决方案，也就是哨兵模式，可以灵活自动切换，不再需要人工介入。在下面图片中，你可以不用理会那么多的箭头，只要了解哨兵集群在监视Redis集群就好。</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250413091343906.png" class>
+
+<blockquote>
+<h3 id="哨兵是什么"><a href="#哨兵是什么" class="headerlink" title="哨兵是什么"></a>哨兵是什么</h3><p>哨兵，顾名思义，最重要的就是放哨，即监测Redis节点故障、并且提供故障转移的能力。说白了就是一套用来检测Redis服务运行情况的程序，发现了就做一些对应处理。</p>
+<p>这里有一点需要关注，Redis的哨兵服务，本质上也是Redis进程，只是启动参数不同，有不同的职责。</p>
+<h3 id="哨兵选主策略"><a href="#哨兵选主策略" class="headerlink" title="哨兵选主策略"></a>哨兵选主策略</h3><p>当哨兵集群选举出哨兵Leader后，由哨兵Leader从Redis从节点中选择一个Redis节点作为主节点：</p>
+<ol>
+<li>过滤故障的节点，这里的故障节点是包含了网络状态不好的结点；</li>
+<li>选择优先级slave-priority最大的从节点作为主节点，如不存在，则继续；</li>
+<li>选择复制偏移量最大的从节点作为主节点，如果都一样，则继续；（这里解释下，数据偏移量记录写了多少数据主服务器会把偏移量同步给从服务器，当主从的偏移量一致，则数据是完全同步。）</li>
+<li>选择runid最小的从节点作为主节点。Redis每次启动的时候生成随机的runid作为Redis的标识。</li>
+</ol>
+</blockquote>
+<p>通过增加从节点的方式，虽然一定程度解决了单点的容灾问题，但并不是尽善尽美的。由于<strong>同步延迟</strong>，Slave可能会损失掉部分数据，分布式锁可能失效，这就会发生短暂的多机获取到执行权限。</p>
+<p>例如，如果一个客户端在主节点上获取了一个锁，但是这个锁的信息还没有同步到从节点，而此时主节点故障了，那么从节点上就没有这个锁的信息。当从节点提升为主节点时，其他客户端可能会再次获取同一资源的锁，因为从节点并不知道该锁已经被获取过了。</p>
+<p>有没有更可靠的办法呢?</p>
+<h3 id="多机部署"><a href="#多机部署" class="headerlink" title="多机部署"></a>多机部署</h3><p>如果对可靠性的要求高一些，可以尝试多机部署，比如Redis的RedLock，大概的思路就是多个机器，通常是奇数个，达到一半以上同意加锁才算加锁成功，这样，可靠性会向ETCD靠近。</p>
+<blockquote>
+<p>个人理解：这里的意思是把同一份数据，放在很多个机器上，然后操作的时候，需要多很多个机器上进行相同的操作。 通常 redlock 的单机，就是n个独立的 redis 节点。</p>
+<p>所以说实现分布式锁的话可以依靠 Redis，etcd 是另外一种方式，分别对应主动轮询和监听回调两种实现理念。</p>
+</blockquote>
+<img src="/2025/04/01/RedisTutorial05/image-20250413134058687.png" class>
+
+<p>现在假设有5个Redis主节点，基本保证它们不会同时宕掉，获取锁和释放锁的过程中，客户端会执行以下操作：</p>
+<p>1.向5个Redis申请加锁;</p>
+<p>2.只要超过一半，也就是3个Redis返回成功，那么就是获取到了锁。如果超过一半失败，需要向每个Redis发送解锁命令;</p>
+<blockquote>
+<p>为什么没获得锁的客户端还要发送解锁命令？</p>
+<p>是因为这里可能有Redis 由于主从切换损失数据而错误地给该客户端发了锁，也可能是加锁成功，但是因为网络返回失败。比如有可能 5 个里面2个已经加锁成功了，虽然整体判断为加锁失败，那就得把这两个清除掉。这里一起释放算是一种统一补偿。</p>
+</blockquote>
+<p>3.由于向5个Redis发送请求，会有一定时耗，所以锁剩余持有时间，需要减去请求时间。这个可以作为判断依据如果剩余时间已经为0，那么也是获取锁失败;</p>
+<p>4.使用完成之后，向5个Redis发送解锁请求。</p>
+<p>这种模式的好处在于，如果挂了2台Redis，整个集群还是可用的，给了运维更多时间来修复。另外，多说一句，单点Redis的所有手段，这种多机模式都可以使用，比如为每个节点配置哨兵模式，由于加锁是一半以上同意就成功，那么如果单个节点进行了主从切换，单个节点数据的丢失，就不会让锁失效了。这样增强了可靠性。就像这样：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Redis实例1: Master1 --&gt; Slave1A, Slave1B</span><br><span class="line">Redis实例2: Master2 --&gt; Slave2A, Slave2B  </span><br><span class="line">Redis实例3: Master3 --&gt; Slave3A, Slave3B</span><br><span class="line">Redis实例4: Master4 --&gt; Slave4A, Slave4B</span><br><span class="line">Redis实例5: Master5 --&gt; Slave5A, Slave5B</span><br></pre></td></tr></table></figure>
+
+<p>在这个架构中，RedLock算法使用5个主节点（Master1-5）进行分布式锁操作，每个主节点都有自己的从节点，用于容灾备份。</p>
+<h3 id="Go-Deeper"><a href="#Go-Deeper" class="headerlink" title="Go Deeper"></a>Go Deeper</h3><p>是不是有RedLock，就一定能保证可靠的分布式锁？</p>
+<p>先说结论：由于分布式系统中的三大困境(简称NPC)，所以没有完全可靠的分布式锁。</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250413165312145.png" class title="来源：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;huilei&#x2F;p&#x2F;15916861.html">
+
+<p>让我们来看看RedLock在NPC下的表现：</p>
+<ul>
+<li>N:Network Delay(网络延迟)</li>
+</ul>
+<p>​	当分布式锁获得返回包的时间过长，此时可能虽然加锁成功，但是已经时过境迁，锁可能很快过期。RedLock算了做了些考量，也就是前面所说的锁剩余持有时间，需要减去请求时间，如此一来，就可以一定程度解决网络延迟的问题。</p>
+<ul>
+<li>P: Process Pause(进程暂停)</li>
+</ul>
+<p>​	比如发生GC，获取锁之后GC了，处于GC执行中，然后锁超时。其他锁来获取资源，这时候GC回来了，那么两个进程就获取到了同一个分布式锁。</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250413170532996.png" class>
+
+<p>也许你会说，在GC回来之后，可以再去查一次啊？这里有两个问题，首先你怎么知道GC回来了？这个可以在做业务之前，通过时间，进行一个粗略判断，但也是很吃场景经验的；第二，如果你判断的时候是ok的，但是判断完GC了呢？这点RedLock是无法解决的。</p>
+<blockquote>
+<p>个人理解：</p>
+<p>A 进程拿到了锁，然后陷入GC，程序暂停，然后锁过期了。</p>
+<p>这时候 B进程就能去拿到锁了。</p>
+<p>等A从 GC 中恢复的时候，就出现了A、B 两个进程都以为自己拿到了锁的情况。</p>
+<p>owner 解决的是可能会释放别人的锁，但是这里说的问题是：AB 同一个时间段都认为自己持有锁，因此Redlock处理不了。</p>
+</blockquote>
+<ul>
+<li>C：Clock Drift(时钟漂移)</li>
+</ul>
+<p>​	如果竞争者A，获得了RedLock，在5台分布式机器上都加上锁。为了方便分析，我们直接假设5台机器都发生了时钟漂移，锁瞬间过期了。我们想象夸张一些，漂移导致的误差已经是好几秒了，A认为还没有过期，但是实际上已经过期了，然而 B在此时获得了锁。此时A和B拿到了相同的执行权限。</p>
+<p>根据上述的分析，可以看出，RedLock也不能扛住NPC的挑战，因此，<strong>单单从分布式锁本身出发，完全可靠是不可能的</strong>。要实现一个相对可靠的分布式锁机制，还是需要和业务的配合，业务本身要幂等可重入，这样的设计可以省却很多麻烦。</p>
+<p>所以，Red Lock这种比较重的方案，在生产中其实用得不多，本身就不能完全可靠，业务上又基本做了幂等，没必要搞这么复杂，直接主从Redis做分布式锁得了。</p>
+<h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><p>事务允许在单次操作中执行一组命令，确保这些命令要么全部执行，要么全不执行。</p>
+<h2 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Redis Transactions allow the execution of a group of commands <span class="keyword">in</span> a single step,</span><br><span class="line">they are centered around the commands MULTI, EXEC, DISCARD and WATCH.</span><br></pre></td></tr></table></figure>
+
+<p>通过官网的声明我们可以知道，Redis事务主要通过以下命令实现：</p>
+<ul>
+<li><strong>MULTI</strong>：标记事务开始</li>
+<li><strong>EXEC</strong>：执行事务中的所有命令</li>
+<li><strong>DISCARD</strong>：取消事务，放弃执行事务中的所有命令</li>
+<li><strong>WATCH</strong>：监视一个或多个键，如果在事务执行前这些键被修改，则事务将被打断</li>
+</ul>
+<p>以下是操作实例：</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250414085106497.png" class>
+
+<p>非常的好理解：discard就是在事务进行的过程中执行，相当于事务的回滚操作。</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250414085246928.png" class>
+
+<p>watch用来提前来观察数据，具体来说，它用于监视一个(或多个)key ，如果在事务执行之前这个(或这些)key 被其他命令所改动，那么事务将被打断。个人认为这相当于乐观锁的实现。</p>
+<p>这里给出一个watch作用的例子：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; watch counter</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; multi</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; incr counter</span><br><span class="line">QUEUED</span><br><span class="line"><span class="comment"># 在另一个客户端中执行以下命令</span></span><br><span class="line"><span class="comment"># 127.0.0.1:6379&gt; incr counter</span></span><br><span class="line">127.0.0.1:6379&gt; <span class="built_in">exec</span></span><br><span class="line">(nil)</span><br></pre></td></tr></table></figure>
+
+<p>可以看到事务执行失败了，说明watch发挥了作用。</p>
+<h2 id="Multi存在的问题"><a href="#Multi存在的问题" class="headerlink" title="Multi存在的问题"></a>Multi存在的问题</h2><p>Redis事务存在的问题：</p>
+<ol>
+<li><strong>不支持回滚</strong>：命令执行错误不会导致事务回滚，反而会继续执行，这很让人疑惑…</li>
+<li><strong>有限的错误处理</strong>：只能检查命令格式错误，无法处理运行时错误</li>
+<li><strong>有限的原子性</strong>：如果每个key都要通过watch来监控的话，那实现的难度也太高了</li>
+</ol>
+<p>这些问题在一定程度上可以通过Lua脚本来解决，因为Lua脚本执行具有更好的原子性和可控性。</p>
+<p>通过使用Lua脚本，我们可以在Redis中实现更复杂的原子操作，弥补Redis事务机制的一些不足。</p>
+<h2 id="Lua脚本与Redis"><a href="#Lua脚本与Redis" class="headerlink" title="Lua脚本与Redis"></a>Lua脚本与Redis</h2><p>Lua 是一种用标准C语言编写的轻量的脚本语言， 其设计目的是为了嵌入应用程序中，从而为应用程序提供灵活的扩展和定制功能。</p>
+<p>Redis 是2.6 版本通过内嵌支持Lua 环境。执行脚本的常用命令为EVAL。Redis因为是单线程操作，处理过程中，是不会被被打断并切换到其它处理，所以Redis执行Lua，不出异常的情况下，也不会被打断。</p>
+<p>使用Lua脚本可以解决Redis事务的一些限制，并提供更强大的原子操作能力。</p>
+<h3 id="1-使用EVAL命令执行Lua脚本"><a href="#1-使用EVAL命令执行Lua脚本" class="headerlink" title="1. 使用EVAL命令执行Lua脚本"></a>1. 使用EVAL命令执行Lua脚本</h3><p>EVAL命令的基本语法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EVAL script numkeys key [key ...] arg [arg ...]</span><br></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<ul>
+<li>script：Lua脚本内容</li>
+<li>numkeys：键名参数的数量</li>
+<li>key：键名参数列表，在Lua脚本中通过KEYS[index]访问</li>
+<li>arg：附加参数列表，在Lua脚本中通过ARGV[index]访问</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EVAL &quot;return &#123;KEYS[1],KEYS[2],ARGV[1],ARGV[2]&#125;&quot; 2 key1 key2 first second</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-使用EVALSHA命令执行已缓存的脚本"><a href="#2-使用EVALSHA命令执行已缓存的脚本" class="headerlink" title="2. 使用EVALSHA命令执行已缓存的脚本"></a>2. 使用EVALSHA命令执行已缓存的脚本</h3><p>为避免每次发送完整脚本内容，可以先用SCRIPT LOAD命令将脚本加载到Redis，然后使用EVALSHA执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SCRIPT LOAD &quot;return redis.call(&#x27;GET&#x27;, KEYS[1])&quot;</span><br></pre></td></tr></table></figure>
+
+<p>Redis会返回脚本的SHA1校验和，然后可以使用EVALSHA执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EVALSHA &quot;脚本的SHA1校验和&quot; 1 mykey</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-在Lua脚本中调用Redis命令"><a href="#3-在Lua脚本中调用Redis命令" class="headerlink" title="3. 在Lua脚本中调用Redis命令"></a>3. 在Lua脚本中调用Redis命令</h3><p>有两种方式可以在Lua脚本中调用Redis命令：</p>
+<ul>
+<li><p>**redis.call()**：如果命令执行出错，会返回Lua错误</p>
+</li>
+<li><p>**redis.pcall()**：即使命令执行出错，也会继续执行脚本</p>
+</li>
+</ul>
+<h3 id="4-复杂Lua脚本示例"><a href="#4-复杂Lua脚本示例" class="headerlink" title="4. 复杂Lua脚本示例"></a>4. 复杂Lua脚本示例</h3><p>以下是一个原子计数器的Lua脚本示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">EVAL &quot;</span><br><span class="line">local current = redis.call(&#x27;GET&#x27;, KEYS[1])</span><br><span class="line">if current == false then</span><br><span class="line">    redis.call(&#x27;SET&#x27;, KEYS[1], ARGV[1])</span><br><span class="line">    return ARGV[1]</span><br><span class="line">else</span><br><span class="line">    local next_value = tonumber(current) + tonumber(ARGV[1])</span><br><span class="line">    redis.call(&#x27;SET&#x27;, KEYS[1], next_value)</span><br><span class="line">    return next_value</span><br><span class="line">end</span><br><span class="line">&quot; 1 counter 5</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-Lua脚本管理命令"><a href="#5-Lua脚本管理命令" class="headerlink" title="5. Lua脚本管理命令"></a>5. Lua脚本管理命令</h3><ul>
+<li><strong>SCRIPT LOAD</strong>：加载脚本到Redis缓存</li>
+<li><strong>SCRIPT EXISTS</strong>：检查脚本是否已加载</li>
+<li><strong>SCRIPT FLUSH</strong>：删除所有已加载的脚本</li>
+<li><strong>SCRIPT KILL</strong>：终止正在执行的脚本</li>
+</ul>
+<p>接下来是实际操作：</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250414092250905.png" class title="数字0表示没有输入键名列表。">
+
+<p>这样的好处是，相比于原生multi事务，我们可以使用lua编写if-else这种选择逻辑，并且不需要用watch进行监控了。但是比较蛋疼的是，事务如果执行失败的话不会回滚，而只是会中断后续执行。所以所说的 Redis 通过 lua 保证他的原子性，只是说不会被其他命令打断，而不具备完备的原子性。</p>
+<p>这也是为什么在分布式系统中，人们经常讨论最终一致性和补偿事务等概念，因为像Redis这样的系统优先考虑了性能和简单性，而不是完整的事务语义。</p>
+<h1 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h1><h2 id="消息队列是什么"><a href="#消息队列是什么" class="headerlink" title="消息队列是什么"></a>消息队列是什么</h2><p>消息队列(Message Queue)，顾名思义就是传递消息的队列，消息队列有着先入先出的特性，消息队列一般用于异步流程、消息分发、流量削锋等问题，可以通过消息队列实现高性能、高可用、高扩展的架构。</p>
+<p>分布式系统有不少消息队列中间件，业界比较出名的消息队列中间件有ActiveMQ、RabbitMQ、ZeroMQ、Kafka、MetaMQ、RocketMQ等，这些队列通常具备可靠性、高性能等特点。</p>
+<p>消息队列的基本模型如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">+-------------+       +----------------+      +-------------+</span><br><span class="line">|             |       |                |      |             |</span><br><span class="line">|  生产者     | ----&gt; |    消息队列    | ---&gt; |   消费者    |</span><br><span class="line">|  Producer   |       |  Message Queue |      |  Consumer   |</span><br><span class="line">|             |       |                |      |             |</span><br><span class="line">+-------------+       +----------------+      +-------------+</span><br></pre></td></tr></table></figure>
+
+<p>其中：</p>
+<ul>
+<li>**生产者(Producer)**：负责产生消息并发送到队列</li>
+<li>**消息队列(Queue)**：存储消息，等待被消费</li>
+<li>**消费者(Consumer)**：从队列中获取并处理消息</li>
+</ul>
+<h2 id="Redis能做消息队列吗？"><a href="#Redis能做消息队列吗？" class="headerlink" title="Redis能做消息队列吗？"></a>Redis能做消息队列吗？</h2><p>上面提到的消息队列，比如Kafka都是很优秀的消息队列中间件，但是其实接入维护一个消息队列中间件，还是比较繁重的事务，而且在某些场景，其实我们并不是一定需要有多可靠、多完善的消息队列，比如发用消息队列发短信，我们肯定也经常遇到过，短信没收到的场景吧？没收到重试就行了。</p>
+<p>所以，轻量级消息队列也有了市场需要，Redis就很适合来做一个不那么完善的消息队列。</p>
+<p>在Redis中，一般有3种方案来做一个轻量级消息队列，下面我们逐一介绍。</p>
+<h2 id="List"><a href="#List" class="headerlink" title="List"></a>List</h2><p>使用Redis的List数据结构是实现消息队列最简单的方式。List是一个双向链表，我们可以用LPUSH&#x2F;RPUSH将消息加入队列，用RPOP&#x2F;LPOP取出消息。（为了实现先入先出的队列功能，因此只能这样对应。）</p>
+<h3 id="基本实现原理"><a href="#基本实现原理" class="headerlink" title="基本实现原理"></a>基本实现原理</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">           +-----------------------+</span><br><span class="line">LPUSH ---&gt; |  msg3, msg2, msg1    | ---&gt; RPOP</span><br><span class="line">           +-----------------------+</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>生产者使用LPUSH将消息推入队列左侧</li>
+<li>消费者使用RPOP从队列右侧取出消息</li>
+</ul>
+<h3 id="Redis命令示例"><a href="#Redis命令示例" class="headerlink" title="Redis命令示例"></a>Redis命令示例</h3><p><strong>生产者操作</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; LPUSH myqueue &quot;message 1&quot;</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; LPUSH myqueue &quot;message 2&quot;</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; LPUSH myqueue &quot;message 3&quot;</span><br><span class="line">(integer) 3</span><br></pre></td></tr></table></figure>
+
+<p><strong>消费者操作</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; RPOP myqueue</span><br><span class="line">&quot;message 1&quot;</span><br><span class="line">127.0.0.1:6379&gt; RPOP myqueue</span><br><span class="line">&quot;message 2&quot;</span><br><span class="line">127.0.0.1:6379&gt; RPOP myqueue</span><br><span class="line">&quot;message 3&quot;</span><br><span class="line">127.0.0.1:6379&gt; RPOP myqueue</span><br><span class="line">(nil)</span><br></pre></td></tr></table></figure>
+
+<h3 id="阻塞式操作"><a href="#阻塞式操作" class="headerlink" title="阻塞式操作"></a>阻塞式操作</h3><p>这样能实现基础功能，但有个问题，消费者无法知道LPOP的时机，只能不停按时间间隔轮询，这对消费者而言是一个负担，所以Redis也提供了阻塞版的POP命令：BRPOP，BLPOP。当队列为空时，消费者将被阻塞直到有新的消息到来或超时。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; BRPOP myqueue 5  # 等待5秒</span><br><span class="line">1) &quot;myqueue&quot;</span><br><span class="line">2) &quot;message 1&quot;</span><br><span class="line"></span><br><span class="line"># 如果5秒内没有消息，将返回nil</span><br><span class="line">127.0.0.1:6379&gt; BRPOP myqueue 5</span><br><span class="line">(nil)</span><br><span class="line">(5.04s)</span><br></pre></td></tr></table></figure>
+
+<p>这样虽然处理了阻塞式操作的问题，但是依然没有解决消息发送失败的问题，即所谓的<strong>ACK机制</strong>：消费成功了，进行 ACK之后，才会到下一条消息。现在没有ACK，也就是说现在在消费者取消息之后，消息就出队列了，如果消费失败，消息还得想办法放回去。</p>
+<p>同时，LIst也不支持多人消费。</p>
+<p>这里继续做下去的话，有几种方式:</p>
+<ol>
+<li><p>先用LRANGE读队列信息，消费完成之后，再POP。但这样消息可能被多个消费者消费，没办法实现一个消费组的逻辑。</p>
+</li>
+<li><p>POP之后，扔到另一个队列，消费确认了，就删除该信息，但如果是失败情况，那就将数据放置回队头，这就需要用lua来做原子性，但是这样业务开发实属复杂。</p>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 消费者使用BRPOPLPUSH命令，将消息从工作队列弹出并同时推入备份队列</span></span><br><span class="line"><span class="comment"># 2. 消息处理成功后，从备份队列中删除该消息</span></span><br><span class="line"><span class="comment"># 3. 另一个进程定期检查备份队列中长时间未处理的消息，重新放入工作队列</span></span><br><span class="line"><span class="comment">#####################</span></span><br><span class="line"><span class="comment"># 消费者</span></span><br><span class="line">127.0.0.1:6379&gt; BRPOPLPUSH work_queue backup_queue 5</span><br><span class="line"><span class="string">&quot;task data&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 处理成功后从备份队列删除</span></span><br><span class="line">127.0.0.1:6379&gt; LREM backup_queue 1 <span class="string">&quot;task data&quot;</span></span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Pub-Sub生产订阅模式"><a href="#Pub-Sub生产订阅模式" class="headerlink" title="Pub&#x2F;Sub生产订阅模式"></a>Pub&#x2F;Sub生产订阅模式</h2><p>Redis的Pub&#x2F;Sub（发布&#x2F;订阅）模式是另一种实现消息队列的方式，它基于”频道”的概念，生产者将消息发布到一个或多个频道，消费者订阅感兴趣的频道接收消息。</p>
+<h3 id="基本实现原理-1"><a href="#基本实现原理-1" class="headerlink" title="基本实现原理"></a>基本实现原理</h3><img src="/2025/04/01/RedisTutorial05/image-20250414111612540.png" class>
+
+<ul>
+<li>发布者通过PUBLISH命令将消息发送到特定频道</li>
+<li>订阅者通过SUBSCRIBE命令订阅一个或多个频道</li>
+<li>当发布者发布消息时，所有订阅该频道的订阅者都会收到消息</li>
+</ul>
+<h3 id="Redis命令示例-1"><a href="#Redis命令示例-1" class="headerlink" title="Redis命令示例"></a>Redis命令示例</h3><p><strong>发布者操作</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; PUBLISH news &quot;Breaking news: Redis is awesome!&quot;</span><br><span class="line">(integer) 2  # 2个客户端接收到消息</span><br></pre></td></tr></table></figure>
+
+<p><strong>订阅者操作</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; SUBSCRIBE news</span><br><span class="line">Reading messages... (press Ctrl-C to quit)</span><br><span class="line">1) &quot;subscribe&quot;</span><br><span class="line">2) &quot;news&quot;</span><br><span class="line">3) (integer) 1</span><br><span class="line">1) &quot;message&quot;</span><br><span class="line">2) &quot;news&quot;</span><br><span class="line">3) &quot;Breaking news: Redis is awesome!&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="模式匹配订阅"><a href="#模式匹配订阅" class="headerlink" title="模式匹配订阅"></a>模式匹配订阅</h3><p>Redis还支持使用PSUBSCRIBE进行模式匹配订阅，允许订阅者使用通配符订阅多个频道：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; psubscribe okr.*</span><br><span class="line">Reading messages... (press Ctrl-C to quit)</span><br><span class="line">1) &quot;psubscribe&quot;</span><br><span class="line">2) &quot;okr.*&quot;</span><br><span class="line">3) (integer) 1</span><br><span class="line">1) &quot;pmessage&quot;</span><br><span class="line">2) &quot;okr.*&quot;</span><br><span class="line">3) &quot;okr.1&quot;</span><br><span class="line">4) &quot;cat&quot;</span><br><span class="line">1) &quot;pmessage&quot;</span><br><span class="line">2) &quot;okr.*&quot;</span><br><span class="line">3) &quot;okr.r&quot;</span><br><span class="line">4) &quot;Breaking news: Redis is awesome!&quot;</span><br><span class="line"></span><br><span class="line">#另一终端：</span><br><span class="line">127.0.0.1:6379&gt; publish okr.1 cat</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; PUBLISH okr.r &quot;Breaking news: Redis is awesome!&quot;</span><br><span class="line">(integer) 1</span><br></pre></td></tr></table></figure>
+
+<p>PUB&#x2F;SUB来实现消息队列，也有两个不足：</p>
+<ol>
+<li><p>没有ACK功能</p>
+</li>
+<li><p>不支持持久化，Redis重启消息会全部丢失，所以PUB&#x2F;SUB比较适合处理不那么重要的消息</p>
+</li>
+</ol>
+<h2 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h2><p>Redis 5.0引入的Stream是专门为消息队列设计的数据类型，它结合了发布&#x2F;订阅模式和传统消息队列的优点，并且解决了上述两种方案的一些缺点。可以说基本的消息队列能力它都具备了。</p>
+<p>由于校招也不问，这里我给一个资料的指路，感兴趣可以看下。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>个人认为Redis提供的队列都不是成熟的消息队列，原则上是不推荐的，但是如果真的场景够轻，同时又不想引入消息队列这么重的技术栈，是可以使用Stream做消息队列的，它是Redis中队列场景最为成熟的解决方案。</p>
+<h1 id="限流器"><a href="#限流器" class="headerlink" title="限流器"></a>限流器</h1><h2 id="限流器是什么"><a href="#限流器是什么" class="headerlink" title="限流器是什么"></a>限流器是什么</h2><img src="/2025/04/01/RedisTutorial05/image-20250414100944966.png" class title="来自维基百科">
+
+<p>限流器 (Rate Limiter) 顾名思义，是用来限制流量的。在全端的世界中，限流器可能是用来限制来自客户端的请求，或者服务对其他服务发送请求时，也可以用限流器来限流。举例来说，可以从 IP 的角度，限制每个 IP 每天的请求数；或者以使用者为维度，来限每个使用者在某段时间的请求数量。</p>
+<p>限流器的好处:</p>
+<ul>
+<li>一来可以阻挡像是 DoS (Denial of Service) 攻击，避免服务器过载；</li>
+<li>二来可以降低成本，特别是如果你有用第三方 API，流量大起来帐单费也会变很可观。</li>
+</ul>
+<p>限流器多半不会在客户端实作，因为请求在客户端比较容易被伪造；所以一般可能会放在服务器端，或者是放在 API Gateway；或者像是 Upstash 的这个开源套件，是放在 Edge 上。</p>
+<p>限流有几种策略，一般常见做法包含：</p>
+<ul>
+<li>计数器算法（Fixed Window）</li>
+<li>滑动窗口（Sliding Window）</li>
+<li>漏桶（Leaky Bucket）</li>
+<li>令牌桶（Token Bucket）</li>
+</ul>
+<h2 id="计数器算法"><a href="#计数器算法" class="headerlink" title="计数器算法"></a>计数器算法</h2><p>计数器算法(Fixed Window Counter)是最简单直观的限流算法。</p>
+<p>原理也很简单：在固定的时间窗口内，维护一个计数器，每当有请求到来时，计数器加1，当计数器达到预设阈值时，后续请求被拒绝，直到时间窗口重置。</p>
+<p>在具体实现中，如果是单机限流，可以用一个整数+时间戳记录。即用两个变量，一个是时间戳(未来某个时间点)，一个记录访问量，通过拦截器的方式，根据不同场景做判断： </p>
+<p>1.超出记录时间且访问量未超出，更新记录时间；</p>
+<p>2.在记录时间点内，访问量未超出，访问量加1；</p>
+<p>3.记录时间点内，访问量超出，拒绝请求。</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250414102121365.png" class>
+
+<p>分布式限流的话，一般使用Redis来做，可以利用 Redis 天然的过期时间，到了设定时间就自动过期。同时，记得要使用 LUA 脚本来保证 redis 的原子操作，即保证“检查请求次数是否达到阈值”与“次数+1”两步操作的原子性。</p>
+<h3 id="Redis实现示例"><a href="#Redis实现示例" class="headerlink" title="Redis实现示例"></a>Redis实现示例</h3><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 计数器限流器 Lua脚本</span></span><br><span class="line"><span class="keyword">local</span> key = KEYS[<span class="number">1</span>]         <span class="comment">-- 限流器key，通常与用户标识或API相关</span></span><br><span class="line"><span class="keyword">local</span> limit = <span class="built_in">tonumber</span>(ARGV[<span class="number">1</span>])     <span class="comment">-- 限流阈值</span></span><br><span class="line"><span class="keyword">local</span> expire_time = <span class="built_in">tonumber</span>(ARGV[<span class="number">2</span>])   <span class="comment">-- 时间窗口(秒)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> current = redis.call(<span class="string">&#x27;get&#x27;</span>, key)</span><br><span class="line"><span class="keyword">if</span> current <span class="keyword">and</span> <span class="built_in">tonumber</span>(current) &gt;= limit <span class="keyword">then</span></span><br><span class="line">    <span class="comment">-- 超过限流阈值，拒绝请求</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="comment">-- 未超过阈值，计数器加1</span></span><br><span class="line">    redis.call(<span class="string">&#x27;incr&#x27;</span>, key)</span><br><span class="line">    <span class="comment">-- 设置过期时间，确保时间窗口结束后自动重置</span></span><br><span class="line">    redis.call(<span class="string">&#x27;expire&#x27;</span>, key, expire_time)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><ul>
+<li><strong>优点</strong>：实现简单，易于理解，内存占用小</li>
+<li><strong>缺点</strong>：存在临界问题。例如，在一分钟的前30秒和后30秒各发送限制数量的请求，实际上在一分钟内总请求数是限制的两倍，但由于跨越了两个时间窗口，不会被限流。这个问题叫做<strong>请求突刺</strong>。</li>
+</ul>
+<p>为了解决这个问题，人们又发明了滑动窗口算法(Sliding Window)。</p>
+<h2 id="滑动窗口算法"><a href="#滑动窗口算法" class="headerlink" title="滑动窗口算法"></a>滑动窗口算法</h2><p>滑动窗口算法是计数器算法的改进版，通过滑动时间窗口解决了计数器算法的临界问题。</p>
+<p>相比于计数器短发的固定窗口值，滑动窗口将时间划分为更小的区间，并且随着时间的推移，窗口不断向前滑动，只统计窗口内的请求数量。</p>
+<p>举个例子：</p>
+<p>如果是普通窗口，时间区间就是 1:00-2:00，2:00-3:00 这样。在 2:00 前后请求量很高的话，那就会造成突刺，突破上限。</p>
+<p>而滑动窗口始终是基于当前，如果现在是2:00，那窗口就是1:00-2:00；如果是2:15，窗口就是1:15-2:15。</p>
+<p>如果你在2点前几乎怼满了一波，那你必须得等当前时间滑得够远，你才能怼第二波，这就解决了突刺。</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250414102504370.png" class>
+
+<h3 id="Redis实现示例-1"><a href="#Redis实现示例-1" class="headerlink" title="Redis实现示例"></a>Redis实现示例</h3><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 滑动窗口限流器 Lua脚本</span></span><br><span class="line"><span class="keyword">local</span> key = KEYS[<span class="number">1</span>]         <span class="comment">-- 限流器key</span></span><br><span class="line"><span class="keyword">local</span> limit = <span class="built_in">tonumber</span>(ARGV[<span class="number">1</span>])     <span class="comment">-- 限流阈值</span></span><br><span class="line"><span class="keyword">local</span> window_size = <span class="built_in">tonumber</span>(ARGV[<span class="number">2</span>])   <span class="comment">-- 时间窗口大小(秒)</span></span><br><span class="line"><span class="keyword">local</span> current_time = <span class="built_in">tonumber</span>(ARGV[<span class="number">3</span>])  <span class="comment">-- 当前时间戳</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 移除窗口外的所有数据</span></span><br><span class="line">redis.call(<span class="string">&#x27;zremrangebyscore&#x27;</span>, key, <span class="number">0</span>, current_time - window_size)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 获取窗口内的请求数</span></span><br><span class="line"><span class="keyword">local</span> count = redis.call(<span class="string">&#x27;zcard&#x27;</span>, key)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> count &gt;= limit <span class="keyword">then</span></span><br><span class="line">    <span class="comment">-- 超过限流阈值，拒绝请求</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="comment">-- 记录本次请求</span></span><br><span class="line">    redis.call(<span class="string">&#x27;zadd&#x27;</span>, key, current_time, current_time .. <span class="string">&quot;:&quot;</span> .. <span class="built_in">math</span>.<span class="built_in">random</span>())</span><br><span class="line">    <span class="comment">-- 设置过期时间</span></span><br><span class="line">    redis.call(<span class="string">&#x27;expire&#x27;</span>, key, window_size)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>使用示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 获取当前时间戳</span></span><br><span class="line">$ current_time=$(<span class="built_in">date</span> +%s)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 允许访问</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;local key = KEYS[1]; local limit = tonumber(ARGV[1]); local window_size = tonumber(ARGV[2]); local current_time = tonumber(ARGV[3]); redis.call(&#x27;zremrangebyscore&#x27;, key, 0, current_time - window_size); local count = redis.call(&#x27;zcard&#x27;, key); if count &gt;= limit then return 0 else redis.call(&#x27;zadd&#x27;, key, current_time, current_time .. &#x27;:&#x27; .. math.random()); redis.call(&#x27;expire&#x27;, key, window_size); return 1 end&quot;</span> 1 user:123:api:login 100 60 <span class="variable">$current_time</span></span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br></pre></td></tr></table></figure>
+
+<p>实际上滑动窗口的最大优势是：滑动的本质是基于当前的<strong>物理时间</strong>看窗口请求量，而不仅仅是根据所谓窗口的精确度决定。因此，滑动窗口一定可以解决计数器算法解决不了的突刺超额问题。</p>
+<p>从复杂度来讲，滑动窗口虽说比计数器难一些，但也属于一个量级。所以，如果实际开发中在计数器和滑动窗口上选型，那么不用犹豫，选滑动窗口吧。</p>
+<p>到此为止介绍的都是计数类算法，下面开始给大家介绍 Traffic Shaping 类的解决方式，我们先来看漏桶算法(Leaky Bucket)。</p>
+<h2 id="漏桶算法"><a href="#漏桶算法" class="headerlink" title="漏桶算法"></a>漏桶算法</h2><p>漏桶算法(Leaky Bucket)以恒定的速率处理请求，多余的请求会被存储在桶中或被丢弃。</p>
+<p>原理是：把请求比作水滴，漏桶以固定速率漏水(处理请求)。当水滴流入速度过快，超过桶容量时，多余的水滴会溢出(请求被拒绝)。</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250414103416247.png" class>
+
+
+
+<h3 id="优缺点-1"><a href="#优缺点-1" class="headerlink" title="优缺点"></a>优缺点</h3><ul>
+<li><strong>优点</strong>：处理速率恒定，流量平滑，避免了突发请求对系统的冲击</li>
+<li><strong>缺点</strong>：不支持突发流量，即使系统处于空闲状态，也不允许突发请求；这也就意味着漏桶无法充分利用满性能资源，还是非常蛋疼的。</li>
+</ul>
+<p>怎么优化呢？一般有两种解决方案：</p>
+<ol>
+<li><p>动态调节水滴速度(就像输液瓶一样):通过对后端进行不断试探，尽可能始终维持在性能处理的极致，这种方式的弊端在于带来了更多的复杂性和耦合性，属于特定优化了。</p>
+</li>
+<li><p>用另一种桶，令牌桶(Token Bucket)。</p>
+</li>
+</ol>
+<h2 id="令牌桶算法"><a href="#令牌桶算法" class="headerlink" title="令牌桶算法"></a>令牌桶算法</h2><p>一言以蔽之：令牌桶算法以恒定速率向桶中添加令牌，请求需要消耗令牌才能被处理，当桶中没有令牌时，请求被拒绝。</p>
+<p>举个例子：</p>
+<p>我们桶里面能放1000个令牌，1ms产生一个令牌，那1s就可以装满这个桶，请求要处理，先从桶里拿令牌，这样1s就能处理1000次，令牌桶算法很像生产消费模式，同时出口流量也很稳定。</p>
+<p>令牌桶算法能够在请求量小的时候，积累令牌，这种模式在限制数据的平均传输速率的同时还允许某种程度的突发传输。</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250414104925923.png" class>
+
+<h3 id="Redis实现示例-2"><a href="#Redis实现示例-2" class="headerlink" title="Redis实现示例"></a>Redis实现示例</h3><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 令牌桶限流器 Lua脚本</span></span><br><span class="line"><span class="keyword">local</span> key = KEYS[<span class="number">1</span>]         <span class="comment">-- 限流器key</span></span><br><span class="line"><span class="keyword">local</span> capacity = <span class="built_in">tonumber</span>(ARGV[<span class="number">1</span>])  <span class="comment">-- 桶容量</span></span><br><span class="line"><span class="keyword">local</span> rate = <span class="built_in">tonumber</span>(ARGV[<span class="number">2</span>])      <span class="comment">-- 令牌放入速率(令牌/秒)</span></span><br><span class="line"><span class="keyword">local</span> now = <span class="built_in">tonumber</span>(ARGV[<span class="number">3</span>])       <span class="comment">-- 当前时间戳</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 获取上次添加令牌的时间和当前令牌数</span></span><br><span class="line"><span class="keyword">local</span> last_token_time = <span class="built_in">tonumber</span>(redis.call(<span class="string">&#x27;hget&#x27;</span>, key, <span class="string">&#x27;last_token_time&#x27;</span>) <span class="keyword">or</span> now)</span><br><span class="line"><span class="keyword">local</span> tokens = <span class="built_in">tonumber</span>(redis.call(<span class="string">&#x27;hget&#x27;</span>, key, <span class="string">&#x27;tokens&#x27;</span>) <span class="keyword">or</span> capacity)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 计算从上次添加到现在应该新增的令牌数</span></span><br><span class="line"><span class="keyword">local</span> new_tokens = <span class="built_in">math</span>.<span class="built_in">min</span>(capacity, tokens + <span class="built_in">math</span>.<span class="built_in">floor</span>((now - last_token_time) * rate))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> new_tokens &lt; <span class="number">1</span> <span class="keyword">then</span></span><br><span class="line">    <span class="comment">-- 没有足够令牌，拒绝请求</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="comment">-- 有足够令牌，消耗一个令牌并更新</span></span><br><span class="line">    new_tokens = new_tokens - <span class="number">1</span></span><br><span class="line">    redis.call(<span class="string">&#x27;hset&#x27;</span>, key, <span class="string">&#x27;last_token_time&#x27;</span>, now)</span><br><span class="line">    redis.call(<span class="string">&#x27;hset&#x27;</span>, key, <span class="string">&#x27;tokens&#x27;</span>, new_tokens)</span><br><span class="line">    redis.call(<span class="string">&#x27;expire&#x27;</span>, key, <span class="number">60</span>) <span class="comment">-- 设置过期时间</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="四种算法对比"><a href="#四种算法对比" class="headerlink" title="四种算法对比"></a>四种算法对比</h2><table>
+<thead>
+<tr>
+<th>算法</th>
+<th>应对突发流量能力</th>
+<th>实现复杂度</th>
+<th>内存占用</th>
+<th>适用场景</th>
+<th>均匀度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>计数器</td>
+<td>差</td>
+<td>简单</td>
+<td>低</td>
+<td>简单场景，对精确度要求不高</td>
+<td>不均匀</td>
+</tr>
+<tr>
+<td>滑动窗口</td>
+<td>中</td>
+<td>中等</td>
+<td>中等</td>
+<td>需要较精确控制请求频率的场景</td>
+<td>不均匀</td>
+</tr>
+<tr>
+<td>漏桶</td>
+<td>差</td>
+<td>中等</td>
+<td>低</td>
+<td>需要稳定输出的场景</td>
+<td>强均匀</td>
+</tr>
+<tr>
+<td>令牌桶</td>
+<td>好</td>
+<td>较复杂</td>
+<td>低</td>
+<td>允许突发流量但需要限制总体速率的场景</td>
+<td>均匀</td>
+</tr>
+</tbody></table>
+<h2 id="生产中怎么选"><a href="#生产中怎么选" class="headerlink" title="生产中怎么选"></a>生产中怎么选</h2><p>在实际生产中，令牌桶因为其均匀性及突发流量容忍性，更受青睐。腾讯云团队，阿里线上管控体系，Shopee 金融团队，都使用了令牌桶来做限流。</p>
+<p>而唯一可以和令牌桶 battle 的漏桶，漏桶没有针对突发流量的处理，严格限制，个人感觉这不是缺陷而是特性，并不是每个场景，都需要支持突发流量的，如果要很严格限定流量，漏桶会是最好的选择。</p>
+<p>至于计数器和滑动窗口算法，优势就是简单，但限流算法实际都不复杂，所以这个优势就很不明显了，生产上不建议使用。</p>
+<p>限流是开发领域一个非常重要的话题，毕竟流控做好了，才不容易过载，才能有个稳定的系统。</p>
+<h1 id="秒杀（超简版）"><a href="#秒杀（超简版）" class="headerlink" title="秒杀（超简版）"></a>秒杀（超简版）</h1><h2 id="什么是秒杀（真的有人不知道吗🥲"><a href="#什么是秒杀（真的有人不知道吗🥲" class="headerlink" title="什么是秒杀（真的有人不知道吗🥲"></a>什么是秒杀（真的有人不知道吗🥲</h2><p>秒杀通常指因为某种活动瞬时产生巨大流量的场景，比如双十一0点抢10000个苹果折扣手机，这种活动通常会吸引几十万甚至数百万人参与，而且大家都盯着0点，等0点一到就是海量的请求。</p>
+<p>那么秒杀场景下要解决的问题有哪些呢？</p>
+<p><strong>1.高并发的海量请求</strong></p>
+<p>无需多言。</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250414123034753.png" class>
+
+<p><strong>2.不能超卖</strong></p>
+<p>因为秒杀有时候就是赔本赚吆喝，价格可能比成本价还低。而这时候要是比原计划的数量卖多了，那到底发不发货呢？</p>
+<p>发货会超预算亏损，要是超卖数量过多，说不定厂子都要倒闭了；不发货会被投诉，影响商家声誉。</p>
+<p>不管怎样，都是硬伤，只能找程序员赔钱了（大雾</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250414123052100.png" class>
+
+<p><strong>3.避免少卖</strong></p>
+<p>少卖会比超卖好一些，商家不存在经济上的损失。但要是被眼尖的消费者发现的话，也是免不了一场麻烦的。所以我们还是要尽可能避免这种情况。</p>
+<p><strong>4.防作弊&#x2F;脚本&#x2F;黄牛</strong></p>
+<p>黄牛可能是开脚本，一次发很多请求过来，抢到之后再转卖。但我们做活动，希望的就是回馈客户，进而吸引用户，而不是去让黄牛赚外快。因此，我们要尽量挡住黄牛的魔爪。</p>
+<p>通常来说，为了打击黄牛，最常见的方式是限购，一个用户最多只能抢到N份，这样可以大大保障正常用户的权益。</p>
+<p>具体怎么做呢，为了性能，我们还是将限制逻辑加入到Redis中，所以我们的Lua脚本中，原本是第一步查询库存，第二步扣减库存，需要优化为<strong>第一步查询库存，第二步查询用户已购买个数，第三步扣减库存，第四步记录用户购买数</strong>。</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250414122033333.png" class>
+
+<p><em>这里需要注意的是，如果使用Redis集群，那么Redis的数据分片，需要根据用户来分Key，不然用户数据会查询不到。</em></p>
+<blockquote>
+<p>当秒杀脚本需要同时操作库存键和用户购买记录键时，如果这两个键被分配到不同的节点，脚本就无法原子性地执行，因为Redis集群不支持跨节点的事务和Lua脚本执行。</p>
+<p>例如，假设有这些键：</p>
+<ul>
+<li><code>product:1001:stock</code> (商品库存)</li>
+<li><code>user:123:purchased:1001</code> (用户购买记录)</li>
+</ul>
+<p>如果这两个键被哈希到不同的节点，就会导致脚本执行失败或查询不到用户数据。</p>
+<p>这就是HashTag（哈希标签）的用处：通过HashTag可以强制多个键被分配到同一个节点。在Redis中，只有花括号 <code>&#123;&#125;</code> 内的部分会被用来计算哈希值。</p>
+<p>因此，应该这样设计键：</p>
+<ul>
+<li><code>&#123;user:123&#125;:product:1001:stock</code></li>
+<li><code>&#123;user:123&#125;:purchased:1001</code></li>
+</ul>
+<p>这样，无论是库存键还是购买记录键，都会根据同一个用户ID（<code>user:123</code>）进行分片，确保相关数据在同一个节点上，从而保证Lua脚本的原子执行。</p>
+</blockquote>
+<p>有了限购，我们可以保证货品不会被黄牛占据太多，那么还剩一个问题，黄牛大多是通过代码来抢购，点击速度比人点击快得多，这样就导致了竞争不公平。</p>
+<p>怎么解决呢？某个用户请求接口次数过于频繁，一般说明是用脚本在跑，可以只针对该用户做限制。</p>
+<p>针对IP做限制也是常见做的做法，但这样容易误杀，主要考虑到使用同一个网络的用户，可能都是一个出口IP。限制IP，会导致正常用户也受到影响。</p>
+<p>更好用的方案是加上一个验证码验证。验证码符合91原则（即90%输入验证码和10%点击业务操作的时间），90%的时间都用在验证码输入上，所以使用脚本点击的影响会降到很低。</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250414124159846.png" class>
+
+<p>当然，我们要明白没有银弹，这种方式缺点在于降低了用户的体验感。</p>
+<blockquote>
+<p>黑话大学习</p>
+<p>银色子弹(silver bullet) 是一种由白银制成的子弹，有时也被称为银弹。在西方的宗教信仰和传说中作为一种武器，传说能专门和狼人、吸血鬼一些怪物对抗的利器。银色子弹也可用于比喻强而有力、一劳永逸地适应各种场合的解决方案，英语中“No silver bullet”即意为“没有灵丹妙药”。</p>
+</blockquote>
+<h2 id="怎么高并发"><a href="#怎么高并发" class="headerlink" title="怎么高并发"></a>怎么高并发</h2><p>我们可以先将库存名额预加载到Redis，然后在Redis中进行扣减，扣减成功的再通过消息队列，传递到MySQL做真正的订单生成。</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250414135811825.png" class>
+
+<p>我们说回Redis，如果请求量超过6W每秒，就要考虑使用多个Redis来分流。预计有100W请求量，我们就可以临时调度20个Redis实例来支持，一个5W&#x2F;s，留点Buffer。</p>
+<p>这种模式倒是不需要使用Redis Cluster的做法，直接接个Nginx负载均衡就可以了。</p>
+<h2 id="拒绝超卖"><a href="#拒绝超卖" class="headerlink" title="拒绝超卖"></a>拒绝超卖</h2><p>我们抢购场景最核心的，有两个步骤：</p>
+<ul>
+<li>第一步，判断库存名额是否充足；</li>
+<li>第二步，减少库存名额，扣减成功就是抢到。</li>
+</ul>
+<p>显然两步是原子性操作，那这里就要用到lua脚本。</p>
+<p>有了lua加持，让我们再分析一下可能发生的异常情况：</p>
+<p>1.正常业务错误，比如库存用完，这种情况符合预期，直接返回给用户即可。</p>
+<p>2.访问Redis错误，这种情况返回给用户，让其重试即可。</p>
+<p>3.客户端访问Redis超时（由于网络延迟等问题），这种情况下，其实redis内可能库存已经扣减成功，此时不用再重试，免得产生更多的无效扣减，虽然多了一次扣减，但是总数是不变的，只会少卖不会多卖。</p>
+<h2 id="避免少卖"><a href="#避免少卖" class="headerlink" title="避免少卖"></a>避免少卖</h2><p>少卖什么情况会出现呢？库存减少了，但用户订单没生成。</p>
+<p>什么情况会这样呢?有几种可能:</p>
+<p>1.上面提到的，减少库存操作超时，但实际是成功的，因为超时并不会进入生成订单流程；</p>
+<p>2.在Redis操作成功，但是向Kafka发送消息失败，这种情况也会白白消耗Redis中的库存。</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250414141802424.png" class>
+
+<p>所以说白了，我们只需要保证<strong>Redis库存+Kafka消费的最终一致性</strong>。但是一致性问题，一直是分布式场景的恶龙，要对付并不容易：</p>
+<ul>
+<li>第一种，也最简单的方式，在投递Kafka失败的情况下，增加渐进式重试；</li>
+</ul>
+<blockquote>
+<p>为什么是渐进式重试而不是固定间隔重试呢？</p>
+<p>一般失败的话后面其实大概率也是失败，这种为了避免性能损耗拉长时间的作法还是蛮多的。比如说微信支付回调中：</p>
+<img src="/2025/04/01/RedisTutorial05/image-20250414142652985.png" class>
+</blockquote>
+<ul>
+<li>第二种，更安全一点，就是在第一种的基础上，将这条超时消息记录在磁盘上，慢慢重试；</li>
+<li>第三种，写磁盘之前就可能失败，可以考虑走WAL路线，但是这样做下去说不定就做成MySQL的undo log&#x2F;redo log这种WAL技术了，会相当复杂，没有必要。</li>
+</ul>
+<p>针对少卖这种极端场景可接受的问题，一般选择第二种方式即可，毕竟是异常情况的小概率事件，真出问题了大不了人工介入。</p>
+<h2 id="Redis角色"><a href="#Redis角色" class="headerlink" title="Redis角色"></a>Redis角色</h2><p>Redis扮演扣减库存的角色，这个主要源自Redis比关系型存储高很多的处理性能。实际上，除了扣件库存，Redis有时候也可以扮演队列的角色，请求过来先记录在Redis，虽然不如传统消息队列可靠，但胜在轻量。</p>
+<h2 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h2><p>总得来说，秒杀通过redis和kafka作为数据库的缓冲。redis负责简单的查询和删减库存操作，成功后发送给kafka。为保证操作原子性，这两步需要lua脚本实现。如果与kafka通信失败，会采用渐进式重试或写入磁盘的方式重试。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2025/04/01/RedisTutorial05/">https://0kr.xin/2025/04/01/RedisTutorial05/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/04/08/FeatureEngineering05/" title="FeatureEngineering05"><img class="cover" src="/statics/landscape002.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">FeatureEngineering05</div></div><div class="info-2"><div class="info-item-1">  引言欢迎来到特征工程项目，这个项目是为 House Prices - Advanced Regression Techniques 竞赛准备的！本次竞赛使用的数据与在 [特征工程](Feature Engineering) 课程练习中使用的数据几乎相同。我们将把您之前完成的工作整合成一个完整的项目，您可以在此基础上加入自己的想法。 第一步 - 准备工作导入和配置我们首先导入在练习中使用的包，并设置一些笔记本默认值： 123456789101112131415161718192021222324252627282930313233import osimport warningsfrom pathlib import Pathimport matplotlib.pyplot as pltimport numpy as npimport pandas as pdimport seaborn as snsfrom IPython.display import displayfrom pandas.api.types import CategoricalDtypefrom...</div></div></div></a><a class="pagination-related" href="/2025/04/01/RedisTutorial04/" title="RedisTutorial04"><img class="cover" src="/statics/landscape002.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">RedisTutorial04</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="toc-number">1.</span> <span class="toc-text">分布式锁</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E6%80%A7"><span class="toc-number">1.1.</span> <span class="toc-text">特性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">实现方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E7%AE%80%E7%89%88%E6%9C%AC"><span class="toc-number">1.2.1.</span> <span class="toc-text">最简版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%AF%E6%8C%81%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4"><span class="toc-number">1.2.2.</span> <span class="toc-text">支持过期时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A0%E4%B8%8Aowner"><span class="toc-number">1.2.3.</span> <span class="toc-text">加上owner</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E5%85%A5Lua"><span class="toc-number">1.2.4.</span> <span class="toc-text">引入Lua</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9C%8B%E9%97%A8%E7%8B%97-watchdog"><span class="toc-number">1.2.5.</span> <span class="toc-text">看门狗 watchdog</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E9%9D%A0%E6%80%A7%E4%BF%9D%E8%AF%81"><span class="toc-number">1.3.</span> <span class="toc-text">可靠性保证</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E4%BB%8E%E5%AE%B9%E7%81%BE"><span class="toc-number">1.3.1.</span> <span class="toc-text">主从容灾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%A8%E5%85%B5%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.3.2.</span> <span class="toc-text">哨兵是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%A8%E5%85%B5%E9%80%89%E4%B8%BB%E7%AD%96%E7%95%A5"><span class="toc-number">1.3.3.</span> <span class="toc-text">哨兵选主策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E6%9C%BA%E9%83%A8%E7%BD%B2"><span class="toc-number">1.3.4.</span> <span class="toc-text">多机部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Go-Deeper"><span class="toc-number">1.3.5.</span> <span class="toc-text">Go Deeper</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1"><span class="toc-number">2.</span> <span class="toc-text">事务</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C"><span class="toc-number">2.1.</span> <span class="toc-text">操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Multi%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">2.2.</span> <span class="toc-text">Multi存在的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Lua%E8%84%9A%E6%9C%AC%E4%B8%8ERedis"><span class="toc-number">2.3.</span> <span class="toc-text">Lua脚本与Redis</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BD%BF%E7%94%A8EVAL%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8CLua%E8%84%9A%E6%9C%AC"><span class="toc-number">2.3.1.</span> <span class="toc-text">1. 使用EVAL命令执行Lua脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BD%BF%E7%94%A8EVALSHA%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%B7%B2%E7%BC%93%E5%AD%98%E7%9A%84%E8%84%9A%E6%9C%AC"><span class="toc-number">2.3.2.</span> <span class="toc-text">2. 使用EVALSHA命令执行已缓存的脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%9C%A8Lua%E8%84%9A%E6%9C%AC%E4%B8%AD%E8%B0%83%E7%94%A8Redis%E5%91%BD%E4%BB%A4"><span class="toc-number">2.3.3.</span> <span class="toc-text">3. 在Lua脚本中调用Redis命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%A4%8D%E6%9D%82Lua%E8%84%9A%E6%9C%AC%E7%A4%BA%E4%BE%8B"><span class="toc-number">2.3.4.</span> <span class="toc-text">4. 复杂Lua脚本示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Lua%E8%84%9A%E6%9C%AC%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4"><span class="toc-number">2.3.5.</span> <span class="toc-text">5. Lua脚本管理命令</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="toc-number">3.</span> <span class="toc-text">消息队列</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">3.1.</span> <span class="toc-text">消息队列是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E8%83%BD%E5%81%9A%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%90%97%EF%BC%9F"><span class="toc-number">3.2.</span> <span class="toc-text">Redis能做消息队列吗？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#List"><span class="toc-number">3.3.</span> <span class="toc-text">List</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-number">3.3.1.</span> <span class="toc-text">基本实现原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis%E5%91%BD%E4%BB%A4%E7%A4%BA%E4%BE%8B"><span class="toc-number">3.3.2.</span> <span class="toc-text">Redis命令示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%BB%E5%A1%9E%E5%BC%8F%E6%93%8D%E4%BD%9C"><span class="toc-number">3.3.3.</span> <span class="toc-text">阻塞式操作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pub-Sub%E7%94%9F%E4%BA%A7%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.4.</span> <span class="toc-text">Pub&#x2F;Sub生产订阅模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86-1"><span class="toc-number">3.4.1.</span> <span class="toc-text">基本实现原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis%E5%91%BD%E4%BB%A4%E7%A4%BA%E4%BE%8B-1"><span class="toc-number">3.4.2.</span> <span class="toc-text">Redis命令示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D%E8%AE%A2%E9%98%85"><span class="toc-number">3.4.3.</span> <span class="toc-text">模式匹配订阅</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stream"><span class="toc-number">3.5.</span> <span class="toc-text">Stream</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.6.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%99%90%E6%B5%81%E5%99%A8"><span class="toc-number">4.</span> <span class="toc-text">限流器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%90%E6%B5%81%E5%99%A8%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">4.1.</span> <span class="toc-text">限流器是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E6%95%B0%E5%99%A8%E7%AE%97%E6%B3%95"><span class="toc-number">4.2.</span> <span class="toc-text">计数器算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis%E5%AE%9E%E7%8E%B0%E7%A4%BA%E4%BE%8B"><span class="toc-number">4.2.1.</span> <span class="toc-text">Redis实现示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-number">4.2.2.</span> <span class="toc-text">优缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95"><span class="toc-number">4.3.</span> <span class="toc-text">滑动窗口算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis%E5%AE%9E%E7%8E%B0%E7%A4%BA%E4%BE%8B-1"><span class="toc-number">4.3.1.</span> <span class="toc-text">Redis实现示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%A1%B6%E7%AE%97%E6%B3%95"><span class="toc-number">4.4.</span> <span class="toc-text">漏桶算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9-1"><span class="toc-number">4.4.1.</span> <span class="toc-text">优缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A4%E7%89%8C%E6%A1%B6%E7%AE%97%E6%B3%95"><span class="toc-number">4.5.</span> <span class="toc-text">令牌桶算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis%E5%AE%9E%E7%8E%B0%E7%A4%BA%E4%BE%8B-2"><span class="toc-number">4.5.1.</span> <span class="toc-text">Redis实现示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E7%A7%8D%E7%AE%97%E6%B3%95%E5%AF%B9%E6%AF%94"><span class="toc-number">4.6.</span> <span class="toc-text">四种算法对比</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E4%BA%A7%E4%B8%AD%E6%80%8E%E4%B9%88%E9%80%89"><span class="toc-number">4.7.</span> <span class="toc-text">生产中怎么选</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A7%92%E6%9D%80%EF%BC%88%E8%B6%85%E7%AE%80%E7%89%88%EF%BC%89"><span class="toc-number">5.</span> <span class="toc-text">秒杀（超简版）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%A7%92%E6%9D%80%EF%BC%88%E7%9C%9F%E7%9A%84%E6%9C%89%E4%BA%BA%E4%B8%8D%E7%9F%A5%E9%81%93%E5%90%97%F0%9F%A5%B2"><span class="toc-number">5.1.</span> <span class="toc-text">什么是秒杀（真的有人不知道吗🥲</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E9%AB%98%E5%B9%B6%E5%8F%91"><span class="toc-number">5.2.</span> <span class="toc-text">怎么高并发</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%92%E7%BB%9D%E8%B6%85%E5%8D%96"><span class="toc-number">5.3.</span> <span class="toc-text">拒绝超卖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%81%BF%E5%85%8D%E5%B0%91%E5%8D%96"><span class="toc-number">5.4.</span> <span class="toc-text">避免少卖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E8%A7%92%E8%89%B2"><span class="toc-number">5.5.</span> <span class="toc-text">Redis角色</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93-1"><span class="toc-number">5.6.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

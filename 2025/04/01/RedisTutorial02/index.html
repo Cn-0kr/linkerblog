@@ -1,0 +1,379 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>RedisTutorial02 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="1.Redis存储过程Redis数据存储的核心是基于redisDb结构，它是Redis中最顶层的数据库对象。   redisDb代表Redis数据库结构，上一章，我们讲到的各种操作对象，就是存储在dict数据结构里，本节后面的讲述中，我们都会以上一章节的操作对象为例来进行讲解。 redisDb结构redisDb结构体(来自Redis 5.0.5)包含以下主要字段： 12345678910typed">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RedisTutorial02">
+<meta property="og:url" content="https://0kr.xin/2025/04/01/RedisTutorial02/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="1.Redis存储过程Redis数据存储的核心是基于redisDb结构，它是Redis中最顶层的数据库对象。   redisDb代表Redis数据库结构，上一章，我们讲到的各种操作对象，就是存储在dict数据结构里，本节后面的讲述中，我们都会以上一章节的操作对象为例来进行讲解。 redisDb结构redisDb结构体(来自Redis 5.0.5)包含以下主要字段： 12345678910typed">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape001.jpg">
+<meta property="article:published_time" content="2025-04-01T02:14:35.000Z">
+<meta property="article:modified_time" content="2025-04-09T16:53:00.919Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape001.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2025/04/01/RedisTutorial02/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'RedisTutorial02',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-04-10 00:53:00'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape001.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">RedisTutorial02</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">RedisTutorial02</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-04-01T02:14:35.000Z" title="发表于 2025-04-01 10:14:35">2025-04-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-04-09T16:53:00.919Z" title="更新于 2025-04-10 00:53:00">2025-04-10</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>19分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="1-Redis存储过程"><a href="#1-Redis存储过程" class="headerlink" title="1.Redis存储过程"></a>1.Redis存储过程</h1><p>Redis数据存储的核心是基于redisDb结构，它是Redis中最顶层的数据库对象。</p>
+<img src="/2025/04/01/RedisTutorial02/image-20250409223947677.png" class>
+
+<p>redisDb代表Redis数据库结构，上一章，我们讲到的各种操作对象，就是存储在dict数据结构里，本节后面的讲述中，我们都会以上一章节的操作对象为例来进行讲解。</p>
+<h2 id="redisDb结构"><a href="#redisDb结构" class="headerlink" title="redisDb结构"></a>redisDb结构</h2><p>redisDb结构体(来自Redis 5.0.5)包含以下主要字段：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">redisDb</span> &#123;</span></span><br><span class="line">    dict *dict;                <span class="comment">/* 数据库的主键空间，存储所有键值对 */</span></span><br><span class="line">    dict *expires;             <span class="comment">/* 存储设置了过期时间的键 */</span></span><br><span class="line">    dict *blocking_keys;       <span class="comment">/* 存储有客户端在等待数据的键(BLPOP) */</span></span><br><span class="line">    dict *ready_keys;          <span class="comment">/* 接收了PUSH命令的被阻塞的键 */</span></span><br><span class="line">    dict *watched_keys;        <span class="comment">/* 被WATCH命令监视的键(用于MULTI/EXEC事务) */</span></span><br><span class="line">    <span class="type">int</span> id;                    <span class="comment">/* 数据库ID号 */</span></span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> avg_ttl;         <span class="comment">/* 平均TTL，仅用于统计 */</span></span><br><span class="line">    <span class="built_in">list</span> *defrag_later;        <span class="comment">/* 稍后要逐个尝试碎片整理的键名列表 */</span></span><br><span class="line">&#125; redisDb;</span><br></pre></td></tr></table></figure>
+
+<p>这里我们重点关注dict结构，其它字段可以先忽略，它代表了我们存入的key-value存储，我们平常添加数据，就是往dict里添加。可以看到，dic其实就是我们前面介绍的Hash对象结构。</p>
+<h2 id="dict结构"><a href="#dict结构" class="headerlink" title="dict结构"></a>dict结构</h2><p>在redisDb中，最核心的是<code>dict</code>字段，它是Redis键值对存储的主要结构。图片展示了dict的定义：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dict</span> &#123;</span></span><br><span class="line">    dictType *type;</span><br><span class="line">    <span class="type">void</span> *privdata;</span><br><span class="line">    dictht ht[<span class="number">2</span>];              <span class="comment">/* 哈希表，使用两个是为了rehash */</span></span><br><span class="line">    <span class="type">long</span> rehashidx;            <span class="comment">/* rehash不在进行中时为-1 */</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> iterators;   <span class="comment">/* 当前运行的迭代器数量 */</span></span><br><span class="line">&#125; dict;</span><br></pre></td></tr></table></figure>
+
+<h2 id="存储过程解析"><a href="#存储过程解析" class="headerlink" title="存储过程解析"></a>存储过程解析</h2><p>Redis存储数据的过程如下：</p>
+<ol>
+<li>Redis服务器维护一个redisDb数组，包含16个数据库</li>
+<li>当我们使用SET命令存储一个键值对时：<ul>
+<li>Redis首先找到当前使用的数据库(redisDb对象)</li>
+<li>然后通过redisDb中的dict(主键空间)来存储这个键值对</li>
+<li>键名直接作为key存入dict</li>
+<li>值被封装为RedisObject对象，然后将其指针作为value存入dict</li>
+</ul>
+</li>
+<li>如果设置了过期时间，键名和过期时间会被存入expires字典</li>
+</ol>
+<img src="/2025/04/01/RedisTutorial02/image-20250409224826723.png" class>
+
+<h2 id="过期键"><a href="#过期键" class="headerlink" title="过期键"></a>过期键</h2><p>Redis数据都可以设置过期键，这样到了一定的时间，这些对象就会自动过期并回收。过期键就存储redisDb的expires字典上。</p>
+<p>假设上面例子的Key，都设置了过期时间，那么其结构如下：</p>
+<img src="/2025/04/01/RedisTutorial02/image-20250409225247576.png" class>
+
+<p>注意，这里的dict中和expires中Key对象，实际都是存储的String对象指针，所以并不是会重复占用内容。Redis对内存的使用都是很珍惜的。</p>
+<blockquote>
+<p>个人理解：dict 和 expires 结构都是一样的，类似 java 里HashMap 的Node&lt;K,V&gt;数组，可以把 dict 和 expires 理解为两个 Node&lt;K,V&gt;数组，二者的K复用的同一个对象，作为指针指向同一个内存地址(比如”animals”)。区别是dict的V指向redisObj，expires的V指向过期时间 timestamp.</p>
+</blockquote>
+<p>这就自然引出一个问题：过期后的键值对Redis是如何处理的呢？实际上，过期后的键不会立刻删除，一般会采用三种清除策略，分别是定时、定期、惰性删除。</p>
+<blockquote>
+<p>定时删除，是在设置键的过期时间的同时，创建一个定时器，让定时器在键的过期时间来临时，立即执行对键的删除操作，定时删除对内存比较友好，但是对CPU不友好，如果某个时间段比较多的Key过期，可能会影响命令处理性能。</p>
+<p>惰性删除，是指使用的时候，发现Key过期了，此时再进行删除，这个策略的思路是对应用而言，只要不访问，过期不过期业务都无所谓，但是这样的代价就是如果某些Key一直不来访问，那本该过期的Key，就变成常驻的Key。这种策略对CPU最友好，对内存不太友好。</p>
+<p>定期删除，每隔一段时间，程序就对数据库进行一次检查，每次删除一部分过期键，这属于一种渐进式兜底策略。</p>
+<p>定时删除实现起来其实没有想象的容易，主要考虑是如果出现异常，有Key遗漏了怎么办，以及如果程序重启，原来的定时器就随重启消失了，那就需要在启动时对过期键进行一些操作，可能是重建定时器，这些都是额外的工作，而且引入了多余的复杂度。</p>
+<p>从实际功能而言，其实并不需要那么实时，所以惰性删除是可以考虑的，但是出于应删尽删的考虑，要保证最终没有漏网之鱼，那就需要加上定期删除作为兜底。所以<strong>Redis过期键采用的是惰性删除+定期删除二者结合的方式进行删除的</strong>。</p>
+</blockquote>
+<h1 id="2-Redis单线程"><a href="#2-Redis单线程" class="headerlink" title="2.Redis单线程"></a>2.Redis单线程</h1><p>Redis是一个能高效处理请求的组件，一般而言，对这种组件，我们都需要了解其并发模型是怎样的，比如Nginx是多进程模型，Mysql是多线程模型，那Redis又是什么呢？多线程型吗？</p>
+<p>先说结论，核心处理逻辑，Redis一直都是单线程的，但是其它辅助模块也会有一些多线程、多进程的功能，比如：</p>
+<p><em>复制模块用的多进程;某些异步流程从4.0开始用的多线程，例如 UNLINK、FLUSHALL ASYNC、FLUSHDB ASYNC 等非阻塞的删除操作；</em></p>
+<p><em>网络I&#x2F;0解包从6.0开始用的是多线程；</em></p>
+<p>但是这种分支模块，都只是辅助，最核心的还是处理架构，这块<strong>Redis始终是单线程的</strong>。</p>
+<blockquote>
+<p>Redis采用Reactor模式的网络模型，对于一个客户端请求，主线程负责一个完整的处理过程:</p>
+<img src="/2025/04/01/RedisTutorial02/image-20250409231710352.png" class>
+
+<p>Redis 在处理客户端的请求时包括获取(socket 读)、解析、执行、内容返回(socket 写)等都由一个顺序串行的主线程处理这就是所谓的“单线程”。</p>
+</blockquote>
+<h2 id="为什么不用多线程？"><a href="#为什么不用多线程？" class="headerlink" title="为什么不用多线程？"></a>为什么不用多线程？</h2><p>1.引入多线程会带来很大的复杂度，比如所有数据类型都需要重构成线程安全的等等，对于追求简洁的Redis而言，这是一个需要非常谨慎的事，事实上Redis 6.0之后为I&#x2F;O处理引入了多线程来提高性能，核心处理逻辑还是保留单线程，但是即使这样，6.0之后的复杂性还是多了许多，更别说完全改成多线程处理了。</p>
+<p>2.多线程会带来额外的开销，比如：</p>
+<ul>
+<li><strong>上下文切换成本</strong>，多线程调度需要切换线程上下文，这个操作先存储当前线程的本地数据、程序指针等，然后载入另一个线程数据，这种内核操作的成本不可忽视。</li>
+<li>同步机制的开销，一些公共资源，在单线程模式下直接访问就行了，多线程需要通过加锁等方式去进行同步，这也是不可忽视的CPU开销;</li>
+<li>一个线程本身也占据内存大小，对Redis这种内存数据库而言，内存非常珍贵，多线程本身带来的内存使用的成本也需要谨慎决策。</li>
+</ul>
+<p>所以综合来看，多线程其实会带来非常多的成本，如果将处理模块改为多线程，即使在性能上，可能也很难有一个很高的预期，毕竟Redis单线程的处理，已经够快了。</p>
+<h2 id="单线程为什么这么快？"><a href="#单线程为什么这么快？" class="headerlink" title="单线程为什么这么快？"></a>单线程为什么这么快？</h2><p>有几个关键点:</p>
+<p>第一，Redis 的大部分操作在内存上完成，内存操作本身就特别快；</p>
+<p>第二，Redis追求极致，选择了很多高效的数据结构，并做了非常多的优化，比如ziplist，hash，跳表，有时候一种对象底层有几种实现以应对不同场景。</p>
+<p>第三，Redis 采用了<strong>多路复用</strong>机制，使其在网络 IO 操作中能并发处理大量的客户端请求，实现高吞吐量。</p>
+<p>第一点很好理解，第二点我们在数据结构部分，已经深入分析过了，Redis对数据结构真是近乎偏执地去优化，这里不做赘述。</p>
+<p>接下来，我们重点看第三点多路复用机制。要理解多路复用机制，我们要先理解为什么要多路复用，没有多路复用情况下，哪些环节可能发生阻塞，Redis是单线程模型，一旦发生阻塞，整体服务都会下来。</p>
+<p>下面，我们来分析下Redis是怎么处理请求的。</p>
+<p>比如，客户端发来一个GET请求，服务端需要哪些事情？</p>
+<p>1.客户端请求到来时候，使用accept建立连接</p>
+<p>2.调用recv从套接字中读取请求</p>
+<p>3.解析客户端发送请求，拿到参数</p>
+<p>4.处理请求，这里是Get，那么Redis就是通过Key获取对应的数据</p>
+<p>5.最后将数据通过send发送给客户端</p>
+<img src="/2025/04/01/RedisTutorial02/image-20250409231710352.png" class title="再放送">
+
+<p>我们要知道，套接字是默认阻塞模式的，这里阻塞可能会发生在两个地方。一个是accept，比如accept建立时间过长，另一个是recv时客户端一直没有发送数据。此时，Redis服务就会阻塞在那里。Redis本身定位就是单线程，发生这种阻塞会将整个服务都卡住。所以不能让这两个操作阻塞，这里Redis将套接字设置为非阻塞式的，这样accept和recv都可以非阻塞调用。</p>
+<blockquote>
+<p>这里非阻塞的意思就是响应会立即返回，无论是否有连接请求。如果没有连接请求，accept 会返回一个特定的错误码通常是 EWOULDBLOCK 或EAGAIN)，表明当前没有连接可接受。</p>
+</blockquote>
+<p>最简单的思路，我们可以通过一个循环来不断轮询，但这种方式显然低效。好在各个操作系统实现了一种机制，叫I&#x2F;O多路复用。</p>
+<p>什么叫I&#x2F;O多路复用，简单理解来说，就是有I&#x2F;O操作触发的时候，就会产生通知，收到通知，再去处理通知对应的事件，针对I&#x2F;O多路复用，Redis做了一层包装，叫Reactor模型。</p>
+<p>如下图，本质就是监听各种事件，当事件发生时，将事件分发给不同的处理器。（注：考虑到Reactor模型是单核执行，这里比处理器更准确的说法应该是不同处理函数。）</p>
+<img src="/2025/04/01/RedisTutorial02/image-20250409232316777.png" class>
+
+<p>就这样通过调用系统的 IO多路复用技术的 api，比如 epoll，使得 redis 可以同时监听多个客户端的请求；然后哪个产生了请求，redis 就立马用 dispatcher 去分发处理。显然这里是通过并发执行优化了数据读取侧的IO。</p>
+<h1 id="3-Redis多线程实现"><a href="#3-Redis多线程实现" class="headerlink" title="3.Redis多线程实现"></a>3.Redis多线程实现</h1><p>然而随着业务请求量越来越高，Redis不得不在原有结构上进行修改来优化读取请求、发送回包的IO操作。</p>
+<p>Redis多线程的设计思路如下：</p>
+<img src="/2025/04/01/RedisTutorial02/image-20250409233102538.png" class>
+
+<h2 id="主线程视角"><a href="#主线程视角" class="headerlink" title="主线程视角"></a>主线程视角</h2><h3 id="事件循环"><a href="#事件循环" class="headerlink" title="事件循环"></a>事件循环</h3><p>主线程和6.0版本之前一样，还是使用aeMain来处理监听端口的事件循环。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">aeMain</span><span class="params">(aeEventLoop *eventLoop)</span>&#123;</span><br><span class="line">	eventLoop-&gt;stop =<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(!eventLoop-&gt;stop)&#123;</span><br><span class="line">		aeProcessEvents(eventLoop,AE ALL EVENTS | </span><br><span class="line">								  AE CALL BEFORE SLEEP |</span><br><span class="line">								  AE CALL AFTER SLEEP);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当有客户端有连接过来，acceptTcpHandler 被调用，主线程使用 AE 的 API 将 readQueryFromClient 命令读取处理器绑定到新连接对应的文件描述符上，并初始化一个 client 绑定这个客户端连接;当client的读写请求过来，就会调用readQueryFromClient这个方法。</p>
+<p>老版本是在readQueryfromClient函数中同步完成读取、解析、执行、将回包放入客户端输出缓冲区。但是多线程模式下，则只会调用postponeClientRead将client加入到 clients pending read任务队列中去，后面主线程再分配 I&#x2F;O 线程去读取客户端请求命令。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">readQueryFromClient</span><span class="params">(connection *conn)</span> &#123;</span><br><span class="line">    client *c = connGetPrivateData(conn);</span><br><span class="line">    <span class="type">int</span> mread, big_arg = <span class="number">0</span>;</span><br><span class="line">    <span class="type">size_t</span> qblen, readlen;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Check if we want to read from the client later when exiting from</span></span><br><span class="line"><span class="comment">     * the event loop. This is the case if threaded I/O is enabled. */</span></span><br><span class="line">    <span class="keyword">if</span> (postponeClientRead(c)) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 省略...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">postponeClientRead</span><span class="params">(client *c)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (server.io_threads_active &amp;&amp; </span><br><span class="line">        server.io_threads_do_reads &amp;&amp;</span><br><span class="line">        !ProcessingEventsWhileBlocked &amp;&amp;</span><br><span class="line">        !(c-&gt;flags &amp; (CLIENT_MASTER|CLIENT_SLAVE|CLIENT_BLOCKED)) &amp;&amp;</span><br><span class="line">        io_threads_op == IO_THREADS_OP_IDLE)</span><br><span class="line">    &#123;</span><br><span class="line">        listAddNodeTail(server.clients_pending_read, c);</span><br><span class="line">        c-&gt;pending_read_list_node = listFirst(server.clients_pending_read);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>放进队列之后，主线程会在事件循环beforeSleep函数中，调用 handleClientsWithPendingReadsUsingThreads，目的是通过 Round-Robin 轮询负载均衡策略把所有任务分配给 I&#x2F;O 线程和主线程去读取并解析客户端命令。</p>
+<p>和单线程时候一样，多线程版本也是在beforesleep来触发回包，不同的是多线程版本下的beforeSleep会使用多线程来进行回包：利用 Round-Robin 轮询负载均衡策略，把 等待回包队列中的连接均匀地分配给 I&#x2F;O 线程各自的本地 FIFO 任务队列 和主线程自己，主线程轮询等待所有 I&#x2F;O 线程完成回包任务。</p>
+<h2 id="子线程视角"><a href="#子线程视角" class="headerlink" title="子线程视角"></a>子线程视角</h2><h3 id="等待事件"><a href="#等待事件" class="headerlink" title="等待事件"></a>等待事件</h3><p>1.自旋1000000次等待资源（就是循环去看有没有分配给自己的任务）</p>
+<p>2.获取io_threads_mutex互斥锁，一开始会阻塞在这里。（虽然发现有任务了,但是为了防止我和其他线程干同一个任务,所以要等到主线程把锁给我我才能执行,类似于一个信号）</p>
+<p>此时，就需要等待主线程来触发资源。</p>
+<h3 id="处理事件"><a href="#处理事件" class="headerlink" title="处理事件"></a>处理事件</h3><p>I&#x2F;O 线程在感知到主线程通知的事件变化，会遍历自己的本地任务队列io_threads_list，取出client来执行。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">    <span class="comment">/* Wait for start */</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; <span class="number">1000000</span>; j++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (getIOPendingCount(id) != <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* Give the main thread a chance to stop this thread. */</span></span><br><span class="line">    <span class="keyword">if</span> (getIOPendingCount(id) == <span class="number">0</span>) &#123;</span><br><span class="line">        pthread_mutex_lock(&amp;io_threads_mutex[id]);</span><br><span class="line">        pthread_mutex_unlock(&amp;io_threads_mutex[id]);</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    serverAssert(getIOPendingCount(id) != <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Process: note that the main thread will never touch our list</span></span><br><span class="line"><span class="comment">     * before we drop the pending count to 0. */</span></span><br><span class="line">    listIter li;</span><br><span class="line">    listNode *ln;</span><br><span class="line">    listRewind(io_threads_list[id], &amp;li);</span><br><span class="line">    <span class="keyword">while</span>((ln = listNext(&amp;li))) &#123;</span><br><span class="line">        client *c = listNodeValue(ln);</span><br><span class="line">        <span class="keyword">if</span> (io_threads_op == IO_THREADS_OP_WRITE) &#123;</span><br><span class="line">            writeToClient(c, <span class="number">0</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (io_threads_op == IO_THREADS_OP_READ) &#123;</span><br><span class="line">            readQueryFromClient(c-&gt;conn);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            serverPanic(<span class="string">&quot;io_threads_op value is unknown&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    listEmpty(io_threads_list[id]);</span><br><span class="line">    setIOPendingCount(id, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，相比于主线程，子线程的逻辑还是比较清晰简单的。子线程会根据事件类型来决定是回包writeToClient，还是读取数据readQueryFromClient。如果是writeToClient，就诵过socket把缓冲区数据发送给客户端，如果是读取操作，就通过socket读取客户端命令，存入读取缓存，这里最终只会解析到第一条命令，然后就结束，不会去执行命令。</p>
+<p>在全部任务执行完之后把自己的原子计数器置 0，以告知主线程自己已经完成了工作。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>主线程负责管理自己所监听的fd；</p>
+<p>当监听到有读或者写事件时，就封装成一个任务，放到任务队列中，而其他的工作线程就从这个任务队列中取任务完成相应的数据准备(用户缓冲区&lt;——&gt;内核缓冲区 +数据解析)的工作。</p>
+<p>而完成这些数据准备工作之后，所有任务的业务逻辑那一部分还是由单线程处理。</p>
+<h1 id="4-内存淘汰算法"><a href="#4-内存淘汰算法" class="headerlink" title="4.内存淘汰算法"></a>4.内存淘汰算法</h1><p>主要的介绍思路是：淘汰时机、淘汰策略、如何选择。</p>
+<h2 id="内存满了怎么办"><a href="#内存满了怎么办" class="headerlink" title="内存满了怎么办"></a>内存满了怎么办</h2><p>我们都知道Redis是基于内存存储，那我们能存入多少数据到Redis呢？</p>
+<p>使用maxmemory配置，默认是被注释掉的，在 32 位操作系统中，maxmemory 的默认值是 3G，因为 32 位的机器最大只支持 4GB 的内存，而系统本身就需要一定的内存资源来支持运行，默认3G相对合理。而现在的机器基本都是64位机器，我们后面重点关注以及面试重点提到的也是64位机器下的情况，64位机器不会限制内存的使用。</p>
+<p>淘汰策略的话，大方向有两个：</p>
+<img src="/2025/04/01/RedisTutorial02/image-20250410001417182.png" class>
+
+<p>一个是noeviction，默认就是这种策略，此时如果内存达到maxmemory，则写入操作会失败，但不会淘汰已有数据。</p>
+<p>第二个是多种淘汰策略，主要支持LRU，LFU，RANDOM，TTL这几个方式:</p>
+<ul>
+<li>lru：根据LRU(Least recently used，最近最少使用)算法尝试回收最长时间未使用的。</li>
+<li>lfu：根据LFU(Least Frequently Use)驱逐最不常用的键，lfu是在4.0引入的。</li>
+<li>random：回收随机的键使得新添加的数据有空间存放。</li>
+<li>ttl：回收在过期集合的键，并且优先回收存活时间(TTL)较短的键，使得新添加的数据有空间存放。</li>
+</ul>
+<p>这四种策略，可以选择时volatile，也就是设置了过期时间的Key，或者是allkeys，即全部的Key，所以一共有8种淘汰方式。</p>
+<blockquote>
+<p>volatile 这个单词在 Redis 内存淘汰策略中的使用，是基于其原本的意义“挥发“或“易变”，而<strong>与Redis 键的 过期性 相关</strong>。Java 中的 volatile 关键字是用来确保变量在多线程环境中的可见性，它和 Redis 的内存淘汰策略没有直接关系。</p>
+</blockquote>
+<h2 id="LRU"><a href="#LRU" class="headerlink" title="LRU"></a>LRU</h2><h3 id="LRU算法是什么"><a href="#LRU算法是什么" class="headerlink" title="LRU算法是什么"></a>LRU算法是什么</h3><p>最近最久未使用，即记录每个Key的最近访问时间，维护一个访问时间的数据。</p>
+<h3 id="Redis用LRU算法会有什么问题"><a href="#Redis用LRU算法会有什么问题" class="headerlink" title="Redis用LRU算法会有什么问题"></a>Redis用LRU算法会有什么问题</h3><p>如果为所有数据维护一个顺序列表，实际就是做一个双向链表，但是如果Redis数据稍微多些，这个链表就是巨大的成本，对于Redis而言，内存是最宝贵的，所以Redis选择了<strong>近似LRU算法</strong>。</p>
+<h3 id="算法概述"><a href="#算法概述" class="headerlink" title="算法概述"></a>算法概述</h3><p>在LRU模式，redisObject对象中lru字段存储的是key被访问时Redis的时钟server.lruclock，当key被访问的时候Redis会更新这个key的redisObject的lru字段。</p>
+<p>近似 LRU 算法在现有数据结构的基础上采用<strong>随机采样</strong>的方式来淘汰元素，当内存不足时，就执行一次近似 LRU 算法。</p>
+<p>具体步骤是随机采样 n个 key（这个采样个数默认为 5）然后根据时间戳淘汰掉最旧的那个 key，如果淘汰后内存还是不足，就继续随机采样来淘汰。</p>
+<blockquote>
+<p>近似 lru 的随机采样和 volatile-random 有什么区别呢？我的理解是 volatile-random 随机选取有过期时间的元素后就直接淘汰被选取的元素，而lru 在随机挑选出元素后，淘汰掉其中最久没有被访问的那个。<em>区别在于是否直接淘汰被选择的元素</em>。</p>
+</blockquote>
+<h3 id="采样范围与时机"><a href="#采样范围与时机" class="headerlink" title="采样范围与时机"></a>采样范围与时机</h3><p>采样范围是什么呢?Redis可以选择范围策略，有两种：</p>
+<p>1.allkeys，所有key中随机采样。</p>
+<p>2.volatile，从有过期时间的key随机采样。分别对应allkeys-lru，volatitle-lru。</p>
+<p>触发时机也很简单，就是当使用内存超过 maxmemory 之后，会触发自动的数据淘汰。</p>
+<h3 id="淘汰池优化（重要）"><a href="#淘汰池优化（重要）" class="headerlink" title="淘汰池优化（重要）"></a>淘汰池优化（重要）</h3><p>近似LRU，优点在于节约了内存，但它的缺点就是不是一个完整的LRU，随机采样得到的结果，其实不是全局真正的最久未访问，在数据量大的情况，尤其是这样。</p>
+<p>Redis3.0对近似LRU算法进行了一些优化。</p>
+<p>新算法会维护一个大小为16的候选池，池中的数据根据访问时间进行排序。第一次随机选取的key都会放入池中然后淘汰掉最久未访问的，比如第一次选了5个，淘汰了1个，剩下4个继续留在池子里。</p>
+<blockquote>
+<p> 注：Redis为了保证核心单线程服务性能，缓存了Unix操作系统时钟，默认每100毫秒更新一次，缓存的值是Unix<br>时间戳取模2^24。lru字段表示的时间戳越小，就代表这个key空闲的时间越大，就越应该被淘汰</p>
+</blockquote>
+<ul>
+<li>如果池子未满，那不管空闲时间大还是小，都需要填充到池子里面</li>
+<li>如果池子满了，每次随机选取的key只有<strong>空闲时间 &gt; 当前池子里面最小空闲时间的key</strong>时才会放入池中，然后将池中空闲时间最大的key进行淘汰</li>
+</ul>
+<p>通过池子存储，其表现也会非常接近真正的LRU。</p>
+<p>以下图片可以帮助理解：</p>
+<img src="/2025/04/01/RedisTutorial02/image-20250410003836771.png" class>
+
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><p>数据触发内存上限时发生内存淘汰，开始采样。采样范围分成全域和过期域可以自己选，方式是随机采样，采到的样按照要求会发配到淘汰池，再根据规则淘汰。</p>
+<h2 id="LFU"><a href="#LFU" class="headerlink" title="LFU"></a>LFU</h2><h3 id="LFU是什么"><a href="#LFU是什么" class="headerlink" title="LFU是什么"></a>LFU是什么</h3><p>LFU淘汰算法，即Least Frequently Used，最不频繁淘汰算法，顾名思义，优先淘汰活跃最低，使用频率最低的。</p>
+<h3 id="为什么4-0引入LFU"><a href="#为什么4-0引入LFU" class="headerlink" title="为什么4.0引入LFU"></a>为什么4.0引入LFU</h3><p>LRU本身已经能解决大部分问题，但是脱离频率，只谈最近访问，在部分场景是得不到我们希望的结果，比如:</p>
+<img src="/2025/04/01/RedisTutorial02/image-20250410004158532.png" class>
+
+<p>如上所示，key niuniu频率很高，key mart虽然是最近访问的，但是实际频率低(我们假设没有其他key的干扰)，如果内存满了，会淘汰key niuniu。</p>
+<p>但如果用LFU的话，会淘汰key mart，可以保留频率较高的keyniuniu希望按访问频率来进行淘汰，这其实是一个很正常的需求，LFU就是专门做这个事的。</p>
+<p>我们都知道，redisObj里是有记录lru的字段的。如果想使用LFU，因为LRU、LFU是不会同时开启的，基于这个情况，加上节约内存的考虑，Redis在LFU策略下复用lru字段，还是用它来表示LFU的信息，不过将24拆解，高16bit存储ldt(Last DecrementTime)，低8bit存储logc(Logistic Counter)。</p>
+<img src="/2025/04/01/RedisTutorial02/image-20250410004415285.png" class>
+
+<p>如图所示，高的16位保存了上次访问时间戳，因为少了8位，所以LFU下时间的最小分度是1分钟，不然用秒的话2^16次方只能表示65536秒，后8位存储的是一个访问计数。</p>
+<p>一个Key是否活跃，就是这两个字段综合决定的。</p>
+<p>如果上一次访问时间很久，那么访问计数就会衰减，这里有同学问为什么要衰减，因为只是简单的增加访问计数的方法并不完美，访问的热度一直在变，比如一个Key，他原来是255，夸张一点，一年没访问了，不该归零么。而本身访问，会增加访问计数。</p>
+<p>当然，最后起判断是否留存的变量就是访问计数。接下来我们讲一下数据更新的过程。</p>
+<h3 id="数据更新"><a href="#数据更新" class="headerlink" title="数据更新"></a>数据更新</h3><p><strong>第一步，计算次数衰减</strong></p>
+<p>因为无论是多快，相对于上次访问，一定有时间间隔，根据间隔，来计算你应该减少的次数。使用的函数就是LFUDecrAndReturn。</p>
+<p><strong>第二步，一定概率增加访问计数</strong></p>
+<p>这里可能会疑问，为什么是一定概率增加访问计数，次数不足5次，那一定会增加，如果大于5次，小于255次，会一定概率加1，原来的次数越大，越困难。</p>
+<p>除了原来的次数影响之外，还有一个lfu-log-factor 参数可以被设置的。也就是说，可以通过lfu-log-factor参数来调节难度，这个越大，难度也越大，如果为0，那么每次必然+1，很快就能255，255[10]-&gt;1111 1111[2]，255就是最大值。</p>
+<p>此参数的默认值是10，需要1M流量才能达到最大值。</p>
+<img src="/2025/04/01/RedisTutorial02/image-20250410004920338.png" class>
+
+<p><strong>第三步，更新</strong></p>
+<p>当前时间更新到高16位，次数更新到低8位。</p>
+<p>源码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Update LFU when an object is accessed.</span></span><br><span class="line"><span class="comment">* Firstly,decrement the counter if the decrement time is reached.</span></span><br><span class="line"><span class="comment">* Then logarithmically increment the counter, and update the access time. */</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">updateLFU</span><span class="params">(robj *val)</span>&#123;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> counter =LFUDecrAndReturn(val);</span><br><span class="line">	counter =LFULogIncr(counter);</span><br><span class="line">	val-&gt;lru=(LFUGetTimeInMinutes()&lt;&lt;<span class="number">8</span>)counter;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2025/04/01/RedisTutorial02/">https://0kr.xin/2025/04/01/RedisTutorial02/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape001.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/04/01/RedisTutorial03/" title="RedisTutorial03"><img class="cover" src="/statics/landscape004.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">RedisTutorial03</div></div><div class="info-2"><div class="info-item-1">Redis数据持久化持久化介绍持久化是什么Redis是跑在内存里的，当程序重启或者服务崩溃，数据就会丢失，如果业务场景希望重启之后数据还在，就需要持久化，即把数据保存到可永久保存的存储设备中。 持久化方式Redis提供两种方式来持久化: 1.RDB(Redis Database Backup)，记录Redis某个时刻的全部数据，这种方式本质就是数据快照，直接保存二进制数据到磁盘，后续通过加载RDB文件恢复数据。    2.AOF(Append Only...</div></div></div></a><a class="pagination-related" href="/2025/04/01/RedisTutorial01/" title="RedisTutorial01"><img class="cover" src="/statics/landscape003.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">RedisTutorial01</div></div><div class="info-2"><div class="info-item-1"> Redis学习流程：对象、执行流程、持久化、场景、集群。本篇讲述第一部分：Redis的各种数据结构。  0.Why Redis？相比与MySQL这种磁盘型的数据库，Redis是一款内存数据存储系统，所有数据采用键值对结构，以其卓越的性能和灵活性在现代应用架构中占据重要地位。它将数据直接存储在RAM中，提供毫秒级响应速度，同时支持多样化的数据结构（如后面要讲到的String、List、Hash、Set、ZSet等）。 在以前，Redis作为传统缓存层的首选技术充当请求与主数据库的缓冲。而现在，Redis不仅能够提供数据持久化保障，还支持JSON格式、高效搜索和对象映射功能，也能支持作为主数据库使用了。无论是自托管还是通过Redis...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-Redis%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">1.Redis存储过程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#redisDb%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.</span> <span class="toc-text">redisDb结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#dict%E7%BB%93%E6%9E%84"><span class="toc-number">1.2.</span> <span class="toc-text">dict结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B%E8%A7%A3%E6%9E%90"><span class="toc-number">1.3.</span> <span class="toc-text">存储过程解析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%87%E6%9C%9F%E9%94%AE"><span class="toc-number">1.4.</span> <span class="toc-text">过期键</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-Redis%E5%8D%95%E7%BA%BF%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">2.Redis单线程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%94%A8%E5%A4%9A%E7%BA%BF%E7%A8%8B%EF%BC%9F"><span class="toc-number">2.1.</span> <span class="toc-text">为什么不用多线程？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E7%BA%BF%E7%A8%8B%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%BF%AB%EF%BC%9F"><span class="toc-number">2.2.</span> <span class="toc-text">单线程为什么这么快？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-Redis%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.</span> <span class="toc-text">3.Redis多线程实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E7%BA%BF%E7%A8%8B%E8%A7%86%E8%A7%92"><span class="toc-number">3.1.</span> <span class="toc-text">主线程视角</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF"><span class="toc-number">3.1.1.</span> <span class="toc-text">事件循环</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%90%E7%BA%BF%E7%A8%8B%E8%A7%86%E8%A7%92"><span class="toc-number">3.2.</span> <span class="toc-text">子线程视角</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AD%89%E5%BE%85%E4%BA%8B%E4%BB%B6"><span class="toc-number">3.2.1.</span> <span class="toc-text">等待事件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%84%E7%90%86%E4%BA%8B%E4%BB%B6"><span class="toc-number">3.2.2.</span> <span class="toc-text">处理事件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.3.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AE%97%E6%B3%95"><span class="toc-number">4.</span> <span class="toc-text">4.内存淘汰算法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E6%BB%A1%E4%BA%86%E6%80%8E%E4%B9%88%E5%8A%9E"><span class="toc-number">4.1.</span> <span class="toc-text">内存满了怎么办</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LRU"><span class="toc-number">4.2.</span> <span class="toc-text">LRU</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LRU%E7%AE%97%E6%B3%95%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">4.2.1.</span> <span class="toc-text">LRU算法是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis%E7%94%A8LRU%E7%AE%97%E6%B3%95%E4%BC%9A%E6%9C%89%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98"><span class="toc-number">4.2.2.</span> <span class="toc-text">Redis用LRU算法会有什么问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E6%A6%82%E8%BF%B0"><span class="toc-number">4.2.3.</span> <span class="toc-text">算法概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%87%E6%A0%B7%E8%8C%83%E5%9B%B4%E4%B8%8E%E6%97%B6%E6%9C%BA"><span class="toc-number">4.2.4.</span> <span class="toc-text">采样范围与时机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%98%E6%B1%B0%E6%B1%A0%E4%BC%98%E5%8C%96%EF%BC%88%E9%87%8D%E8%A6%81%EF%BC%89"><span class="toc-number">4.2.5.</span> <span class="toc-text">淘汰池优化（重要）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93-1"><span class="toc-number">4.2.6.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LFU"><span class="toc-number">4.3.</span> <span class="toc-text">LFU</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LFU%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">4.3.1.</span> <span class="toc-text">LFU是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%884-0%E5%BC%95%E5%85%A5LFU"><span class="toc-number">4.3.2.</span> <span class="toc-text">为什么4.0引入LFU</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%9B%B4%E6%96%B0"><span class="toc-number">4.3.3.</span> <span class="toc-text">数据更新</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

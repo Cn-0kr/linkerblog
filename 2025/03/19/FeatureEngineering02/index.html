@@ -1,0 +1,359 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>FeatureEngineering02 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="创建特征引言一旦你确定了一组具有潜力的特征，就该开始开发它们了。在本课中，你将学习一些可以完全在Pandas中进行的常见转换。如果你感到生疏，我们有一个很棒的Pandas课程. 我们将在本课中使用四个具有不同特征类型的数据集：[美国交通事故]、[1985年汽车]、[混凝土配方]和[客户终身价值]。 发现新特征的技巧 理解特征。参考你的数据集的数据文档（如果有）。 研究问题领域以获取领域知识。如果你">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FeatureEngineering02">
+<meta property="og:url" content="https://0kr.xin/2025/03/19/FeatureEngineering02/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="创建特征引言一旦你确定了一组具有潜力的特征，就该开始开发它们了。在本课中，你将学习一些可以完全在Pandas中进行的常见转换。如果你感到生疏，我们有一个很棒的Pandas课程. 我们将在本课中使用四个具有不同特征类型的数据集：[美国交通事故]、[1985年汽车]、[混凝土配方]和[客户终身价值]。 发现新特征的技巧 理解特征。参考你的数据集的数据文档（如果有）。 研究问题领域以获取领域知识。如果你">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape003.jpg">
+<meta property="article:published_time" content="2025-03-19T12:11:08.000Z">
+<meta property="article:modified_time" content="2025-03-20T11:19:31.796Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape003.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2025/03/19/FeatureEngineering02/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'FeatureEngineering02',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-03-20 19:19:31'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape003.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">FeatureEngineering02</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">FeatureEngineering02</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-03-19T12:11:08.000Z" title="发表于 2025-03-19 20:11:08">2025-03-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-03-20T11:19:31.796Z" title="更新于 2025-03-20 19:19:31">2025-03-20</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="创建特征"><a href="#创建特征" class="headerlink" title="创建特征"></a>创建特征</h1><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>一旦你确定了一组具有潜力的特征，就该开始开发它们了。在本课中，你将学习一些可以完全在Pandas中进行的常见转换。如果你感到生疏，我们有一个很棒的Pandas课程.</p>
+<p>我们将在本课中使用四个具有不同特征类型的数据集：[美国交通事故]、[1985年汽车]、[混凝土配方]和[客户终身价值]。</p>
+<h2 id="发现新特征的技巧"><a href="#发现新特征的技巧" class="headerlink" title="发现新特征的技巧"></a>发现新特征的技巧</h2><ul>
+<li>理解特征。参考你的数据集的数据文档（如果有）。</li>
+<li>研究问题领域以获取领域知识。如果你的问题是预测房价，请对房地产进行一些研究。维基百科是一个很好的起点，但书籍和期刊文章通常会有最好的信息。</li>
+<li>研究以往的工作。来自过去Kaggle比赛的解决方案是很好的资源。</li>
+<li>使用数据可视化。可视化可以揭示特征分布中的问题或可以简化的复杂关系。确保在特征工程过程中可视化你的数据集。</li>
+</ul>
+<h2 id="数学变换"><a href="#数学变换" class="headerlink" title="数学变换"></a>数学变换</h2><p>数值特征之间的关系通常通过数学公式表达，这些公式你会在领域研究中经常遇到。在Pandas中，你可以像对待普通数字一样对列进行算术运算。</p>
+<p>在汽车数据集中有描述汽车引擎的特征。研究产生了各种创建潜在有用新特征的公式。例如，”冲程比”是衡量引擎效率与性能的指标：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">autos[<span class="string">&quot;stroke_ratio&quot;</span>] = autos.stroke / autos.bore</span><br><span class="line">autos[[<span class="string">&quot;stroke&quot;</span>, <span class="string">&quot;bore&quot;</span>, <span class="string">&quot;stroke_ratio&quot;</span>]].head()</span><br></pre></td></tr></table></figure>
+
+<p>组合越复杂，模型学习就越困难，比如这个计算引擎”排量”（功率指标）的公式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">autos[<span class="string">&quot;displacement&quot;</span>] = (</span><br><span class="line">    np.pi * ((<span class="number">0.5</span> * autos.bore) ** <span class="number">2</span>) * autos.stroke * autos.num_of_cylinders</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>数据可视化可以提示转换，通常是通过幂或对数”重塑”特征。例如，美国事故数据集中的WindSpeed分布高度偏斜，在这种情况下对数变换能有效地使其正常化：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 如果特征有0.0值，使用np.log1p (log(1+x))代替np.log</span></span><br><span class="line">accidents[<span class="string">&quot;LogWindSpeed&quot;</span>] = accidents.WindSpeed.apply(np.log1p)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制比较图</span></span><br><span class="line">fig, axs = plt.subplots(<span class="number">1</span>, <span class="number">2</span>, figsize=(<span class="number">8</span>, <span class="number">4</span>))</span><br><span class="line">sns.kdeplot(accidents.WindSpeed, shade=<span class="literal">True</span>, ax=axs[<span class="number">0</span>])</span><br><span class="line">sns.kdeplot(accidents.LogWindSpeed, shade=<span class="literal">True</span>, ax=axs[<span class="number">1</span>]);</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/19/FeatureEngineering02/image-20250319202222695.png" class>
+
+<p>查看我们的Data Cleaning课程，你还将学习Box-Cox变换，这是一种非常通用的规范化器。</p>
+<h2 id="计数（Counts）"><a href="#计数（Counts）" class="headerlink" title="计数（Counts）"></a>计数（Counts）</h2><p>描述某物存在或不存在的特征通常成组出现，例如疾病的风险因素集合。你可以通过创建计数来聚合此类特征。</p>
+<p>这些特征将是二元的（1表示存在，0表示不存在）或布尔型（True或False）。在Python中，布尔值可以像整数一样相加。</p>
+<p>交通事故数据集中有几个特征表明某些道路物体是否在事故附近。这将创建一个使用sum方法计算附近道路特征总数的计数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># “便利设施”“凸起”“十字路口”“让行”“交叉路口”“无出口”“铁路”“环形交叉路口”“车站”“停车”“交通减速”“交通信号灯”</span></span><br><span class="line">roadway_features = [<span class="string">&quot;Amenity&quot;</span>, <span class="string">&quot;Bump&quot;</span>, <span class="string">&quot;Crossing&quot;</span>, <span class="string">&quot;GiveWay&quot;</span>, </span><br><span class="line">                    <span class="string">&quot;Junction&quot;</span>, <span class="string">&quot;NoExit&quot;</span>, <span class="string">&quot;Railway&quot;</span>, <span class="string">&quot;Roundabout&quot;</span>, <span class="string">&quot;Station&quot;</span>, <span class="string">&quot;Stop&quot;</span>,</span><br><span class="line">                    <span class="string">&quot;TrafficCalming&quot;</span>, <span class="string">&quot;TrafficSignal&quot;</span>]</span><br><span class="line">accidents[<span class="string">&quot;RoadwayFeatures&quot;</span>] = accidents[roadway_features].<span class="built_in">sum</span>(axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">accidents[roadway_features + [<span class="string">&quot;RoadwayFeatures&quot;</span>]].head(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/19/FeatureEngineering02/image-20250319202601082.png" class>
+
+<blockquote>
+<p>译者注：这里的计数可以反映道路环境的复杂性。比如值为0表示附近没有任何道路特征，而较高的值意味着该区域道路基础设施较为复杂。从表格数据来看，你可以观察到大多数样本的”RoadwayFeatures”值为0，表示附近没有特殊道路设施，而少数样本有1个或2个特征。这种模式可能是事故预测的重要信号。</p>
+</blockquote>
+<p>你也可以使用数据框的内置方法来创建布尔值。在混凝土数据集中有混凝土配方的成分含量。许多配方缺少一种或多种成分（即，该成分的值为0）。下面将计算一个配方中包含的成分数量，使用数据框的内置大于（gt）方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">components = [<span class="string">&quot;Cement&quot;</span>, <span class="string">&quot;BlastFurnaceSlag&quot;</span>, <span class="string">&quot;FlyAsh&quot;</span>, <span class="string">&quot;Water&quot;</span>, </span><br><span class="line">              <span class="string">&quot;Superplasticizer&quot;</span>, <span class="string">&quot;CoarseAggregate&quot;</span>, <span class="string">&quot;FineAggregate&quot;</span>]</span><br><span class="line">concrete[<span class="string">&quot;Components&quot;</span>] = concrete[components].gt(<span class="number">0</span>).<span class="built_in">sum</span>(axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">concrete[components + [<span class="string">&quot;Components&quot;</span>]].head(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/19/FeatureEngineering02/image-20250319203258902.png" class>
+
+<h2 id="组合和分解特征"><a href="#组合和分解特征" class="headerlink" title="组合和分解特征"></a>组合和分解特征</h2><p>通常你会遇到可以有效分解为更简单部分的复杂字符串。一些常见的例子：</p>
+<ul>
+<li>ID号码：’123-45-6789’</li>
+<li>电话号码：’(999) 555-0123’</li>
+<li>街道地址：’8241 Kaggle Ln., Goose City, NV’</li>
+<li>互联网地址：’<a target="_blank" rel="noopener" href="http://www.kaggle.com/">http://www.kaggle.com</a>‘</li>
+<li>产品代码：’0 36000 29145 2’</li>
+<li>日期和时间：’Mon Sep 30 07:06:05 2013’</li>
+</ul>
+<p>这类特征通常有某种结构可以利用。例如，美国电话号码有一个区号部分(‘(999)’)，它告诉你来电者的位置。一如既往，一些研究可能会有所帮助。</p>
+<p>str访问器允许你直接对列应用字符串方法，如split。客户终身价值数据集包含描述保险公司客户的特征。从Policy特征中，我们可以分离出Type和Level覆盖类型：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">customer[[<span class="string">&quot;Type&quot;</span>, <span class="string">&quot;Level&quot;</span>]] = (  <span class="comment"># 创建两个新特征</span></span><br><span class="line">    customer[<span class="string">&quot;Policy&quot;</span>]        <span class="comment"># 从Policy特征</span></span><br><span class="line">    .<span class="built_in">str</span>                      <span class="comment"># 通过字符串访问器</span></span><br><span class="line">    .split(<span class="string">&quot; &quot;</span>, expand=<span class="literal">True</span>)  <span class="comment"># 通过拆分&quot; &quot;</span></span><br><span class="line">                             <span class="comment"># 并将结果扩展为单独的列</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">customer[[<span class="string">&quot;Policy&quot;</span>, <span class="string">&quot;Type&quot;</span>, <span class="string">&quot;Level&quot;</span>]].head(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/19/FeatureEngineering02/image-20250319203517178.png" class>
+
+<p>如果你有理由相信某些特征组合存在交互，你也可以将简单特征组合成一个复合特征：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">autos[<span class="string">&quot;make_and_style&quot;</span>] = autos[<span class="string">&quot;make&quot;</span>] + <span class="string">&quot;_&quot;</span> + autos[<span class="string">&quot;body_style&quot;</span>]</span><br><span class="line">autos[[<span class="string">&quot;make&quot;</span>, <span class="string">&quot;body_style&quot;</span>, <span class="string">&quot;make_and_style&quot;</span>]].head()</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/19/FeatureEngineering02/image-20250319203538132.png" class>
+
+<blockquote>
+<p>译者注：原始特征可能与目标变量有直接关系，而复合特征可能捕捉到额外的交互效应。因此，一般建议创建复合特征的同时也保留原始特征。</p>
+</blockquote>
+<h2 id="分组转换（Group-Transforms）"><a href="#分组转换（Group-Transforms）" class="headerlink" title="分组转换（Group Transforms）"></a>分组转换（Group Transforms）</h2><p>最后是分组转换，它能汇总多个按某种类别分组的行的信息。通过分组转换，您可以创建诸如“某人居住州的平均收入”或“按类型划分的工作日上映电影的比例”之类的特征。如果您发现了类别交互作用，针对该类别的分组转换可能是值得研究的。</p>
+<p>使用聚合函数，分组转换会结合两个特征：一个用于分组的分类特征以及另一个您希望对其值进行聚合的特征。对于“按州划分的平均收入”，您会将“州”选为分组特征，将“平均值”选为聚合函数，将“收入”选为聚合特征。在 Pandas 中计算此值时，我们使用 groupby 和 transform 方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">customer[<span class="string">&quot;AverageIncome&quot;</span>] = (</span><br><span class="line">    customer.groupby(<span class="string">&quot;State&quot;</span>)  <span class="comment"># 对每个州</span></span><br><span class="line">    [<span class="string">&quot;Income&quot;</span>]                <span class="comment"># 选择收入</span></span><br><span class="line">    .transform(<span class="string">&quot;mean&quot;</span>)        <span class="comment"># 并计算其平均值</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">customer[[<span class="string">&quot;State&quot;</span>, <span class="string">&quot;Income&quot;</span>, <span class="string">&quot;AverageIncome&quot;</span>]].head(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/19/FeatureEngineering02/image-20250319204856954.png" class>
+<p>mean函数是一个内置的dataframe方法，这意味着我们可以将其作为字符串去<code>transform</code>。其他有用的方法包括max、min、median、var、std和count。下面是如何计算每个州在数据集中出现的频率：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">customer[<span class="string">&quot;StateFreq&quot;</span>] = (</span><br><span class="line">    customer.groupby(<span class="string">&quot;State&quot;</span>)</span><br><span class="line">    [<span class="string">&quot;State&quot;</span>]</span><br><span class="line">    .transform(<span class="string">&quot;count&quot;</span>)</span><br><span class="line">    / customer.State.count()</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">customer[[<span class="string">&quot;State&quot;</span>, <span class="string">&quot;StateFreq&quot;</span>]].head(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/19/FeatureEngineering02/image-20250319205037385.png" class>
+
+<p>你可以使用这样的转换为分类特征创建”频率编码(frequency encoding)”。</p>
+<p>如果你使用训练和验证数据集分割，为了保持它们的独立性，最好只使用训练集创建分组特征，然后将其合并到验证集中。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建分割</span></span><br><span class="line">df_train = customer.sample(frac=<span class="number">0.5</span>)</span><br><span class="line">df_valid = customer.drop(df_train.index)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在训练集上创建按覆盖类型划分的平均索赔金额</span></span><br><span class="line">df_train[<span class="string">&quot;AverageClaim&quot;</span>] = df_train.groupby(<span class="string">&quot;Coverage&quot;</span>)[<span class="string">&quot;ClaimAmount&quot;</span>].transform(<span class="string">&quot;mean&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将值合并到验证集，并简单查看每个类型对应的大致金额</span></span><br><span class="line">df_valid = df_valid.merge(</span><br><span class="line">    df_train[[<span class="string">&quot;Coverage&quot;</span>, <span class="string">&quot;AverageClaim&quot;</span>]].drop_duplicates(),</span><br><span class="line">    on=<span class="string">&quot;Coverage&quot;</span>,</span><br><span class="line">    how=<span class="string">&quot;left&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">df_valid[[<span class="string">&quot;Coverage&quot;</span>, <span class="string">&quot;AverageClaim&quot;</span>]].head(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/19/FeatureEngineering02/image-20250319205208965.png" class>
+
+<h2 id="创建特征的建议-重要！"><a href="#创建特征的建议-重要！" class="headerlink" title="创建特征的建议(重要！)"></a>创建特征的建议(重要！)</h2><p>在创建特征时，记住你的模型本身的优势和劣势很重要。以下是一些指导原则：</p>
+<ul>
+<li>线性模型本身可以学习和与差，但无法学习更复杂的关系。</li>
+<li>比率似乎对大多数模型来说都很难学习。比率组合通常能带来一些简单的性能提升。</li>
+<li>线性模型和神经网络通常在标准化特征上表现更好。神经网络特别需要将特征缩放到不太远离0的值。基于树的模型（如随机森林和XGBoost）有时也能从标准化中受益，但通常受益程度要小得多。</li>
+<li>树模型能学习近似任何特征组合，但当某个组合特别重要时，它们仍然可以从显式创建该组合中受益，尤其是在数据有限的情况下。</li>
+<li>计数对树模型特别有帮助，因为这些模型没有一种自然的方式来一次性聚合多个特征的信息。</li>
+</ul>
+<h1 id="K-Means聚类"><a href="#K-Means聚类" class="headerlink" title="K-Means聚类"></a>K-Means聚类</h1><p>本课程和下一课使用的是所谓的无监督学习算法。无监督算法不使用目标变量；相反，它们的目的是学习数据的某些特性，以某种方式表示特征的结构。在预测的特征工程背景下，<strong>你可以将无监督算法视为一种”特征发现”技术</strong>。</p>
+<p><strong>聚类</strong>简单来说就是根据数据点之间的相似程度将它们分配到不同组中。当用于特征工程时，我们可以尝试发现共享相似类型的部分变量，例如，共享相似天气模式的地理区域。添加聚类标签特征可以帮助机器学习模型解开空间或接近度的复杂关系。</p>
+<h2 id="聚类标签作为特征（Cluster-Labels-as-a-Feature）"><a href="#聚类标签作为特征（Cluster-Labels-as-a-Feature）" class="headerlink" title="聚类标签作为特征（Cluster Labels as a Feature）"></a>聚类标签作为特征（Cluster Labels as a Feature）</h2><p>应用于单个实值特征时，聚类的作用类似于传统的”分箱”或”离散化”转换。在多个特征上，它就像是”多维分箱（multi-dimensional binning）”（有时称为向量量化）。</p>
+<img src="/2025/03/19/FeatureEngineering02/image-20250319211916394.png" class>
+
+<p>添加到dataframe中，聚类标签特征可能看起来像这样：</p>
+<table>
+<thead>
+<tr>
+<th>Longitude</th>
+<th>Latitude</th>
+<th>Cluster</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-93.619</td>
+<td>42.054</td>
+<td>3</td>
+</tr>
+<tr>
+<td>-93.619</td>
+<td>42.053</td>
+<td>3</td>
+</tr>
+<tr>
+<td>-93.638</td>
+<td>42.060</td>
+<td>1</td>
+</tr>
+<tr>
+<td>-93.602</td>
+<td>41.988</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>重要的是要记住，这个<code>聚类</code>特征是分类型变量（categorical）。这里，它显示为标签编码（即作为整数序列），这是典型聚类算法产生的结果；根据你的模型，也可能更适合使用独热编码。</p>
+<p>添加聚类标签的动机是聚类将把特征之间的复杂关系分解成更简单的块。我们的模型然后可以一个接一个地学习这些更简单的块，而不必同时学习整个复杂的关系。这是一种”分而治之”的策略。</p>
+<img src="/2025/03/19/FeatureEngineering02/image-20250319212120316.png" class>
+
+<p>图中显示了聚类如何改进简单的线性模型。<code>建造年份</code>和<code>销售价格</code>之间的曲线关系对这种模型来说太复杂了——它欠拟合。然而，在较小的块上，关系几乎是线性的，模型可以轻松学习。</p>
+<h2 id="K-Means聚类-1"><a href="#K-Means聚类-1" class="headerlink" title="K-Means聚类"></a>K-Means聚类</h2><p>世界上有很多聚类算法。它们主要在如何衡量”相似性”或”接近度”以及适用于哪类特征方面有所不同。我们将使用的k均值算法，在特征工程上下文中直观且易于应用。根据你的应用，另一种算法可能更合适。</p>
+<p><strong>K-Means</strong>使用普通直线距离（即欧几里得距离）来衡量相似性。它通过在特征空间内放置一些点（称为中心点）来创建聚类。数据集中的每个点都被分配到与其距离最近的中心点的聚类。”k均值”中的”k”表示它创建的中心点（即聚类）数量。你可以自己定义k值。</p>
+<p>你可以想象每个中心点通过一系列辐射圆捕获点。当来自竞争中心点的圆集重叠时，它们形成一条线。结果是所谓的Voronoi图案。该图案展示了未来数据将被分配到哪些聚类；该图案本质上是k均值从其训练数据中学到的内容。</p>
+<p>上面Ames数据集的聚类是一个k均值聚类。这里显示的是同一张图，但包含了图案和中心点。</p>
+<img src="/2025/03/19/FeatureEngineering02/image-20250319212506521.png" class>
+
+
+
+<p>让我们回顾一下k均值算法如何学习聚类以及这对特征工程意味着什么。我们将关注scikit-learn实现中的三个参数：<code>n_clusters</code>、<code>max_iter</code>和<code>n_init</code>。</p>
+<p>这是一个简单的两步过程。算法首先随机初始化一些预定义数量（<code>n_clusters</code>）的中心点。然后它对这两个操作进行迭代：</p>
+<ol>
+<li>将点分配到最近的聚类中心点</li>
+<li>移动每个中心点以最小化到其点的距离</li>
+</ol>
+<p>它会不断迭代这两个步骤，直到中心点不再移动，或者直到达到某个最大迭代次数（<code>max_iter</code>）。</p>
+<p>经常发生的情况是，中心点的初始随机位置会导致不良的聚类。因此，算法会重复多次（<code>n_init</code>），并返回点到其中心点总距离最小的聚类，即最优聚类。</p>
+<p>下面的动画展示了算法的运行过程。它说明了结果对初始中心点的依赖性以及迭代至收敛的重要性。</p>
+<img src="/2025/03/19/FeatureEngineering02/tBkCqXJ.gif" class>
+
+<p>对于大量聚类或复杂数据集，你可能需要增加<code>max_iter</code>或<code>n_init</code>。但通常，你自己需要选择的唯一参数是<code>n_clusters</code>（即k值）。一组特征的最佳划分取决于你使用的模型和你试图预测的内容，所以最好像任何超参数一样调整它（比如通过交叉验证）。</p>
+<h2 id="示例-加州住房"><a href="#示例-加州住房" class="headerlink" title="示例 - 加州住房"></a>示例 - 加州住房</h2><p>作为空间特征，加州住房数据集的<code>纬度</code>和<code>经度</code>是k均值聚类的自然候选。在这个例子中，我们将这些特征与<code>中位收入</code>（MedInc）一起聚类，以创建加州不同地区的经济部门。</p>
+<p>由于k均值聚类对尺度敏感，对有极值的数据进行重新缩放或标准化是个好主意。我们的特征已经大致在同一尺度上，所以我们将保持原样。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建聚类特征</span></span><br><span class="line">kmeans = KMeans(n_clusters=<span class="number">6</span>)</span><br><span class="line">X[<span class="string">&quot;Cluster&quot;</span>] = kmeans.fit_predict(X)</span><br><span class="line">X[<span class="string">&quot;Cluster&quot;</span>] = X[<span class="string">&quot;Cluster&quot;</span>].astype(<span class="string">&quot;category&quot;</span>)</span><br><span class="line"></span><br><span class="line">X.head()</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/19/FeatureEngineering02/image-20250319215329909.png" class>
+
+<p>现在让我们看几个图表来看看这有多有效。首先，一个显示聚类地理分布的散点图。看起来算法为沿海地区的高收入区域创建了单独的部分。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sns.relplot(</span><br><span class="line">    x=<span class="string">&quot;Longitude&quot;</span>, y=<span class="string">&quot;Latitude&quot;</span>, hue=<span class="string">&quot;Cluster&quot;</span>, data=X, height=<span class="number">6</span>,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/19/FeatureEngineering02/image-20250319215448202.png" class>
+
+
+
+<p>该数据集的目标是<code>MedHouseVal</code>（中位房屋价值）。这些箱线图显示了每个聚类内目标的分布。如果聚类信息丰富，这些分布应该在<code>MedHouseVal</code>上大部分分开，而这正是我们所看到的。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">X[<span class="string">&quot;MedHouseVal&quot;</span>] = df[<span class="string">&quot;MedHouseVal&quot;</span>]</span><br><span class="line">sns.catplot(x=<span class="string">&quot;MedHouseVal&quot;</span>, y=<span class="string">&quot;Cluster&quot;</span>, data=X, kind=<span class="string">&quot;boxen&quot;</span>, height=<span class="number">6</span>);</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/19/FeatureEngineering02/image-20250319215942164.png" class>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2025/03/19/FeatureEngineering02/">https://0kr.xin/2025/03/19/FeatureEngineering02/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape003.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/03/19/FeatureEngineering03/" title="FeatureEngineering03"><img class="cover" src="/statics/landscape003.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">FeatureEngineering03</div></div><div class="info-2"><div class="info-item-1">主成分分析（Principal Component Analysis）在前一课中，我们了解了特征工程的第一个基于模型的方法：聚类。在本课中，我们将学习下一个方法：主成分分析（PCA）。就像聚类是基于接近度对数据集进行划分一样，PCA可以被视为对数据变异性的划分。PCA是探索数据中重要关系并创建更具信息量特征的有效工具。  ...</div></div></div></a><a class="pagination-related" href="/2025/03/18/FeatureEngineering01/" title="FeatureEngineering01"><img class="cover" src="/statics/landscape003.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">FeatureEngineering01</div></div><div class="info-2"><div class="info-item-1">特征工程入门在本课程中，您将学习构建优秀机器学习模型过程中最重要的步骤之一：特征工程。您将学习如何：  通过 mutual information（互信息）确定哪些特征最重要 创建新特征 使用 target encoding（目标编码）编码高基数类别变量 使用 k-means clustering（k均值聚类）创建分割特征 使用 principal component analysis（主成分分析）将数据集的变异分解为特征  实践练习将逐步引导您完成一个完整的 notebook，应用所有这些技术参加 House Prices Getting Started...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E7%89%B9%E5%BE%81"><span class="toc-number">1.</span> <span class="toc-text">创建特征</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%91%E7%8E%B0%E6%96%B0%E7%89%B9%E5%BE%81%E7%9A%84%E6%8A%80%E5%B7%A7"><span class="toc-number">1.2.</span> <span class="toc-text">发现新特征的技巧</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E5%AD%A6%E5%8F%98%E6%8D%A2"><span class="toc-number">1.3.</span> <span class="toc-text">数学变换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E6%95%B0%EF%BC%88Counts%EF%BC%89"><span class="toc-number">1.4.</span> <span class="toc-text">计数（Counts）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%84%E5%90%88%E5%92%8C%E5%88%86%E8%A7%A3%E7%89%B9%E5%BE%81"><span class="toc-number">1.5.</span> <span class="toc-text">组合和分解特征</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E7%BB%84%E8%BD%AC%E6%8D%A2%EF%BC%88Group-Transforms%EF%BC%89"><span class="toc-number">1.6.</span> <span class="toc-text">分组转换（Group Transforms）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E7%89%B9%E5%BE%81%E7%9A%84%E5%BB%BA%E8%AE%AE-%E9%87%8D%E8%A6%81%EF%BC%81"><span class="toc-number">1.7.</span> <span class="toc-text">创建特征的建议(重要！)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#K-Means%E8%81%9A%E7%B1%BB"><span class="toc-number">2.</span> <span class="toc-text">K-Means聚类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%81%9A%E7%B1%BB%E6%A0%87%E7%AD%BE%E4%BD%9C%E4%B8%BA%E7%89%B9%E5%BE%81%EF%BC%88Cluster-Labels-as-a-Feature%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">聚类标签作为特征（Cluster Labels as a Feature）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#K-Means%E8%81%9A%E7%B1%BB-1"><span class="toc-number">2.2.</span> <span class="toc-text">K-Means聚类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B-%E5%8A%A0%E5%B7%9E%E4%BD%8F%E6%88%BF"><span class="toc-number">2.3.</span> <span class="toc-text">示例 - 加州住房</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

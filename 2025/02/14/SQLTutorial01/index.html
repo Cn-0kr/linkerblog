@@ -1,16 +1,16 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>SQLTutorial01 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="知识日期函数DAYOFWEEK(date)返回日期date的星期索引(1&#x3D;星期天，2&#x3D;星期一, ……7&#x3D;星期六)。这些索引值对应于ODBC标准。 1select&#96; &#96;DAYOFWEEK(&#96;&#96;&#x27;1998-02-03&#x27;&#96;&#96;)  -&gt; 3 WEEKDAY(date)返回date的星期索引(0&#x3D;星期一，1&#x3D;星期二, ……6&amp;#x3">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>SQLTutorial01 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="1.多表查询使用inner join ...on...进行表连接。 例： 1234select qpd.device_id, qpd.question_id, qpd.resultfrom question_practice_detail as qpdinner join user_profile as up on up.device_id&#x3D;qpd.device_id and up.univers">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SQLTutorial01">
-<meta property="og:url" content="https://0krblog.yqbirdmp.com/2025/02/14/SQLTutorial01/index.html">
+<meta property="og:url" content="https://0kr.xin/2025/02/14/SQLTutorial01/index.html">
 <meta property="og:site_name" content="0kr&#39;s Blog">
-<meta property="og:description" content="知识日期函数DAYOFWEEK(date)返回日期date的星期索引(1&#x3D;星期天，2&#x3D;星期一, ……7&#x3D;星期六)。这些索引值对应于ODBC标准。 1select&#96; &#96;DAYOFWEEK(&#96;&#96;&#x27;1998-02-03&#x27;&#96;&#96;)  -&gt; 3 WEEKDAY(date)返回date的星期索引(0&#x3D;星期一，1&#x3D;星期二, ……6&amp;#x3">
+<meta property="og:description" content="1.多表查询使用inner join ...on...进行表连接。 例： 1234select qpd.device_id, qpd.question_id, qpd.resultfrom question_practice_detail as qpdinner join user_profile as up on up.device_id&#x3D;qpd.device_id and up.univers">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://0krblog.yqbirdmp.com/statics/landscape002.jpg">
+<meta property="og:image" content="https://0kr.xin/statics/landscape002.jpg">
 <meta property="article:published_time" content="2025-02-14T04:11:13.000Z">
-<meta property="article:modified_time" content="2025-02-14T04:11:48.096Z">
+<meta property="article:modified_time" content="2025-03-12T08:33:55.436Z">
 <meta property="article:author" content="Chn_0kr">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://0krblog.yqbirdmp.com/statics/landscape002.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0krblog.yqbirdmp.com/2025/02/14/SQLTutorial01/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape002.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2025/02/14/SQLTutorial01/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
     (() => {
       
     const saveToLocal = {
@@ -146,78 +146,354 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2025-02-14 12:11:48'
-}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">28</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape002.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">SQLTutorial01</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">SQLTutorial01</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-02-14T04:11:13.000Z" title="发表于 2025-02-14 12:11:13">2025-02-14</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-02-14T04:11:48.096Z" title="更新于 2025-02-14 12:11:48">2025-02-14</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">588</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="知识"><a href="#知识" class="headerlink" title="知识"></a>知识</h2><h3 id="日期函数"><a href="#日期函数" class="headerlink" title="日期函数"></a>日期函数</h3><h4 id="DAYOFWEEK-date"><a href="#DAYOFWEEK-date" class="headerlink" title="DAYOFWEEK(date)"></a>DAYOFWEEK(date)</h4><p>返回日期date的星期索引(1&#x3D;星期天，2&#x3D;星期一, ……7&#x3D;星期六)。这些索引值对应于ODBC标准。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select` `DAYOFWEEK(``&#x27;1998-02-03&#x27;``)</span><br></pre></td></tr></table></figure>
+  postUpdate: '2025-03-12 16:33:55'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape002.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">SQLTutorial01</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">SQLTutorial01</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-02-14T04:11:13.000Z" title="发表于 2025-02-14 12:11:13">2025-02-14</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-03-12T08:33:55.436Z" title="更新于 2025-03-12 16:33:55">2025-03-12</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="1-多表查询"><a href="#1-多表查询" class="headerlink" title="1.多表查询"></a>1.多表查询</h1><p>使用<code>inner join ...on...</code>进行表连接。</p>
+<p>例：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> qpd.device_id, qpd.question_id, qpd.result</span><br><span class="line"><span class="keyword">from</span> question_practice_detail <span class="keyword">as</span> qpd</span><br><span class="line"><span class="keyword">inner</span> <span class="keyword">join</span> user_profile <span class="keyword">as</span> up <span class="keyword">on</span> up.device_id<span class="operator">=</span>qpd.device_id <span class="keyword">and</span> up.university<span class="operator">=</span><span class="string">&#x27;浙江大学&#x27;</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> question_id</span><br></pre></td></tr></table></figure>
 
-<p>-&gt; 3</p>
-<h4 id="WEEKDAY-date"><a href="#WEEKDAY-date" class="headerlink" title="WEEKDAY(date)"></a>WEEKDAY(date)</h4><p>返回date的星期索引(0&#x3D;星期一，1&#x3D;星期二, ……6&#x3D; 星期天)。</p>
-<p><a target="_blank" rel="noopener" href="https://www.nowcoder.com/practice/847373e2fe8d47b4a2c294bdb5bda8b6?tpId=199&tqId=1975680&ru=/practice/979b1a5a16d44afaba5191b22152f64a&qru=/ta/sql-quick-study/question-ranking&sourceUrl=/exam/oj?page=1&tab=SQL%E7%AF%87&topicId=199#">复制代码</a></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ``select` `WEEKDAY(``&#x27;1997-10-04 22:23:00&#x27;``);</span><br></pre></td></tr></table></figure>
+<h1 id="2-条件函数"><a href="#2-条件函数" class="headerlink" title="2.条件函数"></a>2.条件函数</h1><p><strong>题目示例</strong>：计算25岁以上和以下的用户数量（SQL26）</p>
+<img src="/2025/02/14/SQLTutorial01/image-20250312083145360.png" class>
 
-<p>-&gt; 5</p>
-<h4 id="DAYOFMONTH-date"><a href="#DAYOFMONTH-date" class="headerlink" title="DAYOFMONTH(date)"></a>DAYOFMONTH(date)</h4><p>返回date的月份中日期，在1到31范围内。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ``select` `DAYOFMONTH(``&#x27;1998-02-03&#x27;``);</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> </span><br><span class="line">    <span class="keyword">CASE</span> <span class="keyword">WHEN</span> age <span class="operator">&gt;=</span> <span class="number">25</span> <span class="keyword">THEN</span> <span class="string">&#x27;25岁及以上&#x27;</span> <span class="keyword">ELSE</span> <span class="string">&#x27;25岁以下&#x27;</span> <span class="keyword">END</span> <span class="keyword">AS</span> age_group,</span><br><span class="line">    <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="keyword">AS</span> user_count</span><br><span class="line"><span class="keyword">FROM</span> users</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> age_group;</span><br></pre></td></tr></table></figure>
 
-<p>-&gt; 3</p>
-<h4 id="DAYOFYEAR-date"><a href="#DAYOFYEAR-date" class="headerlink" title="DAYOFYEAR(date)"></a>DAYOFYEAR(date)</h4><p>返回date在一年中的日数, 在1到366范围内。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ``select` `DAYOFYEAR(``&#x27;1998-02-03&#x27;``);</span><br></pre></td></tr></table></figure>
+<h3 id="1-COUNT-的作用"><a href="#1-COUNT-的作用" class="headerlink" title="1. COUNT 的作用"></a><strong>1. <code>COUNT</code> 的作用</strong></h3><p><code>COUNT</code> 是聚合函数，用于统计行数。常见用法有两种：</p>
+<ul>
+<li>**<code>COUNT(*)</code>**：统计所有行的数量，包括值为 <code>NULL</code> 的行。</li>
+<li>**<code>COUNT(column_name)</code>**：统计指定列中非 <code>NULL</code> 值的行数。</li>
+</ul>
+<p><strong>在本题中的应用</strong>：<br>题目要求统计用户数量，且需包含 <code>age</code> 为 <code>NULL</code> 的情况。因此必须使用 <code>COUNT(*)</code>，以确保所有行都被计数。</p>
+<hr>
+<h3 id="2-GROUP-BY-的作用"><a href="#2-GROUP-BY-的作用" class="headerlink" title="2. GROUP BY 的作用"></a><strong>2. <code>GROUP BY</code> 的作用</strong></h3><p><code>GROUP BY</code> 用于将结果集按指定列或表达式分组，每组返回一行。其核心逻辑是：</p>
+<ul>
+<li>将相同值的行归为一组。</li>
+<li>结合聚合函数（如 <code>COUNT</code>、<code>SUM</code> 等），对每组数据进行统计。</li>
+</ul>
+<p><strong>在本题中的应用</strong>：<br>通过 <code>CASE WHEN</code> 生成年龄分类字段 <code>age_cut</code>（“25岁以下”或“25岁及以上”），再用 <code>GROUP BY age_cut</code> 将所有用户按此分类分为两组。每组内的行数即为该年龄段的用户数量。</p>
+<hr>
+<h3 id="3-为什么结合-COUNT-和-GROUP-BY-能解决问题？"><a href="#3-为什么结合-COUNT-和-GROUP-BY-能解决问题？" class="headerlink" title="3. 为什么结合 COUNT 和 GROUP BY 能解决问题？"></a><strong>3. 为什么结合 <code>COUNT</code> 和 <code>GROUP BY</code> 能解决问题？</strong></h3><p>以题目示例数据为例：</p>
+<table>
+<thead>
+<tr>
+<th>原始年龄</th>
+<th>分类（<code>CASE WHEN</code> 生成）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>21</td>
+<td>25岁以下</td>
+</tr>
+<tr>
+<td>NULL</td>
+<td>25岁以下</td>
+</tr>
+<tr>
+<td>20</td>
+<td>25岁以下</td>
+</tr>
+<tr>
+<td>23</td>
+<td>25岁以下</td>
+</tr>
+<tr>
+<td>25</td>
+<td>25岁及以上</td>
+</tr>
+<tr>
+<td>28</td>
+<td>25岁及以上</td>
+</tr>
+<tr>
+<td>26</td>
+<td>25岁及以上</td>
+</tr>
+</tbody></table>
+<p><strong>分组过程</strong>：  </p>
+<ul>
+<li><code>GROUP BY age_cut</code> 将数据分为两组：  <ol>
+<li><strong>“25岁以下”组</strong>：包含年龄为21、NULL、20、23的4行。  </li>
+<li><strong>“25岁及以上”组</strong>：包含年龄为25、28、26的3行。</li>
+</ol>
+</li>
+</ul>
+<p><strong>统计过程</strong>：  </p>
+<ul>
+<li><code>COUNT(*)</code> 对每组行数进行统计：  <ul>
+<li>“25岁以下”组：<code>COUNT(*)</code> 结果为4。  </li>
+<li>“25岁及以上”组：<code>COUNT(*)</code> 结果为3。</li>
+</ul>
+</li>
+</ul>
+<p>先分组，再统计。</p>
+<h1 id="3-distinct关键字"><a href="#3-distinct关键字" class="headerlink" title="3.distinct关键字"></a>3.distinct关键字</h1><ul>
+<li><p><strong>用户表（<code>user_profile</code>）</strong>：</p>
+<table>
+<thead>
+<tr>
+<th align="left">device_id</th>
+<th align="left">university</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">1</td>
+<td align="left">北京大学</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left">复旦大学</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="left">北京大学</td>
+</tr>
+</tbody></table>
+</li>
+<li><p><strong>答题记录表（<code>question_practice_detail</code>）</strong>：</p>
+<table>
+<thead>
+<tr>
+<th align="left">device_id</th>
+<th align="left">question_id</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">1</td>
+<td align="left">100</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="left">101</td>
+<td># 设备1回答了2个问题</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left">102</td>
+<td># 设备2回答了1个问题</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="left">103</td>
+<td># 设备3回答了1个问题</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<p><strong>执行结果</strong>：</p>
+<table>
+<thead>
+<tr>
+<th align="left">university</th>
+<th align="left">avg_answer_cnt</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">北京大学</td>
+<td align="left">(2+1)&#x2F;2 &#x3D; 1.5</td>
+<td># 总问题数3（设备1答2题，设备3答1题），不同设备数2</td>
+</tr>
+<tr>
+<td align="left">复旦大学</td>
+<td align="left">1&#x2F;1 &#x3D; 1</td>
+<td># 总问题数1（设备2答1题），不同设备数1</td>
+</tr>
+</tbody></table>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> university,</span><br><span class="line">    <span class="built_in">count</span>(question_id) <span class="operator">/</span> <span class="built_in">count</span>(<span class="keyword">distinct</span> qpd.device_id) <span class="keyword">as</span> avg_answer_cnt</span><br><span class="line"><span class="keyword">from</span> question_practice_detail <span class="keyword">as</span> qpd</span><br><span class="line"><span class="keyword">inner</span> <span class="keyword">join</span> user_profile <span class="keyword">as</span> up</span><br><span class="line"><span class="keyword">on</span> qpd.device_id<span class="operator">=</span>up.device_id</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> university</span><br></pre></td></tr></table></figure>
 
-<p>-&gt; 34</p>
-<h4 id="MONTH-date"><a href="#MONTH-date" class="headerlink" title="MONTH(date)"></a>MONTH(date)</h4><p>返回date的月份，范围1到12。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ``select` `MONTH``(``&#x27;1998-02-03&#x27;``);</span><br></pre></td></tr></table></figure>
+<h3 id="DISTINCT关键字的作用"><a href="#DISTINCT关键字的作用" class="headerlink" title="DISTINCT关键字的作用"></a><strong><code>DISTINCT</code>关键字的作用</strong></h3><ul>
+<li><strong>含义</strong>：<code>DISTINCT</code> 用于去重，确保统计的是唯一值。</li>
+<li><strong>在代码中的应用</strong>：<ul>
+<li><code>COUNT(DISTINCT qpd.device_id)</code>：统计每个大学中<strong>不同的设备数量</strong>。</li>
+<li>如果没有 <code>DISTINCT</code>，<code>COUNT(qpd.device_id)</code> 会统计所有设备的答题记录数（包含重复设备），导致分母错误。</li>
+</ul>
+</li>
+</ul>
+<h1 id="4-窗口函数与topk问题"><a href="#4-窗口函数与topk问题" class="headerlink" title="4.窗口函数与topk问题"></a>4.窗口函数与topk问题</h1><img src="/2025/02/14/SQLTutorial01/image-20250312085837193.png" class>
 
-<p>-&gt; 2</p>
-<h4 id="DAYNAME-date"><a href="#DAYNAME-date" class="headerlink" title="DAYNAME(date)"></a>DAYNAME(date)</h4><p>返回date的星期名字。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ``select` `DAYNAME(``&quot;1998-02-05&quot;``);</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> device_id, university, gpa</span><br><span class="line"><span class="keyword">FROM</span> (</span><br><span class="line">    <span class="keyword">SELECT</span> <span class="operator">*</span>,</span><br><span class="line">        <span class="built_in">ROW_NUMBER</span>() <span class="keyword">OVER</span> (</span><br><span class="line">            <span class="keyword">PARTITION</span> <span class="keyword">BY</span> university </span><br><span class="line">            <span class="keyword">ORDER</span> <span class="keyword">BY</span> gpa <span class="keyword">ASC</span></span><br><span class="line">        ) <span class="keyword">AS</span> rn </span><br><span class="line">    <span class="keyword">FROM</span> user_profile</span><br><span class="line">) <span class="keyword">AS</span> ranked_students</span><br><span class="line"><span class="keyword">WHERE</span> rn <span class="operator">=</span> <span class="number">1</span>  </span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> university;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>**<code>ROW_NUMBER()</code>**：窗口函数，为每一行分配一个唯一的序号。<ul>
+<li>**<code>PARTITION BY school</code>**：按学校分区，每个学校的行独立编号。</li>
+<li>**<code>ORDER BY GPA ASC</code>**：在每个学校内，按GPA升序排序（GPA越低，排名越靠前）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="窗口函数详解"><a href="#窗口函数详解" class="headerlink" title="窗口函数详解"></a><strong>窗口函数详解</strong></h3><h4 id="1-ROW-NUMBER-vs-RANK-vs-DENSE-RANK"><a href="#1-ROW-NUMBER-vs-RANK-vs-DENSE-RANK" class="headerlink" title="1. ROW_NUMBER() vs RANK() vs DENSE_RANK()"></a><strong>1. <code>ROW_NUMBER()</code> vs <code>RANK()</code> vs <code>DENSE_RANK()</code></strong></h4><table>
+<thead>
+<tr>
+<th>函数</th>
+<th>行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong><code>ROW_NUMBER()</code></strong></td>
+<td>始终生成唯一序号（即使数据相同，如GPA并列最低，也会分配不同序号）。</td>
+</tr>
+<tr>
+<td><strong><code>RANK()</code></strong></td>
+<td>相同值的行序号相同，但后续序号会跳跃（如1,1,3）。</td>
+</tr>
+<tr>
+<td><strong><code>DENSE_RANK()</code></strong></td>
+<td>相同值的行序号相同，后续序号连续（如1,1,2）。</td>
+</tr>
+</tbody></table>
+<p><strong>示例</strong>：若两学生GPA相同且最低：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ROW_NUMBER</span>()  <span class="comment">--&gt; 1, 2</span></span><br><span class="line"><span class="built_in">RANK</span>()        <span class="comment">--&gt; 1, 1</span></span><br><span class="line"><span class="built_in">DENSE_RANK</span>()  <span class="comment">--&gt; 1, 1</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="2-PARTITION-BY-的作用"><a href="#2-PARTITION-BY-的作用" class="headerlink" title="2. PARTITION BY 的作用"></a><strong>2. <code>PARTITION BY</code> 的作用</strong></h4><ul>
+<li><strong>功能</strong>：将数据划分为多个独立的分区，<strong>窗口函数在每个分区内单独计算</strong>。</li>
+<li><strong>类比</strong>：类似于 <code>GROUP BY</code>，但不会折叠行，保留原始数据行的完整性。</li>
+</ul>
+<h4 id="3-ORDER-BY-GPA-ASC-的意义"><a href="#3-ORDER-BY-GPA-ASC-的意义" class="headerlink" title="3. ORDER BY GPA ASC 的意义"></a><strong>3. <code>ORDER BY GPA ASC</code> 的意义</strong></h4><ul>
+<li><strong>升序排序</strong>：GPA越低排名越靠前，因此 <code>rank = 1</code> 对应GPA最低的学生。</li>
+<li><strong>降序排序</strong>：若改为 <code>ORDER BY GPA DESC</code>，则 <code>rank = 1</code> 对应GPA最高的学生。</li>
+</ul>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a><strong>适用场景</strong></h3><ul>
+<li><strong>Top K问题</strong>：如“每个部门薪资最高的员工”、“每个类别销量前3的产品”。</li>
+<li><strong>去重</strong>：当需要按某字段分组并保留特定行时（如保留最新记录）。</li>
+</ul>
+<p><em>其实就是通过窗口函数新增一列ranking列，对每个分区下的ranking排列，再在外部的where语句查询最终结果。</em></p>
+<hr>
+<h1 id="5-日期函数"><a href="#5-日期函数" class="headerlink" title="5.日期函数"></a>5.日期函数</h1><img src="/2025/02/14/SQLTutorial01/image-20250312092720824.png" class>
 
-<p>-&gt; ‘Thursday’</p>
-<h4 id="MONTHNAME-date"><a href="#MONTHNAME-date" class="headerlink" title="MONTHNAME(date)"></a>MONTHNAME(date)</h4><p>返回date的月份名字。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ``select` `MONTHNAME(``&quot;1998-02-05&quot;``);</span><br></pre></td></tr></table></figure>
+<p>解法一：日期函数过滤</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">    <span class="keyword">day</span>(<span class="type">date</span>) <span class="keyword">as</span> <span class="keyword">day</span>,</span><br><span class="line">    <span class="built_in">count</span>(question_id) <span class="keyword">as</span> question_cnt</span><br><span class="line"><span class="keyword">from</span> question_practice_detail</span><br><span class="line"><span class="keyword">where</span> <span class="keyword">month</span>(<span class="type">date</span>)<span class="operator">=</span><span class="number">8</span> <span class="keyword">and</span> <span class="keyword">year</span>(<span class="type">date</span>)<span class="operator">=</span><span class="number">2021</span></span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> <span class="type">date</span></span><br></pre></td></tr></table></figure>
 
-<p>-&gt; ‘February’</p>
-<h4 id="QUARTER-date"><a href="#QUARTER-date" class="headerlink" title="QUARTER(date)"></a>QUARTER(date)</h4><p>返回date一年中的季度，范围1到4。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ``select` `QUARTER(``&#x27;98-04-01&#x27;``);</span><br></pre></td></tr></table></figure>
+<p>解法二：模糊查询</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DAY</span>(<span class="type">date</span>) <span class="keyword">day</span>,</span><br><span class="line"><span class="built_in">COUNT</span>(question_id) question_cnt</span><br><span class="line"><span class="keyword">FROM</span> question_practice_detail</span><br><span class="line"><span class="keyword">WHERE</span> <span class="type">date</span> <span class="keyword">like</span> <span class="string">&#x27;%2021-08%&#x27;</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> <span class="keyword">day</span>;</span><br></pre></td></tr></table></figure>
 
-<p>-&gt; 2</p>
-<h4 id="WEEK-date"><a href="#WEEK-date" class="headerlink" title="WEEK(date)"></a>WEEK(date)</h4><p>对于星期天是一周的第一天的地方，有一个单个参数，返回date的周数，范围在0到52。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ``select` `WEEK(``&#x27;1998-02-20&#x27;``);</span><br></pre></td></tr></table></figure>
 
-<p>-&gt; 7</p>
-<h4 id="WEEK-date-first"><a href="#WEEK-date-first" class="headerlink" title="WEEK(date,first)"></a>WEEK(date,first)</h4><p>2个参数形式WEEK()允许你指定星期是否开始于星期天或星期一。<br>如果第二个参数是0，星期从星期天开始，<br>如果第二个参数是1，从星期一开始。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ``select` `WEEK(``&#x27;1998-02-20&#x27;``,0);</span><br></pre></td></tr></table></figure>
 
-<p>-&gt; 7</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ``select` `WEEK(``&#x27;1998-02-20&#x27;``,1);</span><br></pre></td></tr></table></figure>
+<h1 id="6-左联表"><a href="#6-左联表" class="headerlink" title="6.左联表"></a>6.左联表</h1><img src="/2025/02/14/SQLTutorial01/image-20250312125118112.png" class>
 
-<p>-&gt; 8</p>
-<h4 id="YEAR-date"><a href="#YEAR-date" class="headerlink" title="YEAR(date)"></a>YEAR(date)</h4><p>返回date的年份，范围在1000到9999。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ``select` `YEAR``(``&#x27;98-02-03&#x27;``);</span><br></pre></td></tr></table></figure>
+<h3 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a><strong>解决思路</strong></h3><ol>
+<li><strong>数据去重</strong>：确保每个用户每天只计一次活跃记录。</li>
+<li><strong>自连接</strong>：将同一用户的连续两天活跃记录关联。</li>
+<li><strong>计算留存率</strong>：统计留存用户数除以总活跃用户数。</li>
+</ol>
+<hr>
+<h3 id="SQL代码"><a href="#SQL代码" class="headerlink" title="SQL代码"></a><strong>SQL代码</strong></h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> </span><br><span class="line">    ROUND(<span class="built_in">COUNT</span>(<span class="keyword">DISTINCT</span> d2.device_id) <span class="operator">/</span> <span class="built_in">COUNT</span>(<span class="keyword">DISTINCT</span> d1.device_id), <span class="number">4</span>) <span class="keyword">AS</span> avg_retention_rate</span><br><span class="line"><span class="keyword">FROM</span> </span><br><span class="line">    (<span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> device_id, <span class="type">date</span> <span class="keyword">FROM</span> question_practice_detail) d1</span><br><span class="line"><span class="keyword">LEFT</span> <span class="keyword">JOIN</span> </span><br><span class="line">    (<span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> device_id, <span class="type">date</span> <span class="keyword">FROM</span> question_practice_detail) d2</span><br><span class="line"><span class="keyword">ON</span> </span><br><span class="line">    d1.device_id <span class="operator">=</span> d2.device_id</span><br><span class="line">    <span class="keyword">AND</span> d2.date <span class="operator">=</span> DATE_ADD(d1.date, <span class="type">INTERVAL</span> <span class="number">1</span> <span class="keyword">DAY</span>);</span><br></pre></td></tr></table></figure>
 
-<p>-&gt; 1998</p>
-<h4 id="HOUR-time"><a href="#HOUR-time" class="headerlink" title="HOUR(time)"></a>HOUR(time)</h4><p>返回time的小时，范围是0到23。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ``select` `HOUR``(``&#x27;10:05:03&#x27;``);</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="代码解释"><a href="#代码解释" class="headerlink" title="代码解释"></a><strong>代码解释</strong></h3><h4 id="1-数据去重"><a href="#1-数据去重" class="headerlink" title="1. 数据去重"></a><strong>1. 数据去重</strong></h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> device_id, <span class="type">date</span> <span class="keyword">FROM</span> question_practice_detail) d1</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>作用</strong>：提取每个用户每天的 <strong>唯一活跃记录</strong>，避免同一天多次刷题重复计数。</li>
+<li><strong>示例</strong>：用户2315在2021-08-13有3条记录，去重后仅保留1条。</li>
+</ul>
+<h4 id="2-自连接关联次日记录"><a href="#2-自连接关联次日记录" class="headerlink" title="2. 自连接关联次日记录"></a><strong>2. 自连接关联次日记录</strong></h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">LEFT</span> <span class="keyword">JOIN</span> ... <span class="keyword">ON</span> </span><br><span class="line">    d1.device_id <span class="operator">=</span> d2.device_id</span><br><span class="line">    <span class="keyword">AND</span> d2.date <span class="operator">=</span> DATE_ADD(d1.date, <span class="type">INTERVAL</span> <span class="number">1</span> <span class="keyword">DAY</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>逻辑</strong>：将每个用户的活跃日期（<code>d1.date</code>）与其次日活跃日期（<code>d2.date</code>）关联。</li>
+<li><strong>结果</strong>：<ul>
+<li>若用户次日有活跃，<code>d2.date</code> 不为 <code>NULL</code>。</li>
+<li>若用户次日无活跃，<code>d2.date</code> 为 <code>NULL</code>。</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-计算留存率"><a href="#3-计算留存率" class="headerlink" title="3. 计算留存率"></a><strong>3. 计算留存率</strong></h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ROUND(<span class="built_in">COUNT</span>(<span class="keyword">DISTINCT</span> d2.device_id, d2.date) <span class="operator">/</span> <span class="built_in">COUNT</span>(<span class="keyword">DISTINCT</span> d1.device_id, d1.date), <span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>分子</strong>：次日留存用户数（<code>d2</code> 中非 <code>NULL</code> 的记录）。</li>
+<li><strong>分母</strong>：总活跃用户数（<code>d1</code> 中所有记录）。</li>
+<li>**ROUND(…, 4)**：结果保留4位小数。</li>
+</ul>
+<hr>
+<h3 id="示例数据验证"><a href="#示例数据验证" class="headerlink" title="示例数据验证"></a><strong>示例数据验证</strong></h3><h4 id="输入数据"><a href="#输入数据" class="headerlink" title="输入数据"></a><strong>输入数据</strong></h4><table>
+<thead>
+<tr>
+<th>device_id</th>
+<th>date</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2138</td>
+<td>2021-05-03</td>
+</tr>
+<tr>
+<td>3214</td>
+<td>2021-05-09</td>
+</tr>
+<tr>
+<td>3214</td>
+<td>2021-06-15</td>
+</tr>
+<tr>
+<td>6543</td>
+<td>2021-08-13</td>
+</tr>
+<tr>
+<td>2315</td>
+<td>2021-08-13</td>
+</tr>
+<tr>
+<td>2315</td>
+<td>2021-08-14</td>
+</tr>
+<tr>
+<td>2315</td>
+<td>2021-08-15</td>
+</tr>
+<tr>
+<td>3214</td>
+<td>2021-08-16</td>
+</tr>
+</tbody></table>
+<h4 id="自连接结果"><a href="#自连接结果" class="headerlink" title="自连接结果"></a><strong>自连接结果</strong></h4><table>
+<thead>
+<tr>
+<th>d1.date</th>
+<th>d2.date</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2021-05-03</td>
+<td>NULL</td>
+</tr>
+<tr>
+<td>2021-05-09</td>
+<td>NULL</td>
+</tr>
+<tr>
+<td>2021-06-15</td>
+<td>NULL</td>
+</tr>
+<tr>
+<td>2021-08-13</td>
+<td>2021-08-14</td>
+</tr>
+<tr>
+<td>2021-08-14</td>
+<td>NULL</td>
+</tr>
+<tr>
+<td>2021-08-15</td>
+<td>NULL</td>
+</tr>
+<tr>
+<td>2021-08-16</td>
+<td>NULL</td>
+</tr>
+</tbody></table>
+<h4 id="计算结果"><a href="#计算结果" class="headerlink" title="计算结果"></a><strong>计算结果</strong></h4><ul>
+<li><strong>分子（留存用户数）</strong>：1（2021-08-13 → 2021-08-14）</li>
+<li><strong>分母（总活跃用户数）</strong>：7</li>
+<li><strong>留存率</strong>：<code>1/7 ≈ 0.1429</code></li>
+</ul>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h3><ol>
+<li><strong>去重必要性</strong>：避免同一天多次刷题导致统计偏差。</li>
+<li><strong>LEFT JOIN</strong>：保留所有首次活跃记录，即使次日无活跃。</li>
+<li><strong>日期函数</strong>：<code>DATE_ADD</code> 用于精确匹配次日日期。</li>
+<li><strong>结果精度</strong>：使用 <code>ROUND</code> 控制小数位数。</li>
+</ol>
+<h1 id="7-例题"><a href="#7-例题" class="headerlink" title="7.例题"></a>7.例题</h1><img src="/2025/02/14/SQLTutorial01/image-20250312163045932.png" class>
 
-<p>-&gt; 10</p>
-<h4 id="MINUTE-time"><a href="#MINUTE-time" class="headerlink" title="MINUTE(time)"></a>MINUTE(time)</h4><p>返回time的分钟，范围是0到59。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ``select` `MINUTE``(``&#x27;98-02-03 10:05:03&#x27;``);</span><br></pre></td></tr></table></figure>
-
-<p>-&gt; 5</p>
-<h4 id="SECOND-time"><a href="#SECOND-time" class="headerlink" title="SECOND(time)"></a>SECOND(time)</h4><p>回来time的秒数，范围是0到59。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ``select` `SECOND``(``&#x27;10:05:03&#x27;``);</span><br></pre></td></tr></table></figure>
-
-<p>-&gt; 3</p>
-<h4 id="PERIOD-ADD-P-N"><a href="#PERIOD-ADD-P-N" class="headerlink" title="PERIOD_ADD(P,N)"></a>PERIOD_ADD(P,N)</h4><p>增加N个月到阶段P(以格式YYMM或YYYYMM)。以格式YYYYMM返回值。注意阶段参数P不是日期值。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ``select` `PERIOD_ADD(9801,2);</span><br></pre></td></tr></table></figure>
-
-<p>-&gt; 199803</p>
-<h4 id="PERIOD-DIFF-P1-P2"><a href="#PERIOD-DIFF-P1-P2" class="headerlink" title="PERIOD_DIFF(P1,P2)"></a>PERIOD_DIFF(P1,P2)</h4><p>返回在时期P1和P2之间月数，P1和P2应该以格式YYMM或YYYYMM。注意，时期参数P1和P2不是日期值。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ``select` `PERIOD_DIFF(9802,199703);</span><br></pre></td></tr></table></figure>
-
-<p>-&gt; 11</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> </span><br><span class="line">    <span class="keyword">DAY</span>(<span class="type">date</span>) <span class="keyword">as</span> <span class="keyword">day</span>,</span><br><span class="line">    <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="keyword">as</span> question_cnt</span><br><span class="line"><span class="keyword">FROM</span> question_practice_detail</span><br><span class="line"><span class="keyword">WHERE</span> <span class="type">date</span> <span class="keyword">BETWEEN</span> <span class="string">&#x27;2021-08-01&#x27;</span> <span class="keyword">AND</span> <span class="string">&#x27;2021-08-31&#x27;</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> <span class="keyword">DAY</span>(<span class="type">date</span>)</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> <span class="keyword">day</span>;</span><br></pre></td></tr></table></figure>
-
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0krblog.yqbirdmp.com">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0krblog.yqbirdmp.com/2025/02/14/SQLTutorial01/">https://0krblog.yqbirdmp.com/2025/02/14/SQLTutorial01/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0krblog.yqbirdmp.com" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/02/16/CSInternet03/" title="CSInternet03"><img class="cover" src="/statics/landscape001.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">CSInternet03</div></div><div class="info-2"><div class="info-item-1">HTTP 有什么缺陷?为什么需要引入 TLS 协议?SSL（安全套接字层）是在 90 年代初开发的。TLS（传输层安全）实际上就是 SSL 的继任者，可以说 TLS 是 SSL 的”后代”。第一个 TLS 版本（TLS 1.0）其实就是 SSL 3.0 的升级版。顺便一提，现代浏览器中也不再支持SSL啦。 关于这个问题，我想还是得从HTTP-&gt;SSL-&gt;TLS的顺序开始讲解会好理解一些： ·通信使用明文(不加密)，内容可能会被窃听。   ·不验证通信方的身份，因此有可能遭遇伪装。   ·无法证明报文的完整性，所以有可能已遭篡改   为了统一解决上述这些问题，需要在 HTTP上再加入加密处理和认证等机制。我们把添加了加密及认证机制的 HTTP 称为 HTTPS（HTTP Secure ）。HTTPS 并非是应用层的一种新协议。只是 HTTP 通信接口部分用SSL(Secure SocketLayer)和TS(Transport Layer Security)协议代替而已。通常，HTTP 直接和 TCP 通信。当使用 SSL时，则演变成先和 SSL通信，再由 SSL和...</div></div></div></a><a class="pagination-related" href="/2025/02/05/JavaTutorial05/" title="JavaTutorial05"><img class="cover" src="/statics/landscape001.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">JavaTutorial05</div></div><div class="info-2"><div class="info-item-1">本篇将以面试问答的形式讲解设计模式与JAVA8新特性相关的知识点。</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">28</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86"><span class="toc-number">1.</span> <span class="toc-text">知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A5%E6%9C%9F%E5%87%BD%E6%95%B0"><span class="toc-number">1.1.</span> <span class="toc-text">日期函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#DAYOFWEEK-date"><span class="toc-number">1.1.1.</span> <span class="toc-text">DAYOFWEEK(date)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#WEEKDAY-date"><span class="toc-number">1.1.2.</span> <span class="toc-text">WEEKDAY(date)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DAYOFMONTH-date"><span class="toc-number">1.1.3.</span> <span class="toc-text">DAYOFMONTH(date)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DAYOFYEAR-date"><span class="toc-number">1.1.4.</span> <span class="toc-text">DAYOFYEAR(date)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MONTH-date"><span class="toc-number">1.1.5.</span> <span class="toc-text">MONTH(date)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DAYNAME-date"><span class="toc-number">1.1.6.</span> <span class="toc-text">DAYNAME(date)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MONTHNAME-date"><span class="toc-number">1.1.7.</span> <span class="toc-text">MONTHNAME(date)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#QUARTER-date"><span class="toc-number">1.1.8.</span> <span class="toc-text">QUARTER(date)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#WEEK-date"><span class="toc-number">1.1.9.</span> <span class="toc-text">WEEK(date)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#WEEK-date-first"><span class="toc-number">1.1.10.</span> <span class="toc-text">WEEK(date,first)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#YEAR-date"><span class="toc-number">1.1.11.</span> <span class="toc-text">YEAR(date)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#HOUR-time"><span class="toc-number">1.1.12.</span> <span class="toc-text">HOUR(time)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MINUTE-time"><span class="toc-number">1.1.13.</span> <span class="toc-text">MINUTE(time)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SECOND-time"><span class="toc-number">1.1.14.</span> <span class="toc-text">SECOND(time)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PERIOD-ADD-P-N"><span class="toc-number">1.1.15.</span> <span class="toc-text">PERIOD_ADD(P,N)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PERIOD-DIFF-P1-P2"><span class="toc-number">1.1.16.</span> <span class="toc-text">PERIOD_DIFF(P1,P2)</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/03/09/GameTheroy/" title="GameTheroy"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="GameTheroy"/></a><div class="content"><a class="title" href="/2025/03/09/GameTheroy/" title="GameTheroy">GameTheroy</a><time datetime="2025-03-09T08:45:50.000Z" title="发表于 2025-03-09 16:45:50">2025-03-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/06/MCUTuTorial01/" title="MCUTuTorial01"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MCUTuTorial01"/></a><div class="content"><a class="title" href="/2025/03/06/MCUTuTorial01/" title="MCUTuTorial01">MCUTuTorial01</a><time datetime="2025-03-06T05:46:58.000Z" title="发表于 2025-03-06 13:46:58">2025-03-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial13/" title="JavaTutorial13"><img src="/statics/landscape004.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial13"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial13/" title="JavaTutorial13">JavaTutorial13</a><time datetime="2025-03-02T08:16:41.000Z" title="发表于 2025-03-02 16:16:41">2025-03-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial12/" title="JavaTutorial12"><img src="/statics/landscape004.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial12"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial12/" title="JavaTutorial12">JavaTutorial12</a><time datetime="2025-03-02T08:16:35.000Z" title="发表于 2025-03-02 16:16:35">2025-03-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/02/JavaTutorial11/" title="JavaTutorial11"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaTutorial11"/></a><div class="content"><a class="title" href="/2025/03/02/JavaTutorial11/" title="JavaTutorial11">JavaTutorial11</a><time datetime="2025-03-02T08:16:31.000Z" title="发表于 2025-03-02 16:16:31">2025-03-02</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+<p>补充一下常见的日期函数吧:</p>
+<p>NOW()- 返回当前的日期和时间。</p>
+<p>DATEDIFF()-返回两个日期之间的天数差异。</p>
+<p>DATE_SUB()-从一个日期中减去指定的时间间隔。</p>
+<p>DATE_ADD()-向一个日期加上指定的时间间隔。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2025/02/14/SQLTutorial01/">https://0kr.xin/2025/02/14/SQLTutorial01/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/02/16/CSInternet03/" title="CSInternet03"><img class="cover" src="/statics/landscape001.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">CSInternet03</div></div><div class="info-2"><div class="info-item-1">HTTP 有什么缺陷?为什么需要引入 TLS 协议?SSL（安全套接字层）是在 90 年代初开发的。TLS（传输层安全）实际上就是 SSL 的继任者，可以说 TLS 是 SSL 的”后代”。第一个 TLS 版本（TLS 1.0）其实就是 SSL 3.0 的升级版。顺便一提，现代浏览器中也不再支持SSL啦。 关于这个问题，我想还是得从HTTP-&gt;SSL-&gt;TLS的顺序开始讲解会好理解一些： ·通信使用明文(不加密)，内容可能会被窃听。   ·不验证通信方的身份，因此有可能遭遇伪装。   ·无法证明报文的完整性，所以有可能已遭篡改   为了统一解决上述这些问题，需要在 HTTP上再加入加密处理和认证等机制。我们把添加了加密及认证机制的 HTTP 称为 HTTPS（HTTP Secure ）。HTTPS 并非是应用层的一种新协议。只是 HTTP 通信接口部分用SSL(Secure SocketLayer)和TS(Transport Layer Security)协议代替而已。通常，HTTP 直接和 TCP 通信。当使用 SSL时，则演变成先和 SSL通信，再由 SSL和...</div></div></div></a><a class="pagination-related" href="/2025/02/05/JavaTutorial05/" title="JavaTutorial05"><img class="cover" src="/statics/landscape003.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">JavaTutorial05</div></div><div class="info-2"><div class="info-item-1">本篇将以面试问答的形式讲解设计模式与JAVA8新特性相关的知识点。</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.</span> <span class="toc-text">1.多表查询</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E6%9D%A1%E4%BB%B6%E5%87%BD%E6%95%B0"><span class="toc-number">2.</span> <span class="toc-text">2.条件函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-COUNT-%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">2.0.1.</span> <span class="toc-text">1. COUNT 的作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-GROUP-BY-%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">2.0.2.</span> <span class="toc-text">2. GROUP BY 的作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%B8%BA%E4%BB%80%E4%B9%88%E7%BB%93%E5%90%88-COUNT-%E5%92%8C-GROUP-BY-%E8%83%BD%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-number">2.0.3.</span> <span class="toc-text">3. 为什么结合 COUNT 和 GROUP BY 能解决问题？</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-distinct%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">3.</span> <span class="toc-text">3.distinct关键字</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DISTINCT%E5%85%B3%E9%94%AE%E5%AD%97%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">3.0.1.</span> <span class="toc-text">DISTINCT关键字的作用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0%E4%B8%8Etopk%E9%97%AE%E9%A2%98"><span class="toc-number">4.</span> <span class="toc-text">4.窗口函数与topk问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0%E8%AF%A6%E8%A7%A3"><span class="toc-number">4.0.1.</span> <span class="toc-text">窗口函数详解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-ROW-NUMBER-vs-RANK-vs-DENSE-RANK"><span class="toc-number">4.0.1.1.</span> <span class="toc-text">1. ROW_NUMBER() vs RANK() vs DENSE_RANK()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-PARTITION-BY-%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">4.0.1.2.</span> <span class="toc-text">2. PARTITION BY 的作用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-ORDER-BY-GPA-ASC-%E7%9A%84%E6%84%8F%E4%B9%89"><span class="toc-number">4.0.1.3.</span> <span class="toc-text">3. ORDER BY GPA ASC 的意义</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">4.0.2.</span> <span class="toc-text">适用场景</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-%E6%97%A5%E6%9C%9F%E5%87%BD%E6%95%B0"><span class="toc-number">5.</span> <span class="toc-text">5.日期函数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-%E5%B7%A6%E8%81%94%E8%A1%A8"><span class="toc-number">6.</span> <span class="toc-text">6.左联表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF"><span class="toc-number">6.0.1.</span> <span class="toc-text">解决思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL%E4%BB%A3%E7%A0%81"><span class="toc-number">6.0.2.</span> <span class="toc-text">SQL代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E8%A7%A3%E9%87%8A"><span class="toc-number">6.0.3.</span> <span class="toc-text">代码解释</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%95%B0%E6%8D%AE%E5%8E%BB%E9%87%8D"><span class="toc-number">6.0.3.1.</span> <span class="toc-text">1. 数据去重</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E8%87%AA%E8%BF%9E%E6%8E%A5%E5%85%B3%E8%81%94%E6%AC%A1%E6%97%A5%E8%AE%B0%E5%BD%95"><span class="toc-number">6.0.3.2.</span> <span class="toc-text">2. 自连接关联次日记录</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E8%AE%A1%E7%AE%97%E7%95%99%E5%AD%98%E7%8E%87"><span class="toc-number">6.0.3.3.</span> <span class="toc-text">3. 计算留存率</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE%E9%AA%8C%E8%AF%81"><span class="toc-number">6.0.4.</span> <span class="toc-text">示例数据验证</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BE%93%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="toc-number">6.0.4.1.</span> <span class="toc-text">输入数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E8%BF%9E%E6%8E%A5%E7%BB%93%E6%9E%9C"><span class="toc-number">6.0.4.2.</span> <span class="toc-text">自连接结果</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E7%BB%93%E6%9E%9C"><span class="toc-number">6.0.4.3.</span> <span class="toc-text">计算结果</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">6.0.5.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#7-%E4%BE%8B%E9%A2%98"><span class="toc-number">7.</span> <span class="toc-text">7.例题</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
   const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
 
   const loadGiscus = () => {

@@ -1,0 +1,279 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>HardWareDesign02 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="0.三极管恒流源设计三极管恒流源设计   1.MOS管原理蓝指针科普 https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;BV1WyCkBvEFh?spm_id_from&#x3D;333.788.recommend_more_video.1&amp;trackid&#x3D;web_related_0.router-related-2479604-6dnm7.1775434329945.471&amp;v">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HardWareDesign02">
+<meta property="og:url" content="https://0kr.xin/2026/04/04/HardWareDesign02/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="0.三极管恒流源设计三极管恒流源设计   1.MOS管原理蓝指针科普 https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;BV1WyCkBvEFh?spm_id_from&#x3D;333.788.recommend_more_video.1&amp;trackid&#x3D;web_related_0.router-related-2479604-6dnm7.1775434329945.471&amp;v">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape002.jpg">
+<meta property="article:published_time" content="2026-04-04T15:05:56.000Z">
+<meta property="article:modified_time" content="2026-04-06T07:08:18.572Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape002.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2026/04/04/HardWareDesign02/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'HardWareDesign02',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-04-06 15:08:18'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape002.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">HardWareDesign02</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">HardWareDesign02</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-04T15:05:56.000Z" title="发表于 2026-04-04 23:05:56">2026-04-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-06T07:08:18.572Z" title="更新于 2026-04-06 15:08:18">2026-04-06</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="0-三极管恒流源设计"><a href="#0-三极管恒流源设计" class="headerlink" title="0.三极管恒流源设计"></a>0.三极管恒流源设计</h1><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/445137422">三极管恒流源设计</a></p>
+<img src="/2026/04/04/HardWareDesign02/image-20260406123307447.png" class>
+
+<h1 id="1-MOS管原理"><a href="#1-MOS管原理" class="headerlink" title="1.MOS管原理"></a>1.MOS管原理</h1><p>蓝指针科普</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1WyCkBvEFh?spm_id_from=333.788.recommend_more_video.1&trackid=web_related_0.router-related-2479604-6dnm7.1775434329945.471&vd_source=86c6b09721e0893e43fc3b93d929a6c9">https://www.bilibili.com/video/BV1WyCkBvEFh?spm_id_from=333.788.recommend_more_video.1&amp;trackid=web_related_0.router-related-2479604-6dnm7.1775434329945.471&amp;vd_source=86c6b09721e0893e43fc3b93d929a6c9</a></p>
+<h1 id="2-MOS管分类"><a href="#2-MOS管分类" class="headerlink" title="2.MOS管分类"></a>2.MOS管分类</h1><p>图中展示了 FET 的两大分支：MOSFET（绝缘栅型）和 JFET（结型），MOSFET 又按工作模式分为增强型和耗尽型，每种再按沟道载流子分为 N 沟道和 P 沟道。</p>
+<img src="/2026/04/04/HardWareDesign02/image-20260406083706638.png" class>
+
+<h1 id="3-MOS管基本特性（Cgs，Ugsth，Rdson等）"><a href="#3-MOS管基本特性（Cgs，Ugsth，Rdson等）" class="headerlink" title="3.MOS管基本特性（Cgs，Ugsth，Rdson等）"></a>3.MOS管基本特性（Cgs，Ugsth，Rdson等）</h1><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Co4y1Q7rN/?spm_id_from=333.1007.top_right_bar_window_custom_collection.content.click&vd_source=86c6b09721e0893e43fc3b93d929a6c9"></a></p>
+<p><strong>释义：</strong>g与s之间的寄生电容，影响nmos的打开速度；栅极开关导通的临界电压；mos管被完全打开后ds之间的组织</p>
+<p>NMOS可以看做是电压控制电阻的元器件，应用最多的MOS就是NMOS； </p>
+<p>如果控制电压超过临界值Vgsth电阻Rdson就会非常小，接近0，此时NMOS通路； </p>
+<p>如果控制电压低于临界值Vgsth，那么电阻就接近无穷大，NMOS断路； </p>
+<p>NMOS的打开和关闭除了受控制电压的影响之外，还有一个参数Cgs会影响NMOS的打开速度； </p>
+<p>Cgs越大NMOS打开的速度越慢，反之越快，这个参数主要影响高速PWM； </p>
+<p>Cgs与Rdson成反比，一般Rdson越小，价格就越高，体积越大，反而不用于高速PWM的控制；</p>
+<hr>
+<p>另外还有：</p>
+<h2 id="三、耗散功率"><a href="#三、耗散功率" class="headerlink" title="三、耗散功率"></a>三、耗散功率</h2><p>MOS 管的总功率损耗分两大部分：</p>
+<p><strong>1. 导通损耗（Conduction Loss）</strong></p>
+<p>Pcond&#x3D;ID2×Rds(on)P_{cond} &#x3D; I_D^2 \times R_{ds(on)}Pcond&#x3D;ID2×Rds(on)</p>
+<p>这是 MOS 管导通时像电阻一样消耗的功率。降低导通损耗的方法是选择 Rds(on) 更低的管子，或者多管并联。需要注意 Rds(on) 会随温度升高而增大（正温度系数），所以实际发热比理论值更严重。</p>
+<p><strong>2. 开关损耗（Switching Loss）</strong></p>
+<p>MOS 管从关断到导通、从导通到关断的过程不是瞬间完成的。在切换过程中，Vds 和 Id 同时存在较大值，它们的乘积形成瞬时功率尖峰。开关频率越高，每秒切换次数越多，开关损耗也越大：</p>
+<p>Psw∝VDS×ID×(trise+tfall)×fswP_{sw} \propto V_{DS} \times I_D \times (t_{rise} + t_{fall}) \times f_{sw}Psw∝VDS×ID×(trise+tfall)×fsw</p>
+<p>这就是为什么评论提到<strong>极限频率在 Buck 电路中非常重要</strong>——Buck 电路的开关频率通常在几百 kHz 到几 MHz，如果 MOS 管的开关速度跟不上，开关损耗会急剧增大，管子会严重发热甚至烧毁。</p>
+<h2 id="四、极限频率与开关速度"><a href="#四、极限频率与开关速度" class="headerlink" title="四、极限频率与开关速度"></a>四、极限频率与开关速度</h2><p>MOS 管的开关速度受栅极寄生电容限制，主要有三个：</p>
+<ul>
+<li><strong>Cgs</strong>（栅-源电容）：最大，需要充放电才能改变 Vgs</li>
+<li><strong>Cgd</strong>（栅-漏电容，又叫密勒电容 Miller Capacitance）：虽然物理值较小，但由于密勒效应被等效放大，是限制开关速度的关键</li>
+<li><strong>Cds</strong>（漏-源电容）：影响较小</li>
+</ul>
+<p>数据手册中通常给出 <strong>Qg（总栅极电荷）</strong>，它直接反映了驱动栅极所需的能量。开关速度 ≈ Qg &#x2F; Ig（驱动电流），所以要想开关更快，要么选 Qg 更小的管子，要么加大驱动电流。</p>
+<p>在 Buck 电路中，高侧管（控制管）的开关损耗占主导，应优先选择 Qg 和 Cgd 小的器件；低侧管（同步整流管）导通时间长，应优先选择 Rds(on) 低的器件。</p>
+<h1 id="4-MOS管常见设计方法"><a href="#4-MOS管常见设计方法" class="headerlink" title="4.MOS管常见设计方法"></a>4.MOS管常见设计方法</h1><h2 id="1）开关驱动"><a href="#1）开关驱动" class="headerlink" title="1）开关驱动"></a>1）开关驱动</h2><p>栅极驱动芯片：</p>
+<img src="/2026/04/04/HardWareDesign02/image-20260406120612510.png" class>
+
+<img src="/2026/04/04/HardWareDesign02/image-20260406120906106.png" class>
+
+<img src="/2026/04/04/HardWareDesign02/image-20260406121036024.png" class>
+
+<h2 id="2）电平转换"><a href="#2）电平转换" class="headerlink" title="2）电平转换"></a>2）电平转换</h2><p>作用相当于数字电路的与门，主要是传递高低电平的信号</p>
+<p>单项转换：</p>
+<img src="/2026/04/04/HardWareDesign02/image-20260406114725117.png" class>
+
+<p>双相转换：</p>
+<img src="/2026/04/04/HardWareDesign02/image-20260406115500816.png" class>
+
+<p>这张图画的是经典的 NMOS 双向电平转换电路，MOS 管用的是 2N7002 或 SI2302。让我分析 5V 侧如何把信号传到 3.3V 侧。</p>
+<p>先确认电路连接：<strong>栅极（G）接 3.3V 电源</strong>，<strong>源极（S）接 3.3V 信号侧</strong>（右边），<strong>漏极（D）接 5V 信号侧</strong>（左边）。两侧各有一个上拉电阻分别拉到各自的电源。</p>
+<hr>
+<h3 id="5V-侧输出高电平（5V）时"><a href="#5V-侧输出高电平（5V）时" class="headerlink" title="5V 侧输出高电平（5V）时"></a>5V 侧输出高电平（5V）时</h3><p>5V 侧为高，右侧（源极侧）被上拉电阻拉到 3.3V。此时 Vgs &#x3D; V_gate - V_source &#x3D; 3.3V - 3.3V &#x3D; <strong>0V</strong>，小于 Vth，MOS 管截止。两侧互不影响，3.3V 侧保持 3.3V 高电平。</p>
+<p>结果：<strong>5V → 3.3V ✓</strong>（3.3V 侧的高电平完全由自己的上拉电阻提供）</p>
+<h3 id="5V-侧输出低电平（0V）时"><a href="#5V-侧输出低电平（0V）时" class="headerlink" title="5V 侧输出低电平（0V）时"></a>5V 侧输出低电平（0V）时</h3><p>这一步是关键，分两个阶段理解：</p>
+<p><strong>第一阶段：体二极管先动作。</strong> MOS 管内部有一个从源极到漏极的寄生体二极管（就是你图中圈出来的那个）。当 5V 侧被外部拉到 0V 时，漏极电位突然降到 0V，而源极（3.3V 侧）此刻还是 3.3V。体二极管从 S 指向 D，此时 S 电位高于 D，体二极管正偏导通，3.3V 侧的电荷通过体二极管流向 0V 侧，把源极电压拉低到大约 0.7V（一个二极管压降）。</p>
+<p><strong>第二阶段：MOS 管完全导通。</strong> 源极被拉低到约 0.7V 后，Vgs &#x3D; 3.3V - 0.7V &#x3D; <strong>2.6V</strong>，远大于 Vth（2N7002 的 Vth 约 1~2.5V），MOS 管沟道导通。导通后 MOS 管相当于一个很小的电阻（Rds(on)），把源极进一步拉到接近 0V，比体二极管单独工作时的 0.7V 更低。</p>
+<p>结果：<strong>0V → ≈0V ✓</strong></p>
+<hr>
+<h2 id="总结一下"><a href="#总结一下" class="headerlink" title="总结一下"></a>总结一下</h2><p>5V→3.3V 方向的传输，核心功臣是<strong>体二极管</strong>。它负责”踢第一脚”——当漏极电压骤降时，体二极管率先导通把源极拉低，使得 Vgs 增大到超过阈值，然后 MOS 管沟道接管，把信号彻底拉到低电平。没有体二极管，MOS 管自己是”启动”不了的——这也是为什么选 MOS 管时必须确认内部有体二极管（分立 MOS 管基本都有，但 IC 内部的不一定有）。</p>
+<p>而高电平的转换根本不需要 MOS 管参与，全靠各自的上拉电阻把信号拉到各自电源电压。所以这个电路本质上只是在”传递低电平”，高电平各管各的。</p>
+<p>当然，这个只能用于低频率通信，如100khz，再高的频率就只能使用电平转换芯片了。</p>
+<img src="/2026/04/04/HardWareDesign02/image-20260406115907582.png" class>
+
+<h1 id="5-补充：米勒平台"><a href="#5-补充：米勒平台" class="headerlink" title="5.补充：米勒平台"></a>5.补充：米勒平台</h1><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Rj2LBSEq4?spm_id_from=333.788.recommend_more_video.0&trackid=web_related_0.router-related-2479604-fc7wt.1775448363745.282&vd_source=86c6b09721e0893e43fc3b93d929a6c9">https://www.bilibili.com/video/BV1Rj2LBSEq4?spm_id_from=333.788.recommend_more_video.0&amp;trackid=web_related_0.router-related-2479604-fc7wt.1775448363745.282&amp;vd_source=86c6b09721e0893e43fc3b93d929a6c9</a></p>
+<p>先给Cgd充电，由于单片机电流很小，产生动态平衡导致只有Cgd有缓慢电流输入。只有Cgd充满电时，电路才会恢复正常	</p>
+<img src="/2026/04/04/HardWareDesign02/image-20260406123127465.png" class>
+
+<img src="/2026/04/04/HardWareDesign02/image-20260406122847375.png" class>
+
+<img src="/2026/04/04/HardWareDesign02/image-20260406122855941.png" class>
+
+<h1 id="6-补充：推挽-开漏-高阻态"><a href="#6-补充：推挽-开漏-高阻态" class="headerlink" title="6.补充：推挽 开漏 高阻态"></a>6.补充：推挽 开漏 高阻态</h1><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1D84y1c7GV/?spm_id_from=333.337.search-card.all.click&vd_source=86c6b09721e0893e43fc3b93d929a6c9">https://www.bilibili.com/video/BV1D84y1c7GV/?spm_id_from=333.337.search-card.all.click&amp;vd_source=86c6b09721e0893e43fc3b93d929a6c9</a></p>
+<img src="/2026/04/04/HardWareDesign02/image-20260406123943053.png" class>
+
+<p>开漏模式的作用：</p>
+<p>1.改变高电平电压防止另一芯片烧坏（原来是5v嘛，怕被烧坏了，实际上这里用电平转换也是可以的）</p>
+<img src="/2026/04/04/HardWareDesign02/image-20260406133502099.png" class>
+
+<p>2.用多个GPIO实现对单引脚的控制</p>
+<img src="/2026/04/04/HardWareDesign02/image-20260406134838988.png" class>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2026/04/04/HardWareDesign02/">https://0kr.xin/2026/04/04/HardWareDesign02/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/04/04/HardWareDesign03/" title="HardWareDesign03"><img class="cover" src="/statics/landscape002.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">HardWareDesign03</div></div><div class="info-2"><div class="info-item-1">设计DC-DC开关电源降压电路1.确定DC-DC拓扑结构及需求          要求一个最大输入电压为12v，开关频率500kHz以上，最大输入电流3A以上的降压电路，最后转成5v 2.芯片选型    不考虑qfn封装，则只剩下一个               2.5 一秒变异及其原理1. 芯片手册电路与前两个通用电路的区别 前两张图是通用的同步降压拓扑原理图，只包含最基本的元素：控制器、两个MOSFET、电感、输入&#x2F;输出电容和负载。而Figure 10的实际电路多了很多辅助元件：  自举电路（R5 + C4）：为高侧MOSFET栅极驱动提供浮动电压 使能控制电路（R3 + R4）：EN引脚的分压电阻，控制芯片启动时序 VCC去耦电容（C5）：给芯片内部偏置电源滤波 反馈分压电阻（R1 + R2）+ 前馈电容（C3）：设定输出电压并优化环路响应 多个并联的输入&#x2F;输出电容：满足纹波电流和容值要求  简单来说，前两张图是”原理”，Figure 10是”能实际工作的完整设计”。 2. 两侧偏置电阻的作用 左侧的 R3（300kΩ）和 R4（130kΩ）...</div></div></div></a><a class="pagination-related" href="/2026/04/04/HardWareDesign01/" title="HardWareDesign01"><img class="cover" src="/statics/landscape003.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">HardWareDesign01</div></div><div class="info-2"><div class="info-item-1">   周次 模块 本周学习内容 关键知识点 预期输出 学习资源    第1周 电容、电感基础 ❶ 电容基本特性（种类&#x2F;ESR&#x2F;频率特性）❷ 电容常见应用解析（旁路&#x2F;去耦&#x2F;滤波&#x2F;储能）❸ 电感基本特性（饱和&#x2F;DCR&#x2F;自谐振）❹ 电感常见应用解析（储能&#x2F;滤波&#x2F;EMI抑制）❺ 电容电感使用注意事项 ① 电容、电感的工作原理 ② 常见计算公式（容抗Xc&#x3D;1&#x2F;2πfC、感抗XL&#x3D;2πfL）③ 常见分析方法（阻抗-频率曲线）④ 常见电容电感应用解析 ⑤ 使用注意事项（降额&#x2F;温度&#x2F;频率） 电容电感特性对比表 + LTspice RC&#x2F;RL电路仿真 📺 B站·蓝指针科普：用水管讲透电容电阻电感 · 📖 知乎·电容——简单但不一般（深度长文） · 📖 杨建国《新概念模拟电路·第1册·晶体管》ADI官网免费下载 · 🔧...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0-%E4%B8%89%E6%9E%81%E7%AE%A1%E6%81%92%E6%B5%81%E6%BA%90%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.</span> <span class="toc-text">0.三极管恒流源设计</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-MOS%E7%AE%A1%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">1.MOS管原理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-MOS%E7%AE%A1%E5%88%86%E7%B1%BB"><span class="toc-number">3.</span> <span class="toc-text">2.MOS管分类</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-MOS%E7%AE%A1%E5%9F%BA%E6%9C%AC%E7%89%B9%E6%80%A7%EF%BC%88Cgs%EF%BC%8CUgsth%EF%BC%8CRdson%E7%AD%89%EF%BC%89"><span class="toc-number">4.</span> <span class="toc-text">3.MOS管基本特性（Cgs，Ugsth，Rdson等）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E8%80%97%E6%95%A3%E5%8A%9F%E7%8E%87"><span class="toc-number">4.1.</span> <span class="toc-text">三、耗散功率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%9E%81%E9%99%90%E9%A2%91%E7%8E%87%E4%B8%8E%E5%BC%80%E5%85%B3%E9%80%9F%E5%BA%A6"><span class="toc-number">4.2.</span> <span class="toc-text">四、极限频率与开关速度</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-MOS%E7%AE%A1%E5%B8%B8%E8%A7%81%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95"><span class="toc-number">5.</span> <span class="toc-text">4.MOS管常见设计方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%EF%BC%89%E5%BC%80%E5%85%B3%E9%A9%B1%E5%8A%A8"><span class="toc-number">5.1.</span> <span class="toc-text">1）开关驱动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%EF%BC%89%E7%94%B5%E5%B9%B3%E8%BD%AC%E6%8D%A2"><span class="toc-number">5.2.</span> <span class="toc-text">2）电平转换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5V-%E4%BE%A7%E8%BE%93%E5%87%BA%E9%AB%98%E7%94%B5%E5%B9%B3%EF%BC%885V%EF%BC%89%E6%97%B6"><span class="toc-number">5.2.1.</span> <span class="toc-text">5V 侧输出高电平（5V）时</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5V-%E4%BE%A7%E8%BE%93%E5%87%BA%E4%BD%8E%E7%94%B5%E5%B9%B3%EF%BC%880V%EF%BC%89%E6%97%B6"><span class="toc-number">5.2.2.</span> <span class="toc-text">5V 侧输出低电平（0V）时</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%E4%B8%80%E4%B8%8B"><span class="toc-number">5.3.</span> <span class="toc-text">总结一下</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-%E8%A1%A5%E5%85%85%EF%BC%9A%E7%B1%B3%E5%8B%92%E5%B9%B3%E5%8F%B0"><span class="toc-number">6.</span> <span class="toc-text">5.补充：米勒平台</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-%E8%A1%A5%E5%85%85%EF%BC%9A%E6%8E%A8%E6%8C%BD-%E5%BC%80%E6%BC%8F-%E9%AB%98%E9%98%BB%E6%80%81"><span class="toc-number">7.</span> <span class="toc-text">6.补充：推挽 开漏 高阻态</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

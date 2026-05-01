@@ -1,0 +1,396 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>MysqlTutorial02 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="索引1. 索引数据结构什么是索引？为什么索引能加快查询？索引是数据库中一种特殊的数据结构，它像书籍的目录一样，能帮助数据库系统快速定位和访问数据。索引能加快查询的原因在于：  减少数据访问量：通过索引，数据库只需要访问包含目标数据的部分，而不是扫描整个表。 有序存储：索引中的数据是按照特定顺序存储的，使得搜索、排序和分组操作更高效。 快速定位：使用树形结构等高效的数据结构，可以在大量数据中快速定位">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MysqlTutorial02">
+<meta property="og:url" content="https://0kr.xin/2025/03/12/MysqlTutorial02/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="索引1. 索引数据结构什么是索引？为什么索引能加快查询？索引是数据库中一种特殊的数据结构，它像书籍的目录一样，能帮助数据库系统快速定位和访问数据。索引能加快查询的原因在于：  减少数据访问量：通过索引，数据库只需要访问包含目标数据的部分，而不是扫描整个表。 有序存储：索引中的数据是按照特定顺序存储的，使得搜索、排序和分组操作更高效。 快速定位：使用树形结构等高效的数据结构，可以在大量数据中快速定位">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape002.jpg">
+<meta property="article:published_time" content="2025-03-12T08:46:00.000Z">
+<meta property="article:modified_time" content="2026-01-27T08:17:02.333Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape002.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2025/03/12/MysqlTutorial02/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MysqlTutorial02',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-01-27 16:17:02'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape002.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">MysqlTutorial02</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">MysqlTutorial02</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-03-12T08:46:00.000Z" title="发表于 2025-03-12 16:46:00">2025-03-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-01-27T08:17:02.333Z" title="更新于 2026-01-27 16:17:02">2026-01-27</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><h2 id="1-索引数据结构"><a href="#1-索引数据结构" class="headerlink" title="1. 索引数据结构"></a>1. 索引数据结构</h2><h3 id="什么是索引？为什么索引能加快查询？"><a href="#什么是索引？为什么索引能加快查询？" class="headerlink" title="什么是索引？为什么索引能加快查询？"></a>什么是索引？为什么索引能加快查询？</h3><p>索引是数据库中一种特殊的数据结构，它像书籍的目录一样，能帮助数据库系统快速定位和访问数据。索引能加快查询的原因在于：</p>
+<ol>
+<li><strong>减少数据访问量</strong>：通过索引，数据库只需要访问包含目标数据的部分，而不是扫描整个表。</li>
+<li><strong>有序存储</strong>：索引中的数据是按照特定顺序存储的，使得搜索、排序和分组操作更高效。</li>
+<li><strong>快速定位</strong>：使用树形结构等高效的数据结构，可以在大量数据中快速定位目标记录。</li>
+</ol>
+<p>没有索引时，数据库需要进行全表扫描，时间复杂度为O(n)；而使用索引后，查询时间复杂度可降至O(log n)。</p>
+<h3 id="B-树和（B-树和红黑树）有什么区别？为什么选择用-B-树作为索引数据结构？"><a href="#B-树和（B-树和红黑树）有什么区别？为什么选择用-B-树作为索引数据结构？" class="headerlink" title="B+ 树和（B 树和红黑树）有什么区别？为什么选择用 B+ 树作为索引数据结构？"></a>B+ 树和（B 树和红黑树）有什么区别？为什么选择用 B+ 树作为索引数据结构？</h3><blockquote>
+<p>图片来自：<a target="_blank" rel="noopener" href="https://xiaolincoding.com/mysql/index/why_index_chose_bpuls_tree.html#%E6%80%8E%E6%A0%B7%E7%9A%84%E7%B4%A2%E5%BC%95%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%98%AF%E5%A5%BD%E7%9A%84">https://xiaolincoding.com/mysql/index/why_index_chose_bpuls_tree.html#%E6%80%8E%E6%A0%B7%E7%9A%84%E7%B4%A2%E5%BC%95%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%98%AF%E5%A5%BD%E7%9A%84</a></p>
+</blockquote>
+<p><em>由于树是存储在磁盘中的，访问每个节点，都对应一次磁盘 I&#x2F;O 操作(假设一个节点的大小「小于」操作系统的最小读写单位块的大小)，也就是说树的高度就等于每次查询数据时磁盘 IO 操作的次数，所以树的高度越高，就会影响查询性能。</em></p>
+<p>要设计一个适合 MySQL 索引的数据结构，至少满足以下要求：</p>
+<ul>
+<li>能在尽可能少的磁盘的 I&#x2F;0 操作中完成查询工作;</li>
+<li>要能高效地查询某一个记录，也要能高效地执行范围查找，</li>
+</ul>
+<p>如果主键按照顺序排列的话，可以通过<strong>二分查找</strong>高效定位数据，使得时间复杂度变为O(log n)。</p>
+<p>用数组来实现线性排序的数据虽然简单好用，但是插入新元素的时候性能太低。因为插入一个元素，需要将这个元素之后的所有元素后移一位，如果这个操作发生在磁盘中呢?这必然是灾难性的。因为磁盘的速度比内存慢几十万倍，所以我们不能用一种线性结构将磁盘排序。因此作为修改，<strong>二叉查找树</strong>诞生了。</p>
+<img src="/2025/03/12/MysqlTutorial02/49cb4df3fb7d4accbc75f6970ff1d0ea.gif" class>
+
+<p>它同时解决了查找和插入的问题，但是也有新的毛病，那就是在极端情况下（插入的永远是最大&#x2F;小项时），二叉搜索树会退化为单链表。</p>
+<img src="/2025/03/12/MysqlTutorial02/320c5c2653e74f9e9ebfcd8ca9681905.gif" class>
+
+<p>于是又引入<strong>平衡二叉查找树</strong>解决这个问题，它能够实现自平衡，自动调整树结构，使每个节点的左子树和右子树的高度差不能超过 1：</p>
+<img src="/2025/03/12/MysqlTutorial02/8d5da86f2e41a0b641dbf45b23f7b7dd.gif" class>
+
+<p>红黑树的原理和其类似，这里不赘述。但问题是，这里一个节点还是只有两个子节点，当树的高度变大时，还是太吃磁盘的IO操作次数了。那么还有没有更加简单的打法呢？</p>
+<p>有的兄弟有的，<strong>B树</strong>来咯！</p>
+<p>为了解决降低树的高度的问题，后面就出来了B树，它不再限制一个节点就只能有2个子节点，而是允许M 个子节点 (M&gt;2)，从而降低树的高度。</p>
+<p>B树的每一个节点最多可以包括 M 个子节点，M 称为 B树的阶，所以 B树就是一个多又树。假设 M &#x3D;3，那么就是一棵3阶的B树，特点就是每个节点最多有2个(M-1个)数据和最多有3个(M个)子节点，超过这些要求的话，就会分裂节点，比如下面的的动图:</p>
+<img src="/2025/03/12/MysqlTutorial02/9a96956de3be0614f7ec2344741b4dcc.gif" class>
+
+<p>问题又来了， B树的每个节点都包含数据(索引+记录)，而用户的记录数据的大小很有可能远远超过了索引数据，这就需要花费更多的磁盘 IO操作次数来读到「有用的索引数据」。</p>
+<p>而且，在我们查询位于底层的某个节点(比如 A 记录)过程中，「非A记录节点」里的记录数据会从磁盘加载到内存，但是这些记录数据是没用的，我们只是想读取这些节点的索引数据来做比较查询，而「非A记录节点」里的记录数据对我们是没用的，这样不仅增多磁盘 IO 操作次数，也占用内存资源。</p>
+<p>另外，如果使用B树来做范围查询的话，需要使用中序遍历，这会涉及多个节点的磁盘 IO 问题，从而导致整体速度下降。</p>
+<p>因此，<strong>B+树</strong>诞生了。</p>
+<img src="/2025/03/12/MysqlTutorial02/b6678c667053a356f46fc5691d2f5878.png" class>
+
+<p>B+ 树与 B 树差异的点，主要是以下这几点:</p>
+<ul>
+<li>叶子节点(最底部的节点)才会存放实际数据(索引+记录)，非叶子节点只会存放索引；</li>
+<li>所有索引都会在叶子节点出现，叶子节点之间构成一个有序链表；</li>
+<li>非叶子节点的索引也会同时存在在子节点中，并且是在子节点中所有索引的最大(或最小)；</li>
+<li>非叶子节点中有多少个子节点，就有多少个索引。</li>
+</ul>
+<p>但是 Innodb 使用的 B+ 树有一些特别的点，比如:</p>
+<ul>
+<li>B+ 树的叶子节点之间是用「双向链表」进行连接，这样的好处是既能向右遍历，也能向左遍历。</li>
+<li>B+树节点内容是数据页，数据页里存放了用户的记录以及各种信息，每个数据页默认大小是 16 KB.</li>
+</ul>
+<p>Innodb 根据索引类型不同，分为聚簇和二级索引。他们区别在于:</p>
+<ul>
+<li>·聚簇索引的叶子节点存放的是实际数据，所有完整的用户记录都存放在聚簇索引的叶子节点，而二级索引的叶子节点存放的是主键值，而不是实际数据。</li>
+<li>因为表的数据都是存放在聚簇索引的叶子节点里，所以 InnoDB 存储引擎一定会为表创建一个聚簇索引且由于数据在物理上只会保存一份，所以聚簇索引只能有一个，而二级索引可以创建多个。</li>
+</ul>
+<img src="/2025/03/12/MysqlTutorial02/dd076212a7637b9032c97a615c39dcd7.png" class>
+
+<p>总结：</p>
+<img src="/2025/03/12/MysqlTutorial02/image-20250319161131521.png" class>
+
+<h2 id="2-索引存储"><a href="#2-索引存储" class="headerlink" title="2. 索引存储"></a>2. 索引存储</h2><h3 id="堆表和索引组织表有什么区别？分别应用场景是什么？"><a href="#堆表和索引组织表有什么区别？分别应用场景是什么？" class="headerlink" title="堆表和索引组织表有什么区别？分别应用场景是什么？"></a>堆表和索引组织表有什么区别？分别应用场景是什么？</h3><blockquote>
+<p>图片来自：<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/MySQL%E5%AE%9E%E6%88%98%E5%AE%9D%E5%85%B8/09%20%20%E7%B4%A2%E5%BC%95%E7%BB%84%E7%BB%87%E8%A1%A8%EF%BC%9A%E4%B8%87%E7%89%A9%E7%9A%86%E7%B4%A2%E5%BC%95.md">https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/MySQL%E5%AE%9E%E6%88%98%E5%AE%9D%E5%85%B8/09%20%20%E7%B4%A2%E5%BC%95%E7%BB%84%E7%BB%87%E8%A1%A8%EF%BC%9A%E4%B8%87%E7%89%A9%E7%9A%86%E7%B4%A2%E5%BC%95.md</a><br>堆表和索引组织表的区别其实也是MyISAM和InnoDB的区别的一部分，因为它们与这两个存储引擎的实现方式分别对应。</p>
+</blockquote>
+<p><strong>堆表中的数据无序存放，</strong> 数据的排序完全依赖于索引（Oracle、Microsoft SQL Server、PostgreSQL 早期默认支持的数据存储都是堆表结构）。</p>
+<img src="/2025/03/12/MysqlTutorial02/Cgp9HWCscj-AMF2xAAGCKX1ziAQ251.png" class>
+
+<p>从图中你能看到，堆表的组织结构中，数据和索引分开存储。索引是排序后的数据，而堆表中的数据是无序的，索引的叶子节点存放了数据在堆表中的地址，当堆表的数据发生改变，且位置发生了变更，所有索引中的地址都要更新，这非常影响性能。</p>
+<p><strong>而索引组织表，数据根据主键排序存放在索引中</strong>，主键索引也叫聚集索引（Clustered Index）。在索引组织表中，数据即索引，索引即数据。并且二级索引只需要通过<strong>回表</strong>的方式进行数据查询，而不用修改其他的索引，这非常的方便。</p>
+<img src="/2025/03/12/MysqlTutorial02/CioPOWCsciqAXCpWAAEzcba-N8Q504.png" class>
+
+<p>值得提的是，每种不同数据对二级索引的性能开销影响是不一样的。要比较顺序，对聚集索引性能友好；尽可能紧凑，对二级索引的性能和存储友好；</p>
+<p><strong>堆表与索引组织表的区别</strong>：</p>
+<ol>
+<li><strong>堆表（Heap Table）</strong>：<ul>
+<li>数据行没有特定顺序，按照插入顺序存储</li>
+<li>通过行ID（ROWID）或物理位置进行访问</li>
+<li>插入操作简单快速，无需维护顺序</li>
+</ul>
+</li>
+<li><strong>索引组织表（Index-Organized Table，IOT）</strong>：<ul>
+<li>数据按主键顺序存储</li>
+<li>表数据本身就是按B+树组织的</li>
+<li>表和主键索引在物理上是同一个结构</li>
+</ul>
+</li>
+</ol>
+<p><strong>应用场景</strong>：</p>
+<ul>
+<li>堆表:</li>
+</ul>
+<p> 当表主要进行大量的插入操作&#x2F;全表扫描，并且对检索性能的要求相对较低时，堆表是一个合适的选择。</p>
+<ul>
+<li>索引组织表:</li>
+</ul>
+<p>当表主要进行范围查询、按索引检索以及有序的数据检索时，索引组织表通常更适用。在这种情况下通过索引直接访问有序的数据行可以提高查询效率。</p>
+<h2 id="3-联合索引与索引覆盖"><a href="#3-联合索引与索引覆盖" class="headerlink" title="3. 联合索引与索引覆盖"></a>3. 联合索引与索引覆盖</h2><h3 id="联合索引的结构是怎样的？"><a href="#联合索引的结构是怎样的？" class="headerlink" title="联合索引的结构是怎样的？"></a>联合索引的结构是怎样的？</h3><p>联合索引（Compound Index）是指由多个列所组合而成的 B+树索引，这和我们之前介绍的B+ 树索引的原理完全一样，只是之前是对一个列排序，现在是对多个列排序。</p>
+<p>联合索引既可以是主键索引，也可以是二级索引，下图显示的是一个二级联合索引：</p>
+<img src="/2025/03/12/MysqlTutorial02/CioPOWCuFduAFMnmAABxfj6SZnc858.png" class>
+
+<p>联合索引的 B+ 树结构</p>
+<p>从上图可以看到，联合索引只是排序的键值从 1 个变成了多个，本质还是一颗 B+ 树索引。但是你一定要意识到（a，b）和（b，a）这样的联合索引，其排序结果是完全不一样的。而索引的字段变多了，设计上更容易出问题，如：</p>
+<img src="/2025/03/12/MysqlTutorial02/Cgp9HWCuFfiAO9wZAABSJmrYlpE547.png" class>
+
+<p>对联合索引（a，b）来说，因为其对列 a、b 做了排序，所以它可以对下面两个查询进行优化：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> <span class="keyword">table</span> <span class="keyword">WHERE</span> a <span class="operator">=</span> ?</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> <span class="keyword">table</span> <span class="keyword">WHERE</span> a <span class="operator">=</span> ？ <span class="keyword">AND</span> b <span class="operator">=</span> ？</span><br></pre></td></tr></table></figure>
+
+<p>上述 SQL 查询中，WHERE 后查询列 a 和 b 的顺序无关，即使先写 b &#x3D; ? AND a &#x3D; ？依然可以使用联合索引（a，b）。</p>
+<p>但是下面的 SQL 无法使用联合索引（a，b），因为（a，b）排序并不能推出（b，a）排序：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> <span class="keyword">table</span> <span class="keyword">WHERE</span> b <span class="operator">=</span> ?</span><br></pre></td></tr></table></figure>
+
+<p>此外，同样由于索引（a，b）已排序，因此下面这条 SQL 依然可以使用联合索引（a，b），以此提升查询的效率：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> <span class="keyword">table</span> <span class="keyword">WHERE</span> a <span class="operator">=</span> ？ <span class="keyword">ORDER</span> <span class="keyword">BY</span> b <span class="keyword">DESC</span></span><br></pre></td></tr></table></figure>
+
+<p>同样的原因，索引（a，b）排序不能得出（b，a）排序，因此下面的 SQL 无法使用联合索引（a，b）：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> <span class="keyword">table</span> <span class="keyword">WHERE</span> b <span class="operator">=</span> ？ <span class="keyword">ORDER</span> <span class="keyword">BY</span> a <span class="keyword">DESC</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="索引覆盖"><a href="#索引覆盖" class="headerlink" title="索引覆盖"></a>索引覆盖</h3><p>由于二级组合索引的叶子节点，包含索引键值和主键值，若查询的字段在二级索引的叶子节点中，则可直接返回结果，无需回表。这种<strong>通过组合索引避免回表的优化技术也称为索引覆盖（Covering Index）</strong>。</p>
+<p>如下面的SQL语句：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">EXPLAIN FORMAT<span class="operator">=</span>tree </span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> o_custkey,o_orderdate,o_totalprice </span><br><span class="line"></span><br><span class="line"><span class="keyword">FROM</span> orders <span class="keyword">WHERE</span> o_custkey <span class="operator">=</span> <span class="number">147601</span>\G</span><br><span class="line"></span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">1.</span> <span class="type">row</span> <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span></span><br><span class="line"></span><br><span class="line">EXPLAIN: <span class="operator">-</span><span class="operator">&gt;</span> Index lookup <span class="keyword">on</span> orders <span class="keyword">using</span> idx_custkey_orderdate (O_CUSTKEY<span class="operator">=</span><span class="number">147601</span>)  (cost<span class="operator">=</span><span class="number">6.65</span> <span class="keyword">rows</span><span class="operator">=</span><span class="number">19</span>)</span><br></pre></td></tr></table></figure>
+
+<p>cost&#x3D;6.65 表示的就是这条 SQL 当前的执行成本。不用关心 cost 的具体单位，你只需明白cost 越小，开销越小，执行速度越快。</p>
+<p>如果想要避免回表，可以通过索引覆盖技术，创建(o_custkey，o_orderdate，o_totalprice）的组合索引，如：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> `orders` <span class="keyword">ADD</span> INDEX</span><br><span class="line"></span><br><span class="line">idx_custkey_orderdate_totalprice(o_custkey,o_orderdate,o_totalprice);</span><br></pre></td></tr></table></figure>
+
+<p>再次观察 SQL 的执行成本，可以看到 cost 有明显的下降，从 6.65 下降为了 2.94：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">EXPLAIN FORMAT<span class="operator">=</span>tree </span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> o_custkey,o_orderdate,o_totalprice </span><br><span class="line"></span><br><span class="line"><span class="keyword">FROM</span> orders <span class="keyword">WHERE</span> o_custkey <span class="operator">=</span> <span class="number">147601</span>\G</span><br><span class="line"></span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">1.</span> <span class="type">row</span> <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span></span><br><span class="line"></span><br><span class="line">EXPLAIN: <span class="operator">-</span><span class="operator">&gt;</span> Index lookup <span class="keyword">on</span> orders <span class="keyword">using</span> idx_custkey_orderdate_totalprice (O_CUSTKEY<span class="operator">=</span><span class="number">147601</span>)  (cost<span class="operator">=</span><span class="number">2.94</span> <span class="keyword">rows</span><span class="operator">=</span><span class="number">19</span>)</span><br></pre></td></tr></table></figure>
+
+<p>效果显著！</p>
+<h3 id="如何利用联合索引提升查询性能？"><a href="#如何利用联合索引提升查询性能？" class="headerlink" title="如何利用联合索引提升查询性能？"></a>如何利用联合索引提升查询性能？</h3><p><strong>利用联合索引提升性能的策略</strong>：</p>
+<ol>
+<li><strong>遵循最左前缀原则</strong>：<ul>
+<li>查询条件必须包含索引的第一列</li>
+<li>如有索引(A,B,C)，可以使用A、AB、ABC组合查询</li>
+<li><img src="/2025/03/12/MysqlTutorial02/image-20250319164929341.png" class title="联合索引举例"></li>
+</ul>
+</li>
+<li><strong>合理设计索引顺序</strong>：<ul>
+<li>把选择性高的列放在前面</li>
+<li>把常用于等值查询的列放在前面</li>
+<li>把范围查询的列放在最后</li>
+</ul>
+</li>
+<li><strong>避免索引失效情况</strong>：<ul>
+<li>不在索引列上使用函数或表达式</li>
+<li>避免使用NOT、!&#x3D;、&lt;&gt;等操作符</li>
+<li>避免隐式类型转换</li>
+<li>注意通配符使用位置（前缀通配符会导致索引失效）</li>
+</ul>
+</li>
+<li><strong>覆盖索引技巧</strong>：<ul>
+<li>将经常查询的列都包含在索引中</li>
+<li>可以实现”索引覆盖”，避免回表操作</li>
+</ul>
+</li>
+<li><strong>适当冗余索引</strong>：<ul>
+<li>为不同查询场景创建专用索引</li>
+<li>平衡索引数量与性能需求</li>
+</ul>
+</li>
+</ol>
+<p>通过合理设计和使用联合索引，可以显著提升查询性能，减少磁盘IO和CPU开销，尤其在大型数据库系统中效果更为明显。</p>
+<hr>
+<p>通过这道题，我来详细解释一下<strong>索引下推（Index Condition Pushdown, ICP）</strong>：</p>
+<h2 id="什么是索引下推？"><a href="#什么是索引下推？" class="headerlink" title="什么是索引下推？"></a>什么是索引下推？</h2><p>索引下推是MySQL 5.6引入的查询优化技术，它允许存储引擎层在遍历索引时，就对索引中包含的字段进行条件判断，从而减少不必要的回表操作。</p>
+<h2 id="用题目中的例子说明"><a href="#用题目中的例子说明" class="headerlink" title="用题目中的例子说明"></a>用题目中的例子说明</h2><h3 id="例2：select-from-T-where-a-1-and-b-2-and-c-3"><a href="#例2：select-from-T-where-a-1-and-b-2-and-c-3" class="headerlink" title="例2：select \* from T where a=1 and b&gt;2 and c=3"></a><strong>例2：<code>select \* from T where a=1 and b&gt;2 and c=3</code></strong></h3><p>对于联合索引(a,b,c)：</p>
+<ul>
+<li><strong>a和b</strong> 可以用于索引定位（最左匹配原则）</li>
+<li><strong>c</strong> 无法用于索引定位（因为b是范围查询，打断了连续性）</li>
+<li>但<strong>c可以进行索引下推</strong></li>
+</ul>
+<p><strong>没有索引下推时的执行过程：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 在索引树中找到所有 a=1 and b&gt;2 的记录</span><br><span class="line">2. 对每条记录都回表，读取完整行数据</span><br><span class="line">3. 在Server层判断 c=3 是否满足</span><br><span class="line">4. 返回符合条件的结果</span><br></pre></td></tr></table></figure>
+
+<p><strong>有索引下推时的执行过程：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 在索引树中找到所有 a=1 and b&gt;2 的记录</span><br><span class="line">2. 在索引树中就判断 c=3 是否满足（索引下推）</span><br><span class="line">3. 只有满足 c=3 的记录才回表</span><br><span class="line">4. 返回符合条件的结果</span><br></pre></td></tr></table></figure>
+
+<h3 id="例4：select-from-T-where-a-2-and-c-3"><a href="#例4：select-from-T-where-a-2-and-c-3" class="headerlink" title="例4：select \* from T where a=2 and c=3"></a><strong>例4：<code>select \* from T where a=2 and c=3</code></strong></h3><ul>
+<li><strong>a</strong> 可以走索引</li>
+<li><strong>c</strong> 无法走索引（跳过了b，不符合最左匹配）</li>
+<li>但<strong>c可以被索引下推</strong></li>
+</ul>
+<p><strong>优化效果：</strong> 假设有100条 a&#x3D;2 的记录，但只有10条同时满足 c&#x3D;3</p>
+<ul>
+<li>没有ICP：需要回表100次</li>
+<li>有ICP：只需要回表10次</li>
+</ul>
+<h2 id="索引下推的关键点"><a href="#索引下推的关键点" class="headerlink" title="索引下推的关键点"></a>索引下推的关键点</h2><ol>
+<li><strong>只适用于二级索引（辅助索引）</strong></li>
+<li><strong>只能下推索引中包含的字段</strong>：对于联合索引(a,b,c)，只有a、b、c这三个字段可以下推</li>
+<li><strong>减少回表次数</strong>：在索引层就过滤掉不符合条件的记录</li>
+<li><strong>提高查询性能</strong>：特别是当回表操作代价较大时</li>
+</ol>
+<h2 id="验证方式"><a href="#验证方式" class="headerlink" title="验证方式"></a>验证方式</h2><p>在MySQL中可以通过EXPLAIN查看是否使用了索引下推：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EXPLAIN <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> T <span class="keyword">WHERE</span> a<span class="operator">=</span><span class="number">1</span> <span class="keyword">AND</span> b<span class="operator">&gt;</span><span class="number">2</span> <span class="keyword">AND</span> c<span class="operator">=</span><span class="number">3</span>;</span><br></pre></td></tr></table></figure>
+
+<p>如果Extra列显示 **”Using index condition”**，说明使用了索引下推。</p>
+<p>索引下推是MySQL优化器的一个智能特性，能自动判断何时使用，无需手动干预，但了解它的原理有助于我们更好地设计索引和优化查询。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2025/03/12/MysqlTutorial02/">https://0kr.xin/2025/03/12/MysqlTutorial02/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/03/12/MysqlTutorial03/" title="MysqlTutorial03"><img class="cover" src="/statics/landscape003.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">MysqlTutorial03</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a><a class="pagination-related" href="/2025/03/12/MysqlTutorial01/" title="MysqlTutorial01"><img class="cover" src="/statics/landscape002.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">MysqlTutorial01</div></div><div class="info-2"><div class="info-item-1">MySQL数据库基础培训：逻辑架构与InnoDB引擎1. MySQL基础概念1.1 什么是MySQLMySQL是全球最受欢迎的开源关系型数据库管理系统之一，由瑞典MySQL AB公司开发，现在属于Oracle公司。MySQL具有以下特点：  开源性：遵循GPL协议，可自由使用和修改 跨平台性：支持Windows、Linux、macOS等多种操作系统 可靠性：广泛应用于各类网站、应用程序和商业产品 性能：针对不同需求可以通过配置进行优化  MySQL广泛应用于网站开发、企业应用、数据仓库等场景，是互联网行业的基础设施之一。 1.2...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95"><span class="toc-number">1.</span> <span class="toc-text">索引</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%B4%A2%E5%BC%95%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.</span> <span class="toc-text">1. 索引数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%B4%A2%E5%BC%95%EF%BC%9F%E4%B8%BA%E4%BB%80%E4%B9%88%E7%B4%A2%E5%BC%95%E8%83%BD%E5%8A%A0%E5%BF%AB%E6%9F%A5%E8%AF%A2%EF%BC%9F"><span class="toc-number">1.1.1.</span> <span class="toc-text">什么是索引？为什么索引能加快查询？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-%E6%A0%91%E5%92%8C%EF%BC%88B-%E6%A0%91%E5%92%8C%E7%BA%A2%E9%BB%91%E6%A0%91%EF%BC%89%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9%E7%94%A8-B-%E6%A0%91%E4%BD%9C%E4%B8%BA%E7%B4%A2%E5%BC%95%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9F"><span class="toc-number">1.1.2.</span> <span class="toc-text">B+ 树和（B 树和红黑树）有什么区别？为什么选择用 B+ 树作为索引数据结构？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E7%B4%A2%E5%BC%95%E5%AD%98%E5%82%A8"><span class="toc-number">1.2.</span> <span class="toc-text">2. 索引存储</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A0%86%E8%A1%A8%E5%92%8C%E7%B4%A2%E5%BC%95%E7%BB%84%E7%BB%87%E8%A1%A8%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F%E5%88%86%E5%88%AB%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.2.1.</span> <span class="toc-text">堆表和索引组织表有什么区别？分别应用场景是什么？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95%E4%B8%8E%E7%B4%A2%E5%BC%95%E8%A6%86%E7%9B%96"><span class="toc-number">1.3.</span> <span class="toc-text">3. 联合索引与索引覆盖</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95%E7%9A%84%E7%BB%93%E6%9E%84%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84%EF%BC%9F"><span class="toc-number">1.3.1.</span> <span class="toc-text">联合索引的结构是怎样的？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E8%A6%86%E7%9B%96"><span class="toc-number">1.3.2.</span> <span class="toc-text">索引覆盖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95%E6%8F%90%E5%8D%87%E6%9F%A5%E8%AF%A2%E6%80%A7%E8%83%BD%EF%BC%9F"><span class="toc-number">1.3.3.</span> <span class="toc-text">如何利用联合索引提升查询性能？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%B4%A2%E5%BC%95%E4%B8%8B%E6%8E%A8%EF%BC%9F"><span class="toc-number">1.4.</span> <span class="toc-text">什么是索引下推？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E9%A2%98%E7%9B%AE%E4%B8%AD%E7%9A%84%E4%BE%8B%E5%AD%90%E8%AF%B4%E6%98%8E"><span class="toc-number">1.5.</span> <span class="toc-text">用题目中的例子说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B2%EF%BC%9Aselect-from-T-where-a-1-and-b-2-and-c-3"><span class="toc-number">1.5.1.</span> <span class="toc-text">例2：select \* from T where a&#x3D;1 and b&gt;2 and c&#x3D;3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B4%EF%BC%9Aselect-from-T-where-a-2-and-c-3"><span class="toc-number">1.5.2.</span> <span class="toc-text">例4：select \* from T where a&#x3D;2 and c&#x3D;3</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E4%B8%8B%E6%8E%A8%E7%9A%84%E5%85%B3%E9%94%AE%E7%82%B9"><span class="toc-number">1.6.</span> <span class="toc-text">索引下推的关键点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81%E6%96%B9%E5%BC%8F"><span class="toc-number">1.7.</span> <span class="toc-text">验证方式</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

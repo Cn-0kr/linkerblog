@@ -1,0 +1,250 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta property="og:type" content="website">
+<meta property="og:title" content="0kr&#39;s Blog">
+<meta property="og:url" content="https://0kr.xin/page/6/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/avatar.png">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/avatar.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/page/6/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '0kr\'s Blog',
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2026-05-01 11:11:50'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page fixed" id="page-header" style="background-image: url(/statics/landscape001.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="site-info"><h1 id="site-title">0kr's Blog</h1><div id="site-subtitle"><span id="subtitle"></span></div><div id="site_social_icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="post_cover left"><a href="/2025/03/20/FeatureEngineering04/" title="FeatureEngineering04"><img class="post-bg" src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FeatureEngineering04"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/03/20/FeatureEngineering04/" title="FeatureEngineering04">FeatureEngineering04</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-03-20T11:11:41.000Z" title="发表于 2025-03-20 19:11:41">2025-03-20</time></span></div><div class="content">我们在本课程中看到的大多数技术都是针对数值特征的。而我们将在本课中看到的技术，target encoding，则是针对分类特征的。它是一种将类别编码为数字的方法，类似于独热编码或标签编码，区别在于它还使用 target 来创建编码。这使它成为我们所称的监督特征工程（supervised feature engineering）技术。 目标编码（target encoding）目标编码是任何一种用从目标派生的某个数字替换特征类别的编码。 一个简单有效的版本是应用第3课中的分组聚合，如均值。使用 Automobiles 数据集，它计算每种车辆品牌的平均价格： 1234# 每个品牌的所有车型都会被替换为该品牌所有车型的平均价格autos[&quot;make_encoded&quot;] = autos.groupby(&quot;make&quot;)[&quot;price&quot;].transform(&quot;mean&quot;)autos[[&quot;make&quot;, &quot;price&quot;,...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2025/03/19/FeatureEngineering03/" title="FeatureEngineering03"><img class="post-bg" src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FeatureEngineering03"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/03/19/FeatureEngineering03/" title="FeatureEngineering03">FeatureEngineering03</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-03-19T12:11:12.000Z" title="发表于 2025-03-19 20:11:12">2025-03-19</time></span></div><div class="content">主成分分析（Principal Component Analysis）在前一课中，我们了解了特征工程的第一个基于模型的方法：聚类。在本课中，我们将学习下一个方法：主成分分析（PCA）。就像聚类是基于接近度对数据集进行划分一样，PCA可以被视为对数据变异性的划分。PCA是探索数据中重要关系并创建更具信息量特征的有效工具。  ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2025/03/19/FeatureEngineering02/" title="FeatureEngineering02"><img class="post-bg" src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FeatureEngineering02"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/03/19/FeatureEngineering02/" title="FeatureEngineering02">FeatureEngineering02</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-03-19T12:11:08.000Z" title="发表于 2025-03-19 20:11:08">2025-03-19</time></span></div><div class="content">...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2025/03/18/FeatureEngineering01/" title="FeatureEngineering01"><img class="post-bg" src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FeatureEngineering01"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/03/18/FeatureEngineering01/" title="FeatureEngineering01">FeatureEngineering01</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-03-18T09:07:01.000Z" title="发表于 2025-03-18 17:07:01">2025-03-18</time></span></div><div class="content">特征工程入门在本课程中，您将学习构建优秀机器学习模型过程中最重要的步骤之一：特征工程。您将学习如何：  通过 mutual information（互信息）确定哪些特征最重要 创建新特征 使用 target encoding（目标编码）编码高基数类别变量 使用 k-means clustering（k均值聚类）创建分割特征 使用 principal component analysis（主成分分析）将数据集的变异分解为特征  实践练习将逐步引导您完成一个完整的 notebook，应用所有这些技术参加 House Prices Getting Started...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2025/03/12/MysqlTutorial04/" title="MysqlTutorial04"><img class="post-bg" src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MysqlTutorial04"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/03/12/MysqlTutorial04/" title="MysqlTutorial04">MysqlTutorial04</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-03-12T08:46:27.000Z" title="发表于 2025-03-12 16:46:27">2025-03-12</time></span></div><div class="content">事务事务的概念及性质引入  事务性质（ACID）事务看起来感觉简单，但是要实现事务必须要遵守4个特性，分别如下:  原子性(Atomicity):一个事务中的所有操作，要么全部完成，要么全部不完成，不会结束在中间某个环节，而且事务在执行过程中发生错误，会被回滚到事务开始前的状态，就像这个事务从来没有执行过一样，就好比买一件商品，购买成功时，则给商家付了钱，商品到手;购买失败时，则商品在商家手中，消费者的钱也没花出去。 一致性(Consistency):是指事务操作前和操作后，数据满足完整性约束，数据库保持一致性状态。比如，用户 A和用户 B在银行分别有 800 元和 600 元，总共 1400 元，用户 A给用户 B转账 200 元分为两个步骤，从 A的账户扣除 200 元和对 B的账户增加 200 元。一致性就是要求上述步骤操作后最后的结果是用户 A 还有 600 元，用户 B有 800 元，总共 1400 元，而不会出现用户 A 扣除了 200元，但用户B未增加的情况(该情况，用户A和B均为 600 元，总共 1200...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2025/03/12/MysqlTutorial03/" title="MysqlTutorial03"><img class="post-bg" src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MysqlTutorial03"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/03/12/MysqlTutorial03/" title="MysqlTutorial03">MysqlTutorial03</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-03-12T08:46:09.000Z" title="发表于 2025-03-12 16:46:09">2025-03-12</time></span></div><div class="content">...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2025/03/12/MysqlTutorial02/" title="MysqlTutorial02"><img class="post-bg" src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MysqlTutorial02"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/03/12/MysqlTutorial02/" title="MysqlTutorial02">MysqlTutorial02</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-03-12T08:46:00.000Z" title="发表于 2025-03-12 16:46:00">2025-03-12</time></span></div><div class="content">索引1. 索引数据结构什么是索引？为什么索引能加快查询？索引是数据库中一种特殊的数据结构，它像书籍的目录一样，能帮助数据库系统快速定位和访问数据。索引能加快查询的原因在于：  减少数据访问量：通过索引，数据库只需要访问包含目标数据的部分，而不是扫描整个表。 有序存储：索引中的数据是按照特定顺序存储的，使得搜索、排序和分组操作更高效。 快速定位：使用树形结构等高效的数据结构，可以在大量数据中快速定位目标记录。  没有索引时，数据库需要进行全表扫描，时间复杂度为O(n)；而使用索引后，查询时间复杂度可降至O(log n)。 B+ 树和（B 树和红黑树）有什么区别？为什么选择用 B+...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2025/03/12/MysqlTutorial01/" title="MysqlTutorial01"><img class="post-bg" src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MysqlTutorial01"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/03/12/MysqlTutorial01/" title="MysqlTutorial01">MysqlTutorial01</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-03-12T08:45:43.000Z" title="发表于 2025-03-12 16:45:43">2025-03-12</time></span></div><div class="content">MySQL数据库基础培训：逻辑架构与InnoDB引擎1. MySQL基础概念1.1 什么是MySQLMySQL是全球最受欢迎的开源关系型数据库管理系统之一，由瑞典MySQL AB公司开发，现在属于Oracle公司。MySQL具有以下特点：  开源性：遵循GPL协议，可自由使用和修改 跨平台性：支持Windows、Linux、macOS等多种操作系统 可靠性：广泛应用于各类网站、应用程序和商业产品 性能：针对不同需求可以通过配置进行优化  MySQL广泛应用于网站开发、企业应用、数据仓库等场景，是互联网行业的基础设施之一。 1.2...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2025/03/09/GameTheroy/" title="GameTheroy"><img class="post-bg" src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="GameTheroy"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/03/09/GameTheroy/" title="GameTheroy">GameTheroy</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-03-09T08:45:50.000Z" title="发表于 2025-03-09 16:45:50">2025-03-09</time></span></div><div class="content">博弈论与极大极小定理 笔记 1. 课程概述本课程探讨了博弈论在计算机科学中的应用，重点包括：  零和博弈与极小极大最优策略 随机算法与博弈论的联系 一般和博弈及纳什均衡   2. 博弈论基础博弈的定义  玩家（Players）：参与者 策略（Actions）：玩家可以采取的决策 收益（Payoff）：由玩家的联合决策决定   3. 经典零和博弈：射手-守门员博弈设定  玩家：射手（Shooter） vs. 守门员（Goalie） 动作：左（L）或右（R） 规则： 若射手和守门员选择相同方向，守门员成功扑救 否则，射手得分    收益矩阵  守门员扑救：(+1, -1) 射手进球：(-1, +1) 这是一个零和博弈，满足 r+c&#x3D;0    行矩阵&#x2F;列矩阵    4. 纯策略 vs. 混合策略 纯策略：玩家每次都选择固定动作 混合策略：玩家按一定概率分配动作选择    收益计算  若两个玩家独立随机选择策略，预期收益计算为：  $$E[payoff]&#x3D;∑piqjR(i,j)E[\text{payoff}] &#x3D; \sum p_i q_j...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2025/03/06/MCUTuTorial01/" title="MCUTuTorial01"><img class="post-bg" src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MCUTuTorial01"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/03/06/MCUTuTorial01/" title="MCUTuTorial01">MCUTuTorial01</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-03-06T05:46:58.000Z" title="发表于 2025-03-06 13:46:58">2025-03-06</time></span></div><div class="content">P2 命名规则   40正极，20接地。P0到3，镜像Z形。左侧上下，右侧外里。9脚复位，P0上拉。31引脚，电平决定，接高访内，接低访外。   P4–点亮一个LED灯 1）通过PCB原理图可以知道控制LED灯亮灭的是P2口的，并且接入+VCC5V即高电平1，LED灯要那个亮的话那个线，P2端要设置为0，不亮就设置为1，有电势差，即有电流流过灯亮； 2）P2&#x3D;1111  1110，即第一个灯亮其他灯不亮，但是我们读取是从下面的，所有不是（P2&#x3D;0111  1111）这样写； 3）用到P2口，所有要导入头文件#….鼠标右键点击就可以加进来； 4）不能识别 P2&#x3D;1111  1110这样的类型，所有将它转为16进制，开头用0x表示16进制的数 P2&#x3D;0xFE ;  &#x2F;&#x2F;1111  1110 转换可以网上搜索，计算器也可以直接算； 5）一个亮一个灭P2&#x3D;0x55; &#x2F;&#x2F;0101 ...</div></div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/5/#content-inner"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/#content-inner">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/#content-inner">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/#content-inner">9</a><a class="extend next" rel="next" href="/page/7/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/"><span class="card-category-list-name">Java</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Vue/"><span class="card-category-list-name">Vue</span><span class="card-category-list-count">5</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 1.23em; color: #999ea6">面试</a> <a href="/tags/TCP/" style="font-size: 1.1em; color: #999">TCP</a> <a href="/tags/Tutorial/" style="font-size: 1.5em; color: #99a9bf">Tutorial</a> <a href="/tags/Java/" style="font-size: 1.37em; color: #99a4b2">Java</a> <a href="/tags/Vue/" style="font-size: 1.23em; color: #999ea6">Vue</a> <a href="/tags/%E6%96%B0%E5%B9%B4%E7%9B%AE%E6%A0%87/" style="font-size: 1.1em; color: #999">新年目标</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      <a class="card-more-btn" href="/archives/" title="查看更多"><i class="fas fa-angle-right"></i></a>
+    </div>
+    <ul class="card-archive-list">
+  
+      <li class="card-archive-list-item">
+        <a class="card-archive-list-link" href="/archives/2026/04/">
+          <span class="card-archive-list-date">四月 2026</span>
+          <span class="card-archive-list-count">8</span>
+        </a>
+      </li>
+    
+      <li class="card-archive-list-item">
+        <a class="card-archive-list-link" href="/archives/2026/01/">
+          <span class="card-archive-list-date">一月 2026</span>
+          <span class="card-archive-list-count">3</span>
+        </a>
+      </li>
+    
+      <li class="card-archive-list-item">
+        <a class="card-archive-list-link" href="/archives/2025/10/">
+          <span class="card-archive-list-date">十月 2025</span>
+          <span class="card-archive-list-count">4</span>
+        </a>
+      </li>
+    
+      <li class="card-archive-list-item">
+        <a class="card-archive-list-link" href="/archives/2025/07/">
+          <span class="card-archive-list-date">七月 2025</span>
+          <span class="card-archive-list-count">1</span>
+        </a>
+      </li>
+    
+      <li class="card-archive-list-item">
+        <a class="card-archive-list-link" href="/archives/2025/05/">
+          <span class="card-archive-list-date">五月 2025</span>
+          <span class="card-archive-list-count">10</span>
+        </a>
+      </li>
+    
+      <li class="card-archive-list-item">
+        <a class="card-archive-list-link" href="/archives/2025/04/">
+          <span class="card-archive-list-date">四月 2025</span>
+          <span class="card-archive-list-count">16</span>
+        </a>
+      </li>
+    
+      <li class="card-archive-list-item">
+        <a class="card-archive-list-link" href="/archives/2025/03/">
+          <span class="card-archive-list-date">三月 2025</span>
+          <span class="card-archive-list-count">21</span>
+        </a>
+      </li>
+    
+      <li class="card-archive-list-item">
+        <a class="card-archive-list-link" href="/archives/2025/02/">
+          <span class="card-archive-list-date">二月 2025</span>
+          <span class="card-archive-list-count">14</span>
+        </a>
+      </li>
+    </ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">86</div></div><div class="webinfo-item"><div class="item-name">运行时间 :</div><div class="item-count" id="runtimeshow" data-publishDate="2024-10-31T16:00:00.000Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">316.2k</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>window.typedJSFn = {
+  init: str => {
+    window.typed = new Typed('#subtitle', Object.assign({
+      strings: str,
+      startDelay: 300,
+      typeSpeed: 150,
+      loop: true,
+      backSpeed: 50,
+    }, null))
+  },
+  run: subtitleType => {
+    if (true) {
+      if (typeof Typed === 'function') {
+        subtitleType()
+      } else {
+        btf.getScript('https://cdn.jsdelivr.net/npm/typed.js/dist/typed.umd.min.js').then(subtitleType)
+      }
+    } else {
+      subtitleType()
+    }
+  }
+}
+btf.addGlobalFn('pjaxSendOnce', () => { typed.destroy() }, 'typedDestroy')
+</script><script>function subtitleType () {
+  if (true) {
+    typedJSFn.init(["今日事&#44;今日毕","Never put off till tomorrow what you can do today"])
+  } else {
+    document.getElementById("subtitle").textContent = "今日事&#44;今日毕"
+  }
+}
+typedJSFn.run(subtitleType)</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

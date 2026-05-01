@@ -1,0 +1,610 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>RedisTutorial01 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="Redis学习流程：对象、执行流程、持久化、场景、集群。本篇讲述第一部分：Redis的各种数据结构。  0.Why Redis？相比与MySQL这种磁盘型的数据库，Redis是一款内存数据存储系统，所有数据采用键值对结构，以其卓越的性能和灵活性在现代应用架构中占据重要地位。它将数据直接存储在RAM中，提供毫秒级响应速度，同时支持多样化的数据结构（如后面要讲到的String、List、Hash、S">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RedisTutorial01">
+<meta property="og:url" content="https://0kr.xin/2025/04/01/RedisTutorial01/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="Redis学习流程：对象、执行流程、持久化、场景、集群。本篇讲述第一部分：Redis的各种数据结构。  0.Why Redis？相比与MySQL这种磁盘型的数据库，Redis是一款内存数据存储系统，所有数据采用键值对结构，以其卓越的性能和灵活性在现代应用架构中占据重要地位。它将数据直接存储在RAM中，提供毫秒级响应速度，同时支持多样化的数据结构（如后面要讲到的String、List、Hash、S">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape003.jpg">
+<meta property="article:published_time" content="2025-04-01T02:14:29.000Z">
+<meta property="article:modified_time" content="2025-04-07T09:55:11.462Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape003.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2025/04/01/RedisTutorial01/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'RedisTutorial01',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-04-07 17:55:11'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape003.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">RedisTutorial01</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">RedisTutorial01</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-04-01T02:14:29.000Z" title="发表于 2025-04-01 10:14:29">2025-04-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-04-07T09:55:11.462Z" title="更新于 2025-04-07 17:55:11">2025-04-07</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">8.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>29分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>Redis学习流程：对象、执行流程、持久化、场景、集群。本篇讲述第一部分：Redis的各种数据结构。</p>
+</blockquote>
+<h1 id="0-Why-Redis？"><a href="#0-Why-Redis？" class="headerlink" title="0.Why Redis？"></a>0.Why Redis？</h1><p>相比与MySQL这种磁盘型的数据库，Redis是一款内存数据存储系统，所有数据采用键值对结构，以其卓越的性能和灵活性在现代应用架构中占据重要地位。它将数据直接存储在RAM中，提供毫秒级响应速度，同时支持多样化的数据结构（如后面要讲到的String、List、Hash、Set、ZSet等）。</p>
+<p>在以前，Redis作为传统缓存层的首选技术充当请求与主数据库的缓冲。而现在，Redis不仅能够提供数据持久化保障，还支持JSON格式、高效搜索和对象映射功能，也能支持作为主数据库使用了。无论是自托管还是通过Redis Cloud服务使用，<strong>它都能为需要低延迟数据访问的应用场景（如缓存、会话管理、实时分析）提供理想解决方案</strong>，有效减轻主数据库负担并显著提升整体系统性能。</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407120652854.png" class>
+
+<p>和之前语言的学习不同，对于Redis数据类型的讲解，我们都是应用方法+底层实现直接一锅端掉送走。在这里请注意仔细区分Redis数据类型和底层数据结构&#x2F;编码的区别，如String和SDS的区别。</p>
+<p>让我们先高屋建瓴地进行概述：</p>
+<p>Redis 共有 5 种基本数据类型：String（字符串）、List（列表）、Set（集合）、Hash（散列）、Zset（有序集合）。</p>
+<p>这 5 种数据类型是直接提供给用户使用的，是数据的保存形式，其底层实现主要依赖这 8 种数据结构：简单动态字符串（SDS）、LinkedList（双向链表）、Dict（哈希表&#x2F;字典）、SkipList（跳跃表）、Intset（整数集合）、ZipList（压缩列表）、QuickList（快速列表）。</p>
+<p>Redis 5 种基本数据类型对应的底层数据结构实现如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th align="left">String</th>
+<th align="left">List</th>
+<th align="left">Hash</th>
+<th align="left">Set</th>
+<th align="left">Zset</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">SDS</td>
+<td align="left">LinkedList&#x2F;ZipList&#x2F;QuickList</td>
+<td align="left">Dict、ZipList</td>
+<td align="left">Dict、Intset</td>
+<td align="left">ZipList、SkipList</td>
+</tr>
+</tbody></table>
+<p>Redis 3.2 之前，List 底层实现是 LinkedList 或者 ZipList。 Redis 3.2 之后，引入了 LinkedList 和 ZipList 的结合 QuickList，List 的底层实现变为 QuickList。从 Redis 7.0 开始， ZipList 被 ListPack 取代。</p>
+<h1 id="0-5-redisObject"><a href="#0-5-redisObject" class="headerlink" title="0.5 redisObject"></a>0.5 redisObject</h1><p>Redis是key-value存储，key和value在Redis中都被抽象为对象，key只能是String对象，而Value支持丰富的对象种类，包括String、List、Set、Hash、Sorted Set、Stream等。</p>
+<p>本部分的内容留个大概印象即可。</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407175328459.png" class>
+
+<p>type:是哪种Redis对象</p>
+<p>encoding:表示用哪种底层编码，用OBJECT ENCODING[key]可以看到对应的编码方式</p>
+<p>lru:记录对象访问信息，用于内存淘汰，这个可以先忽略，后续章节会详细介绍。</p>
+<p>refcount:引用计数，用来描述有多少个指针，指向该对象</p>
+<p>ptr:内容指针，指向实际内容</p>
+<h1 id="1-String"><a href="#1-String" class="headerlink" title="1.String"></a>1.String</h1><h2 id="String操作"><a href="#String操作" class="headerlink" title="String操作"></a>String操作</h2><p>String是Redis中最基本的数据类型，可以存储文本、整数或二进制数据。一个键最大能存储512MB的数据。</p>
+<p>说到底，操作还是增删改查四个方面…</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407123125198.png" class>
+
+<p><strong>基本命令：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># 创建</span><br><span class="line">SET key value            # 设置key对应的值为string类型的value</span><br><span class="line">SETNX key value          # 只有当key不存在时才设置value（SET if Not eXists）</span><br><span class="line"></span><br><span class="line"># 查询</span><br><span class="line">GET key                  # 获取key对应的值</span><br><span class="line">MGET key1 [key2 ...]     # 批量获取多个key的值</span><br><span class="line"></span><br><span class="line"># 更新</span><br><span class="line">SET key value            # 设置key对应的值（如果已存在则覆盖）</span><br><span class="line">INCR key                 # 将key对应的数字值加1</span><br><span class="line">DECR key                 # 将key对应的数字值减1</span><br><span class="line">INCRBY key increment     # 将key对应的数字值增加increment</span><br><span class="line">DECRBY key decrement     # 将key对应的数字值减少decrement</span><br><span class="line">APPEND key value         # 将value追加到key对应值的末尾</span><br><span class="line"></span><br><span class="line"># 删除</span><br><span class="line">DEL key                  # 删除key</span><br><span class="line">STRLEN key               # 返回key对应值的长度</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用示例：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"># 创建操作</span><br><span class="line">127.0.0.1:6379&gt; SET username &quot;redis&quot;    # 常规创建</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; SETNX newkey &quot;value&quot;    # 不存在才创建</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; SETNX username &quot;test&quot;   # 已存在，不会设置</span><br><span class="line">(integer) 0</span><br><span class="line"></span><br><span class="line"># 查询操作</span><br><span class="line">127.0.0.1:6379&gt; GET username</span><br><span class="line">&quot;redis&quot;</span><br><span class="line">127.0.0.1:6379&gt; MGET username newkey    # 批量获取</span><br><span class="line">1) &quot;redis&quot;</span><br><span class="line">2) &quot;value&quot;</span><br><span class="line"></span><br><span class="line"># 更新操作</span><br><span class="line">127.0.0.1:6379&gt; SET counter 100</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; INCR counter</span><br><span class="line">(integer) 101</span><br><span class="line">127.0.0.1:6379&gt; INCRBY counter 50</span><br><span class="line">(integer) 151</span><br><span class="line">127.0.0.1:6379&gt; APPEND username &quot;_user&quot;</span><br><span class="line">(integer) 10</span><br><span class="line">127.0.0.1:6379&gt; GET username</span><br><span class="line">&quot;redis_user&quot;</span><br><span class="line"></span><br><span class="line"># 删除操作</span><br><span class="line">127.0.0.1:6379&gt; DEL newkey</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; GET newkey</span><br><span class="line">(nil)</span><br></pre></td></tr></table></figure>
+
+<h2 id="底层实现"><a href="#底层实现" class="headerlink" title="底层实现"></a>底层实现</h2><p>String结构看起来很简单，但是实际上有三种编码方式：</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407124414968.png" class>
+
+<ul>
+<li><p>INT编码：这个很好理解，就是存一个整型，可以用long表示的整数就以这种编码存储;</p>
+</li>
+<li><p>EMBSTR编码：如果字符串小于等于阈值字节，使用EMBSTR编码;</p>
+</li>
+<li><p>RAW编码：字符串大于阈值字节，则用RAW编码。</p>
+</li>
+</ul>
+<blockquote>
+<p>这里的阈值字节在Redis3.2之前的版本是39，3.2以及之后的版本是44，原因这里不做探讨。</p>
+</blockquote>
+<p>EMBSTR和RAW都是由redisObject和SDS两个结构组成，它们的差异在于，<strong>EMBSTR下redisObject和SDS是连续的内存，RAW编码下redisObject和SDS的内存是分开的。</strong></p>
+<p>EMBSTR优点是redisObject和SDS两个结构可以一次性分配空间，缺点在于如果重新分配空间，整体都需要再分配，所以<em>EMBSTR设计为只读</em>，<strong>任何写操作之后EMBSTR都会变成RAW</strong>，理念是发生过修改的字符串通常会认为是易变的。</p>
+<p>那么EMBSTR和RAW内存的结构又是什么呢？请看：</p>
+<p>EMBSTR内存结构：</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407125432148.png" class>
+
+<p>RAW内存结构：</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407125506058.png" class>
+
+<p>我们注意到，字符串编码EMBSTR和RAW都包含一个结构叫SDS，它是Simple Dynamic String的缩写，即简单动态字符串，这是Redis内部作为基石的字符串封装，十分重要，下面我们详细介绍下SDS。</p>
+<h3 id="为什么需要SDS？"><a href="#为什么需要SDS？" class="headerlink" title="为什么需要SDS？"></a>为什么需要SDS？</h3><p>在C语言中，字符串用一个”0”结尾的char数组表示，比如”hello 0kr” 即”hello 0kr\0”。然而</p>
+<ol>
+<li>每次计算字符串长度的复杂度为O(N)；</li>
+<li>对字符串进行追加，需要重新分配内存；</li>
+<li>非二进制安全（这里就是指在字符串中出现\0的情况）。</li>
+</ol>
+<p>在Redis内部，字符串的追加和长度计算很常见，这两个简单的操作不应该成为性能的瓶颈，于是Redis封装了一个叫SDS的字符串结构，用来解决上述问题。下面我们来看看它是怎样的结构。</p>
+<p>首先，Redis中SDS分为sdshdr8、sdshdr16、sdshdr32、sdshdr64，它们的字段属性都是一样，区别在于应对不同大小的字符串以节省内存开销。我们以sdshdr8为例:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// from Redis 7.0.8</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr8</span> &#123;</span></span><br><span class="line">    <span class="type">uint8_t</span> len;      <span class="comment">/* used */</span></span><br><span class="line">    <span class="type">uint8_t</span> alloc;    <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> flags;  <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="type">char</span> buf[];       <span class="comment">/* 实际的字符数组 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<svg width="400" height="230" viewbox="0 0 400 230" xmlns="http://www.w3.org/2000/svg">
+  <rect x="50" y="50" width="300" height="30" fill="#f0f0f0" stroke="#000"/>
+  <text x="200" y="70" text-anchor="middle">len (已使用长度, 1字节)</text>
+  <rect x="50" y="80" width="300" height="30" fill="#f0f0f0" stroke="#000"/>
+  <text x="200" y="100" text-anchor="middle">alloc (分配长度, 1字节)</text>
+  <rect x="50" y="110" width="300" height="30" fill="#e6f7ff" stroke="#000"/>
+  <text x="200" y="130" text-anchor="middle">flags (类型标志, 1字节)</text>
+  <rect x="50" y="140" width="300" height="40" fill="#ffcccc" stroke="#000"/>
+  <text x="200" y="165" text-anchor="middle">buf[] (字符数据)</text>
+<text x="175" y="25" font-weight="bold" text-anchor="middle">Redis 7.0.8 SDS结构</text>
+<text x="80" y="195" text-anchor="start" font-style="italic" font-size="12">* packed 属性确保结构体紧凑存储，没有对齐填充</text>
+<text x="80" y="215" text-anchor="start" font-style="italic" font-size="12">* flags中3个低位表示SDS类型，5位未使用</text>
+</svg>
+
+<p>此结构中：</p>
+<ul>
+<li>len：表示已使用的字节数</li>
+<li>alloc：表示除头部和结束符外分配的字节数</li>
+<li>flags：SDS类型标志，低3位表示SDS类型（如SDS_TYPE_8），在代码中就是：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> SDS_TYPE_8 1</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>buf[]：存储实际字符数据的数组（二进制存储，这使得Redis字符串可以处理任何类型的数据，而不仅限于文本）</li>
+</ul>
+<p>于是我们能很清晰地看出SDS是如何解决上面三个问题的：</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407130935585.png" class>
+
+<ol>
+<li>增加长度字段len，快速返回长度;</li>
+<li>增加空余空间(alloc-len)，为后续追加数据留余地；</li>
+<li>不再以’\0’作为判断标准，二进制安全。</li>
+</ol>
+<h1 id="2-List"><a href="#2-List" class="headerlink" title="2.List"></a>2.List</h1><p>List是一个按照插入顺序排序的字符串链表。你可以添加元素到头部（左边）或尾部（右边）。一个列表最多可包含2^32 - 1个元素（超过40亿）。</p>
+<h2 id="List操作"><a href="#List操作" class="headerlink" title="List操作"></a>List操作</h2><img src="/2025/04/01/RedisTutorial01/image-20250407132514763.png" class>
+
+<p><strong>基本命令：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># 创建</span><br><span class="line">LPUSH key value [value ...]       # 将一个或多个值插入到列表头部</span><br><span class="line">RPUSH key value [value ...]       # 将一个或多个值插入到列表尾部</span><br><span class="line"></span><br><span class="line"># 查询</span><br><span class="line">LLEN key                          # 获取列表长度</span><br><span class="line">LRANGE key start stop             # 获取列表指定范围内的元素</span><br><span class="line">LINDEX key index                  # 通过索引获取列表中的元素</span><br><span class="line"></span><br><span class="line"># 更新</span><br><span class="line">LPUSH key value [value ...]       # 从列表头部添加元素</span><br><span class="line">RPUSH key value [value ...]       # 从列表尾部添加元素</span><br><span class="line">LPOP key                          # 移出并获取列表的第一个元素</span><br><span class="line">RPOP key                          # 移出并获取列表的最后一个元素</span><br><span class="line">LREM key count value              # 移除列表中与value相等的元素</span><br><span class="line"></span><br><span class="line"># 删除</span><br><span class="line">DEL key                           # 删除整个列表</span><br><span class="line">UNLINK key                        # 非阻塞删除，仅将键从keyspace元数据中删除</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用示例：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"># 创建操作</span><br><span class="line">127.0.0.1:6379&gt; LPUSH mylist &quot;world&quot;    # 从左侧插入</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; LPUSH mylist &quot;hello&quot;</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; RPUSH mylist &quot;redis&quot;    # 从右侧插入</span><br><span class="line">(integer) 3</span><br><span class="line"></span><br><span class="line"># 查询操作</span><br><span class="line">127.0.0.1:6379&gt; LLEN mylist             # 获取长度</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; LRANGE mylist 0 -1      # 获取全部元素</span><br><span class="line">1) &quot;hello&quot;</span><br><span class="line">2) &quot;world&quot;</span><br><span class="line">3) &quot;redis&quot;</span><br><span class="line"></span><br><span class="line"># 更新操作</span><br><span class="line">127.0.0.1:6379&gt; LPOP mylist             # 从左侧弹出</span><br><span class="line">&quot;hello&quot;</span><br><span class="line">127.0.0.1:6379&gt; RPOP mylist             # 从右侧弹出</span><br><span class="line">&quot;redis&quot;</span><br><span class="line">127.0.0.1:6379&gt; LRANGE mylist 0 -1</span><br><span class="line">1) &quot;world&quot;</span><br><span class="line">127.0.0.1:6379&gt; LPUSH mylist &quot;new&quot;</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; LREM mylist 1 &quot;world&quot;   # 删除指定元素</span><br><span class="line">(integer) 1</span><br><span class="line"></span><br><span class="line"># 删除操作</span><br><span class="line">127.0.0.1:6379&gt; DEL mylist              # 删除整个列表</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; LPUSH mylist &quot;test&quot;</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; UNLINK mylist           # 非阻塞删除</span><br><span class="line">(integer) 1</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p> 这里需要解释一下DEL和UNLINK指令的区别：</p>
+<p>del 命令同步删除命令，会阻塞客户端，直到删除完成。 unlink 命令是异步删除命令，只是取消Key在键空间的关联，让其不再能查到，删除是异步进行，所以不会阻塞客户端（相当于逻辑删除）。</p>
+</blockquote>
+<h2 id="底层实现-1"><a href="#底层实现-1" class="headerlink" title="底层实现"></a>底层实现</h2><p>Redis的List在早期版本（3.2之前）使用两种数据结构：ziplist和linkedlist。在Redis 3.2之后，引入了quicklist作为List的统一实现：</p>
+<ol>
+<li><strong>ziplist（压缩列表）</strong>：当列表元素较少且元素值较小时使用</li>
+<li><strong>linkedlist（双向链表）</strong>：当列表元素多或元素值较大时使用</li>
+<li><strong>quicklist（快速列表）</strong>：结合了ziplist和linkedlist的优点，将linkedlist按段切分，每一段使用ziplist实现，相当于一个由ziplist组成的linkedlist</li>
+</ol>
+<img src="/2025/04/01/RedisTutorial01/image-20250407133714005.png" class>
+
+<p>让我们分别介绍一下：</p>
+<h3 id="ZIPLIST"><a href="#ZIPLIST" class="headerlink" title="ZIPLIST"></a>ZIPLIST</h3><p>当满足如下条件时，用ZIPLIST编码:</p>
+<ol>
+<li>列表对象保存的所有字符串对象长度都小于64字节;</li>
+<li>列表对象元素个数少于512个，注意，这是LIST的限制，而不是ZIPLIST的限制。</li>
+</ol>
+<p>ZIPLIST底层用压缩列表实现，这里我们假设列表中包含”hello”、”niuniu”、”mar”三个元素，ZIPLIST编码示意如下:</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407134701283.png" class>
+
+<ul>
+<li>zlbytes:表示该ZIPLIST一共占了多少字节数，这个数字是包含zlbytes本身占据的字节的。</li>
+<li>zitail: ZIPLIST 尾巴节点 <strong>相对于 ZIPLIST 的开头(起始指针)偏移的字节数</strong>。通过这个字段可以快速定位到尾部节点，例如现在有一个 ZIPLIST，z| 指向它的开头，如果要获取 tail 尾巴节点，即 ZIPLIST 里的最后一个节点可以 zl + zltail的值，这样定位到它。如果没有尾节点，就定位到 zlend。</li>
+<li>zllen:表示有多少个数据节点，在本例中就有3个节点。</li>
+<li>entry1~entry3:表示压缩列表数据节点。</li>
+<li>zlend:一个特殊的entry节点，表示ZIPLIST的结束。</li>
+</ul>
+<p>这里的每一个entry又是由下面三个部分组成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;prevlen&gt; &lt;encoding&gt; &lt;entry-data&gt;</span><br></pre></td></tr></table></figure>
+
+<p>同样的，我们来看看，各字段的含义:</p>
+<ul>
+<li>prevlen:表示上一个节点的数据长度。通过这个字段可以定位上一个节点的起始地址——换言之，prevlen 可以跳到前一个节点的开头位置，实现从后往前操作，所以压缩列表才可以从后往前遍历。</li>
+<li>encoding:编码类型。编码类型里还包含了一个entry的长度信息，可用于正向遍历。</li>
+<li>entry-data:实际的数据。</li>
+</ul>
+<blockquote>
+<p>如果前一节点的长度，也就是前一个ENTRY的大小，小于254字节，那么prevlen属性需要用1字节长的空间来保存这个长度值，(255是特殊字符，被zlend使用了.)</p>
+<p>如果前一节点的长度大于等于254字节，那么prevlen属性需要用5字节长的空间来保存这个长度值，注意5个字节中的第一个字节为11111110，也就是254，标志这是个5字节的prevlen信息，剩下4字节来表示大小。</p>
+</blockquote>
+<h4 id="连锁更新问题"><a href="#连锁更新问题" class="headerlink" title="连锁更新问题"></a>连锁更新问题</h4><p>连锁更新(cascading update)问题发生在以下场景：</p>
+<p>ZIPLIST使用可变长度编码来存储元素长度，长度编码可能占用1或5个字节。当一个元素的长度发生变化，可能导致其长度编码字节数也发生变化。</p>
+<p>当长度编码字节数增加时，会导致后续所有元素位置发生偏移，这种偏移可能导致其他元素的长度编码也需要调整。在最坏情况下，一个元素的变化会引发整个ZIPLIST的所有元素需要重新定位。这就是连锁更新的问题。</p>
+<p>为了解决这个问题，我们需要一种不记录prevlen，并且还能找到上一个节点的起始位置的办法，Redis使用了很巧妙的一种方式：LISTPACK。</p>
+<h3 id="LISTPACK"><a href="#LISTPACK" class="headerlink" title="LISTPACK"></a>LISTPACK</h3><p>LISTPACK的内存布局大致如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;total-bytes&gt;&lt;num-elements&gt;&lt;element-1&gt;...&lt;element-N&gt;&lt;end-mark&gt;</span><br></pre></td></tr></table></figure>
+
+<p>每个元素的格式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;encoding-type&gt; &lt;element-data&gt; &lt;element-tot-len&gt;</span><br></pre></td></tr></table></figure>
+
+<p>其中：</p>
+<ol>
+<li><strong>encoding-type</strong>: 表示数据的编码类型（如整数、字符串等）</li>
+<li><strong>element-data</strong>: 实际存储的数据内容</li>
+<li><strong>element-tot-len</strong>: 记录整个节点的总长度（不包括自身）</li>
+</ol>
+<p>在LISTPACK中，向后遍历很简单，因为我们知道每个节点的长度，可以直接跳到下一个节点。但向前遍历就有挑战性，因为我们需要知道前一个节点的起始位置。</p>
+<p>Redis采用了一个巧妙的设计：在<code>element-tot-len</code>字段中，每个字节的最高位(第一个bit)用作标记位：</p>
+<ul>
+<li><p><strong>0表示这是结束字节</strong></p>
+</li>
+<li><p><strong>1表示还有后续字节</strong></p>
+</li>
+<li><p>当我们需要向前遍历时，可以按照以下步骤：</p>
+<ol>
+<li>从当前位置向前查找，检查每个字节的最高位</li>
+<li>找到最高位为0的字节，这标志着前一个节点的<code>element-tot-len</code>字段的结束</li>
+<li>基于<code>element-tot-len</code>的值，计算出前一个节点的起始位置</li>
+</ol>
+</li>
+</ul>
+<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><p>假设某个节点的<code>element-tot-len</code>值为132（二进制：10000100），需要两个字节存储：</p>
+<ul>
+<li>第一个字节：00000001（最高位为0，表示这是结束字节）</li>
+<li>第二个字节：10000100（最高位为1，表示这是继续字节）</li>
+</ul>
+<p>向前遍历时：</p>
+<ol>
+<li>从当前位置向前扫描，查找最高位为0的字节（00000001）</li>
+<li>读取完整的长度值：00000001 10000100 &#x3D; 132</li>
+<li>从当前位置减去132，就得到了前一个节点的起始位置</li>
+</ol>
+<p>通过这样的设计，当一个节点的大小变化时，只需修改该节点本身。后续节点不存储关于前一个节点的长度信息，因此不会因为前一个节点的变化而需要更新。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>本质区别在于信息依赖关系：</p>
+<ul>
+<li>ZIPLIST：节点A存储节点B的长度信息 → 节点B变化 → 节点A需要更新</li>
+<li>LISTPACK：节点只存储自身信息 → 节点变化 → 只修改自身，不影响其他节点</li>
+</ul>
+<p>即使LISTPACK需要从后向前遍历（通过检查字节的最高位来识别长度字段的结束），这种设计也不会导致连锁更新问题，因为每个节点的变化仍然是局部的、独立的。</p>
+<h3 id="LINKEDLIST"><a href="#LINKEDLIST" class="headerlink" title="LINKEDLIST"></a>LINKEDLIST</h3><p>回到正文。如果不满足ZIPLIST编码的条件，则使用LINKEDLIST编码。为了便于描述，我们还是假设列表含”hello”、”niuniu”、”mart”三个元素，如果用LINKEDLIST编码，则是几个String对象的链接结构，结构示意图如下：</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407142149270.png" class>
+
+<p>可以看到，”hello”、”niuniu”、”mart”这几个数据是以链表的形式连接在一起，实际上删除更为灵活，但是内存不如ZIPLIST紧凑，所以只有在列表个数或节点数据长度比较大的时候，才会使用LINKEDLIST编码，以加快处理性能，一定程度上牺牲了内存。</p>
+<h3 id="QUICKLIST"><a href="#QUICKLIST" class="headerlink" title="QUICKLIST"></a>QUICKLIST</h3><p>上面的分析有说到，ZIPLIST是为了在数据较少时节约内存，LINKEDLIST是为了数据多时提高更新效率，ZIPLIST数据稍多时插入数据会导致很多内存复制。</p>
+<p>但如果节点非常多的情况，LINKEDLIST链表的节点就很多，会占用不少的内存。</p>
+<p>为了解决上面的问题引入了QUICKLIST。</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407142444524.png" class title="是不是有B+树的影子呢？😯😯">
+
+<p>这种方案其实是用ZIPLIST、LINKEDLIST综合的结构，取代二者本身。</p>
+<ul>
+<li>当数据较少的时候，QUICKLIST的节点就只有一个，此时其实相当于就是一个ZIPLIST;</li>
+<li>当数据很多的时候，则同时利用了ZIPLIST和LINKEDLIST的优势。</li>
+</ul>
+<h1 id="3-Set"><a href="#3-Set" class="headerlink" title="3.Set"></a>3.Set</h1><p>Set是一个无序且唯一的字符串集合。可以进行交集、并集、差集等集合运算。</p>
+<h2 id="Set操作"><a href="#Set操作" class="headerlink" title="Set操作"></a>Set操作</h2><img src="/2025/04/01/RedisTutorial01/image-20250407142751135.png" class>
+
+<p><strong>基本命令：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"># 创建</span><br><span class="line">SADD key member [member ...]       # 向集合添加一个或多个成员</span><br><span class="line"></span><br><span class="line"># 查询</span><br><span class="line">SISMEMBER key member               # 判断member是否是集合key的成员</span><br><span class="line">SCARD key                          # 获取集合中的成员数</span><br><span class="line">SMEMBERS key                       # 返回集合中的所有成员</span><br><span class="line">SSCAN key cursor [MATCH pattern] [COUNT count]  # 迭代集合中的元素</span><br><span class="line">SINTER key [key ...]               # 返回给定所有集合的交集</span><br><span class="line">SUNION key [key ...]               # 返回给定所有集合的并集</span><br><span class="line">SDIFF key [key ...]                # 返回给定所有集合的差集</span><br><span class="line"></span><br><span class="line"># 更新</span><br><span class="line">SADD key member [member ...]       # 向集合添加一个或多个成员</span><br><span class="line">SREM key member [member ...]       # 移除集合中一个或多个成员</span><br><span class="line"></span><br><span class="line"># 删除</span><br><span class="line">DEL key                           # 删除整个集合</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用示例：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"># 创建操作</span><br><span class="line">127.0.0.1:6379&gt; SADD fruits &quot;apple&quot;             # 创建集合并添加元素</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; SADD fruits &quot;banana&quot; &quot;cherry&quot;   # 添加多个元素</span><br><span class="line">(integer) 2</span><br><span class="line"></span><br><span class="line"># 查询操作</span><br><span class="line">127.0.0.1:6379&gt; SISMEMBER fruits &quot;apple&quot;        # 检查元素是否存在</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; SCARD fruits                    # 获取集合大小</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; SMEMBERS fruits                 # 获取所有成员</span><br><span class="line">1) &quot;apple&quot;</span><br><span class="line">2) &quot;banana&quot;</span><br><span class="line">3) &quot;cherry&quot;</span><br><span class="line">127.0.0.1:6379&gt; SADD vegetables &quot;carrot&quot; &quot;celery&quot;</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; SUNION fruits vegetables        # 集合并集操作</span><br><span class="line">1) &quot;apple&quot;</span><br><span class="line">2) &quot;banana&quot;</span><br><span class="line">3) &quot;cherry&quot;</span><br><span class="line">4) &quot;carrot&quot;</span><br><span class="line">5) &quot;celery&quot;</span><br><span class="line">127.0.0.1:6379&gt; SINTER fruits vegetables        # 集合交集操作</span><br><span class="line">(empty list or set)</span><br><span class="line">127.0.0.1:6379&gt; SDIFF fruits vegetables         # 集合差集操作</span><br><span class="line">1) &quot;apple&quot;</span><br><span class="line">2) &quot;banana&quot;</span><br><span class="line">3) &quot;cherry&quot;</span><br><span class="line"></span><br><span class="line"># 更新操作</span><br><span class="line">127.0.0.1:6379&gt; SADD fruits &quot;grape&quot;             # 添加新元素</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; SREM fruits &quot;banana&quot;            # 删除指定元素</span><br><span class="line">(integer) 1</span><br><span class="line"></span><br><span class="line"># 删除操作</span><br><span class="line">127.0.0.1:6379&gt; DEL vegetables                  # 删除整个集合</span><br><span class="line">(integer) 1</span><br></pre></td></tr></table></figure>
+
+<h2 id="底层实现-2"><a href="#底层实现-2" class="headerlink" title="底层实现"></a>底层实现</h2><p>Redis的Set在底层使用两种数据结构实现：</p>
+<ol>
+<li><strong>intset（整数集合）</strong>：当集合中的元素都是整数且元素数量较少时使用</li>
+<li><strong>hashtable（哈希表）</strong>：当集合中包含非整数元素或元素数量较多时使用</li>
+</ol>
+<img src="/2025/04/01/RedisTutorial01/image-20250407143457084.png" class>
+
+
+
+<p>如果集合元素都是整数，且元素数量不超过512个，就可以用INTSET编码，结构如下图，可以看到INTSET排列比较紧凑，内存占用少，但是查询时需要二分查找。</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407144144093.png" class>
+
+<p>如果不满足INTSET的条件，就需要用HASHTABLE，HASHTABLE结构如下图，可以看到HASHTABLE查询一个元素的性能很高，能O(1)时间就能找到一个元素是否存在。</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407144257817.png" class>
+
+<h1 id="4-Hash"><a href="#4-Hash" class="headerlink" title="4.Hash"></a>4.Hash</h1><p>Redis Hash是一个field、value都为string的hash表，类似于编程语言中的Map或Dictionary类型。</p>
+<p>每个hash可以存储2^32 - 1个键值对。</p>
+<h2 id="Hash操作"><a href="#Hash操作" class="headerlink" title="Hash操作"></a>Hash操作</h2><img src="/2025/04/01/RedisTutorial01/image-20250407144334786.png" class>
+
+<p><strong>基本命令：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># 创建</span><br><span class="line">HSET key field value [field value ...]   # 为哈希表key设置一个或多个字段的值</span><br><span class="line">HSETNX key field value                   # 只在字段不存在时，才设置哈希表字段的值</span><br><span class="line"></span><br><span class="line"># 查询</span><br><span class="line">HGET key field                           # 获取哈希表key中字段field的值</span><br><span class="line">HGETALL key                              # 获取哈希表key中所有的字段和值</span><br><span class="line">HLEN key                                 # 获取哈希表key中字段的数量</span><br><span class="line">HSCAN key cursor [MATCH pattern] [COUNT count]  # 迭代哈希表中的键值对</span><br><span class="line"></span><br><span class="line"># 更新</span><br><span class="line">HSET key field value                     # 设置哈希表字段的值</span><br><span class="line">HSETNX key field value                   # 只在字段不存在时，设置哈希表字段的值 </span><br><span class="line">HDEL key field [field ...]               # 删除哈希表key中的一个或多个字段</span><br><span class="line"></span><br><span class="line"># 删除</span><br><span class="line">DEL key                                  # 删除整个哈希表</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用示例：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"># 创建操作</span><br><span class="line">127.0.0.1:6379&gt; HSET user:1 name &quot;Tom&quot; age 25   # 创建哈希表并设置多个字段</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; HSETNX user:1 email &quot;tom@example.com&quot;  # 设置不存在的字段</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; HSETNX user:1 name &quot;Thomas&quot;    # 字段已存在，设置失败</span><br><span class="line">(integer) 0</span><br><span class="line"></span><br><span class="line"># 查询操作</span><br><span class="line">127.0.0.1:6379&gt; HGET user:1 name               # 获取单个字段值</span><br><span class="line">&quot;Tom&quot;</span><br><span class="line">127.0.0.1:6379&gt; HGETALL user:1                 # 获取所有字段和值</span><br><span class="line">1) &quot;name&quot;</span><br><span class="line">2) &quot;Tom&quot;</span><br><span class="line">3) &quot;age&quot;</span><br><span class="line">4) &quot;25&quot;</span><br><span class="line">5) &quot;email&quot;</span><br><span class="line">6) &quot;tom@example.com&quot;</span><br><span class="line">127.0.0.1:6379&gt; HLEN user:1                    # 获取字段数量</span><br><span class="line">(integer) 3</span><br><span class="line"></span><br><span class="line"># 更新操作</span><br><span class="line">127.0.0.1:6379&gt; HSET user:1 age 26             # 更新已有字段</span><br><span class="line">(integer) 0</span><br><span class="line">127.0.0.1:6379&gt; HDEL user:1 email              # 删除某个字段</span><br><span class="line">(integer) 1</span><br><span class="line"></span><br><span class="line"># 删除操作</span><br><span class="line">127.0.0.1:6379&gt; DEL user:1                     # 删除整个哈希表</span><br><span class="line">(integer) 1</span><br></pre></td></tr></table></figure>
+
+<h2 id="底层实现-3"><a href="#底层实现-3" class="headerlink" title="底层实现"></a>底层实现</h2><p>Redis的Hash类型底层实现使用了两种数据结构：</p>
+<ol>
+<li><strong>ziplist（压缩列表）</strong>：当哈希表元素较少且元素值较小时使用（当然，新版本已经替换成LISTPACK）</li>
+<li><strong>hashtable（哈希表）</strong>：当哈希表元素较多或元素值较大时使用</li>
+</ol>
+<img src="/2025/04/01/RedisTutorial01/image-20250407144941391.png" class>
+
+<p>老样子，同时满足以下两个条件，用压缩列表：</p>
+<ol>
+<li>Hash对象保存的所有值和键的长度都小于64字节,</li>
+<li>Hash对象元素个数少于512个。</li>
+</ol>
+<img src="/2025/04/01/RedisTutorial01/image-20250407145002265.png" class>
+
+<p>两个条件任何一条不满足，编码结构就用HASHTABLE。在之前无序集合Set中也有应用，和Set的区别在于，在Set中value始终为NULL，但是在Hash中，是有对应的值的。</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407145150974.png" class>
+
+<p>由于HASHTABLE是面试的超级大热门，所以我们在这里也深究一下其中的原理。</p>
+<h3 id="HASHTABLE"><a href="#HASHTABLE" class="headerlink" title="HASHTABLE"></a>HASHTABLE</h3><p>Redis中HASHTABLE的结构如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// from Redis 5.0.5</span></span><br><span class="line"><span class="comment">/* This is our hash table structure. */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictht</span> &#123;</span></span><br><span class="line">    dictEntry **table;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> size;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> sizemask;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> used;</span><br><span class="line">&#125; dictht;</span><br></pre></td></tr></table></figure>
+
+
+
+<img src="/2025/04/01/RedisTutorial01/image-20250407173714039.png" class>
+
+<p>最外层是一个封装的dictht结构，其中字段含义如下:</p>
+<ul>
+<li>table:指向实际hash存储。</li>
+<li>size:哈希表大小。实际就是dictEntry有多少元素空间。</li>
+<li>sizemask:哈希表大小的掩码表示，总是等于<code>size-1</code>。这个属性和哈希值一起决定一个键应该被放到table数组的哪个索引上面，规则<code>Index=hash&amp;sizemask</code></li>
+<li>used:表示已有节点数量。</li>
+</ul>
+<p>所以说查询HASHTABLE节点总数的时间复杂度是O(1)，因为表头是有记录的。</p>
+<p>接下来的重点是HASHTABLE的扩容、缩容和发生的时机。</p>
+<h4 id="扩容时机"><a href="#扩容时机" class="headerlink" title="扩容时机"></a>扩容时机</h4><ol>
+<li><strong>负载因子过高</strong>：当哈希表的负载因子(used&#x2F;size)超过1时，意味着平均每个bucket已经有至少一个元素，此时会触发扩容。通常情况下，当负载因子大于等于1时，会将哈希表的大小扩大为原来的两倍。</li>
+<li><strong>强制扩容</strong>：在没有开启自动rehash的情况下(如载入大量数据时)，如果负载因子超过5，则强制执行rehash。</li>
+</ol>
+<h4 id="缩容时机"><a href="#缩容时机" class="headerlink" title="缩容时机"></a>缩容时机</h4><p>当负载因子小于0.1时，即哈希表中的元素数量不足哈希表大小的10%，会触发缩容操作，将哈希表大小缩小为当前使用量的一倍大小(used*2)，以节省内存空间。</p>
+<h4 id="渐进式rehash过程"><a href="#渐进式rehash过程" class="headerlink" title="渐进式rehash过程"></a>渐进式rehash过程</h4><p>Redis的渐进式rehash分为以下几个步骤：</p>
+<ol>
+<li><strong>分配新哈希表</strong>：为字典的ht[1]分配空间，大小由扩容或缩容决定。</li>
+<li><strong>维护rehash标志</strong>：设置rehashidx为0，表示rehash工作正在进行。</li>
+<li><strong>渐进迁移</strong>：rehash不是一次性完成的，而是分多次、渐进式完成的：<ul>
+<li>在对字典执行添加、删除、查找或更新操作时，顺便将ht[0]中rehashidx索引上的所有键值对rehash到ht[1]</li>
+<li>每完成一次rehash，rehashidx值+1</li>
+<li>系统会在定时任务中执行rehash，每次最多执行1毫秒</li>
+</ul>
+</li>
+<li><strong>完成rehash</strong>：当ht[0]的所有键值对都迁移到ht[1]后，将rehashidx设置为-1，并将ht[1]设置为ht[0]，ht[1]重新初始化为空表</li>
+</ol>
+<h4 id="渐进式rehash的好处"><a href="#渐进式rehash的好处" class="headerlink" title="渐进式rehash的好处"></a>渐进式rehash的好处</h4><ol>
+<li><strong>避免阻塞</strong>：由于Redis是单线程模型，一次性rehash可能导致服务暂停响应。渐进式rehash将这个过程分散到多次操作中，减少了单次操作的时间消耗。</li>
+<li><strong>平滑性能</strong>：将rehash操作分摊到平时的各个增删改查操作中，使得服务器性能更加平稳，避免了突然的性能抖动。</li>
+</ol>
+<p>在渐进式rehash过程中，字典的删除、查找、更新等操作会在两个哈希表上进行，而新增操作只会添加到ht[1]。这种设计保证了在rehash过程中服务依然可以正常运行，用户几乎感知不到rehash过程的存在。</p>
+<h1 id="5-ZSet"><a href="#5-ZSet" class="headerlink" title="5.ZSet"></a>5.ZSet</h1><p>ZSet（Sorted Set，有序集合）是一个有序且唯一的字符串集合。与Set不同，ZSet中的每个成员都关联一个分数（score），Redis通过分数来为集合中的成员进行从小到大的排序。</p>
+<h2 id="ZSet操作"><a href="#ZSet操作" class="headerlink" title="ZSet操作"></a>ZSet操作</h2><img src="/2025/04/01/RedisTutorial01/image-20250407145648325.png" class>
+
+<p><strong>基本命令：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># 创建</span><br><span class="line">ZADD key score member [score member ...]   # 向有序集合添加一个或多个成员，或更新已存在成员的分数</span><br><span class="line"></span><br><span class="line"># 查询</span><br><span class="line">ZRANGE key start stop [WITHSCORES]         # 按照索引范围返回有序集合的成员</span><br><span class="line">ZCOUNT key min max                         # 计算有序集合中指定分数区间的成员数</span><br><span class="line">ZRANK key member                          # 返回有序集合中成员的排名（从低到高）</span><br><span class="line">ZSCORE key member                         # 返回有序集中成员的分数值</span><br><span class="line">ZCARD key                                 # 获取有序集合的成员数</span><br><span class="line"></span><br><span class="line"># 更新</span><br><span class="line">ZADD key score member [score member ...]  # 更新已有成员的分数值</span><br><span class="line">ZREM key member [member ...]              # 移除有序集合中的一个或多个成员</span><br><span class="line"></span><br><span class="line"># 删除</span><br><span class="line">DEL key                                   # 删除整个有序集合</span><br><span class="line">UNLINK key                                # 非阻塞删除，仅将键从keyspace元数据中删除</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用示例：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"># 创建操作</span><br><span class="line">127.0.0.1:6379&gt; ZADD leaderboard 100 &quot;user1&quot; 80 &quot;user2&quot; 120 &quot;user3&quot;  # 创建有序集合</span><br><span class="line">(integer) 3</span><br><span class="line"></span><br><span class="line"># 查询操作</span><br><span class="line">127.0.0.1:6379&gt; ZRANGE leaderboard 0 -1 WITHSCORES  # 获取所有成员及分数（升序）</span><br><span class="line">1) &quot;user2&quot;</span><br><span class="line">2) &quot;80&quot;</span><br><span class="line">3) &quot;user1&quot;</span><br><span class="line">4) &quot;100&quot;</span><br><span class="line">5) &quot;user3&quot;</span><br><span class="line">6) &quot;120&quot;</span><br><span class="line">127.0.0.1:6379&gt; ZRANK leaderboard &quot;user1&quot;           # 获取成员排名</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; ZSCORE leaderboard &quot;user3&quot;          # 获取成员分数</span><br><span class="line">&quot;120&quot;</span><br><span class="line">127.0.0.1:6379&gt; ZCOUNT leaderboard 90 150           # 统计分数范围内的成员数</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; ZCARD leaderboard                   # 获取成员总数</span><br><span class="line">(integer) 3</span><br><span class="line"></span><br><span class="line"># 更新操作</span><br><span class="line">127.0.0.1:6379&gt; ZADD leaderboard 200 &quot;user1&quot;        # 更新成员分数</span><br><span class="line">(integer) 0</span><br><span class="line">127.0.0.1:6379&gt; ZREM leaderboard &quot;user2&quot;            # 移除成员</span><br><span class="line">(integer) 1</span><br><span class="line"></span><br><span class="line"># 删除操作</span><br><span class="line">127.0.0.1:6379&gt; DEL leaderboard                     # 删除整个有序集合</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; ZADD leaderboard 50 &quot;user4&quot;         # 新建有序集合</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; UNLINK leaderboard                  # 非阻塞删除</span><br><span class="line">(integer) 1</span><br></pre></td></tr></table></figure>
+
+<h2 id="底层实现-4"><a href="#底层实现-4" class="headerlink" title="底层实现"></a>底层实现</h2><p>Redis的ZSet是一个复合结构，底层同时使用了两种数据结构：</p>
+<ol>
+<li><strong>ziplist（压缩列表）</strong>：当有序集合的元素数量较少且元素值较小时使用</li>
+<li><strong>skiplist（跳表）+ hashtable（哈希表）</strong>：当有序集合的元素数量较多或元素值较大时使用</li>
+</ol>
+<img src="/2025/04/01/RedisTutorial01/image-20250407145758113.png" class>
+
+<p>ziplist不必多说，之前List、Hash中都有打过交道，同样在，在ZSet中ZIPLIST也是用于数据量比较小时候的内存节省，结构如下:</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407150019193.png" class>
+
+<p>如果满足如下规则，ZSet就用ZIPLIST编码:</p>
+<ol>
+<li>列表对象保存的所有字符串对象长度都小于64字节;</li>
+<li>列表对象元素个数少于128个。</li>
+</ol>
+<p>两个条件任何一条不满足，编码机构就用SKIPLIST+HASHTABLE，其中SKIPLIST也是底层数据结构，是本节才出现的新伙伴。</p>
+<p>SKIPLIST是一种可以快速查找的多级链表结构，通过SKIPLIST可以快速定位到数据所在。它的排名操作、范围查询性能都很高，在前面的章节，我们已经介绍过SKIPLIST，如果有所遗忘的同学，可以回过头去看一下。</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407150112887.png" class>
+
+<p>除了SKIPLIST，Redis还使用了HASHTABLE来配合查询，这样可以在O(1)时间复杂度查到成员的分数值。</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407150125111.png" class>
+
+<p>所以你知道的，接下来我们必须详细地介绍一下跳表。</p>
+<h3 id="跳表"><a href="#跳表" class="headerlink" title="跳表"></a>跳表</h3><h4 id="跳表是什么"><a href="#跳表是什么" class="headerlink" title="跳表是什么"></a>跳表是什么</h4><p>跳表本质上还是链表，普通链表结构如下：</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407164734099.png" class>
+
+<p>这种结构虽然简单清晰，但是查询某个节点的效率比较低，而在有序集合场景，无论是查找还是添加删除元素，我们是需要能快速通过score定位到具体位置，如果用链表那时间复杂度其实就是O(N)，N是节点个数。</p>
+<p><strong>为了提升查找的性能</strong>，Redis就引入了跳表，跳表在链表的基础上，给链表增加了多级的索引，<strong>通过索引可以一次实现多个节点的跳跃</strong>，提高性能。</p>
+<h4 id="跳表的结构"><a href="#跳表的结构" class="headerlink" title="跳表的结构"></a>跳表的结构</h4><img src="/2025/04/01/RedisTutorial01/image-20250407165007343.png" class>
+
+<p>我们分几个场景来分析。</p>
+<ul>
+<li>场景一:查找分数为45的数据</li>
+</ul>
+<p>如果只有原始的链表，那需要走4步，如果有图中的二级索引，只用走2步；</p>
+<p>其实就是从第1个节点出发，通过二级索引走到35，再查看到下一个节点是65，已经超过了，所以降低到下方的索引，也就是一级索引，往后走一次就可以找到45。</p>
+<ul>
+<li>场景二:插入一条score为36的数据</li>
+</ul>
+<p>首先，定位到第一个比score大的位置，这里是45，定位方式和查询类似，不再赘述。</p>
+<p>然后，构造一个新的节点（<u>这里我们假设节点层高随机到3</u>，具体随机算法我们后面会介绍，目前不用太关注）。</p>
+<p>最后，将各层链表补齐，其实就是在每一层进行链接，效果如图：</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407165604580.png" class>
+
+<h4 id="Redis跳表实现与源码解析"><a href="#Redis跳表实现与源码解析" class="headerlink" title="Redis跳表实现与源码解析"></a>Redis跳表实现与源码解析</h4><p>标准的跳表中，score分数值是不可以重复的，并且只有向前指针没有回退指针。Redis对以上两点做了改进，这使得其能够很方便地完成一些业务上的功能，比如排行榜中相同分数的用户以及倒序遍历等等。</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407165849447.png" class>
+
+<p>这是Redis 跳表单个节点的定义:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// from Redis 7.0.8</span></span><br><span class="line"><span class="comment">/* ZSETs use a specialized version of Skiplists */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> &#123;</span></span><br><span class="line">    sds ele;</span><br><span class="line">    <span class="type">double</span> score;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">backward</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistLevel</span> &#123;</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">forward</span>;</span></span><br><span class="line">        <span class="type">unsigned</span> <span class="type">long</span> span;</span><br><span class="line">    &#125; level[];</span><br><span class="line">&#125; zskiplistNode;</span><br></pre></td></tr></table></figure>
+
+<p>我们来看看字段的含义:</p>
+<ul>
+<li>ele:很熟悉的SDS结构，用来存储数据。</li>
+<li>score:节点的分数，浮点型数据</li>
+<li>backward:指向上一个节点的回退指针，支持从表尾向表头遍历，也就是ZREVRANGE这个命令</li>
+<li>level:是个zskiplistLevel结构体数组，zskiplistLevel这个结构体包含了两个字段，一个是forward，指向该层下个能跳到的节点，span记录了距离下个节点的步数，数组结构就表示每个节点都可能是个多层结构。</li>
+</ul>
+<p>结合这张图能够更好地理解：</p>
+<img src="/2025/04/01/RedisTutorial01/image-20250407171311053.png" class>
+
+<p>总而言之，就是从高级索引往后查找，如果下个节点的数值比目标节点小，则继续找，否则不跳过去，而是用下级索引往下找。</p>
+<p>还有几个关键的问题：</p>
+<p><strong>Redis跳表单个节点有几层?</strong></p>
+<p>层次的决定，需要比较随机，才能在各个场景表现出较为平均的性能，这里Redis使用概率均衡的思路来确定新插入节点的层数:</p>
+<p>Redis 跳表决定每一个节点，是否能增加一层的概率为25%，而最大层数限制在Redis 5.0是64层，在Redis 7.0是32层。</p>
+<p><strong>Redis跳表的性能优化了多少？</strong></p>
+<p>这个其实可以很容易想到，跳表的查找过程，其实是走高层，行得通跳过去，行不通走相对下层，很像二叉树的另种表现形式，实际上他们性能也是差不多的，平均时间复杂度都是O(logn)，区别是二叉树最坏情况下也是O(logn)比较稳定，而跳表的最坏时间复杂度是O(N)。当然，实际的生产过程中，体现出来的基本都是跳表的平均时间复杂度。</p>
+<p>前面也提到，有序集合无论是査找、还是增加删除元素，都是需要先定位到数据位置，所以跳表将这三个操作的时间复杂度，都从O(N)降低到了Iog(N)。</p>
+<blockquote>
+<p>个人理解：ZSCORE这种单值查询可以用HASHTABLE，ZRANK这种范围查询可以用跳表。</p>
+</blockquote>
+<h1 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h1><img src="/2025/04/01/RedisTutorial01/image-20250407170755758.png" class>
+
+<p>Redis五种基本数据类型各有其特点和适用场景：</p>
+<ul>
+<li><strong>String</strong>：适用于缓存简单数据、计数器、分布式锁等</li>
+<li><strong>List</strong>：适用于消息队列、最新消息列表等</li>
+<li><strong>Set</strong>：适用于去重、交集运算（共同好友）等</li>
+<li><strong>Hash</strong>：适用于存储对象、用户信息等</li>
+<li><strong>ZSet</strong>：适用于排行榜、优先级队列等</li>
+</ul>
+<p>理解这些数据类型的底层实现有助于我们更高效地使用Redis，根据实际场景选择最合适的数据结构。Redis的优秀性能很大程度上得益于其精心设计的数据结构和算法。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2025/04/01/RedisTutorial01/">https://0kr.xin/2025/04/01/RedisTutorial01/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape003.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/04/01/RedisTutorial02/" title="RedisTutorial02"><img class="cover" src="/statics/landscape001.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">RedisTutorial02</div></div><div class="info-2"><div class="info-item-1">1.Redis存储过程Redis数据存储的核心是基于redisDb结构，它是Redis中最顶层的数据库对象。   redisDb代表Redis数据库结构，上一章，我们讲到的各种操作对象，就是存储在dict数据结构里，本节后面的讲述中，我们都会以上一章节的操作对象为例来进行讲解。 redisDb结构redisDb结构体(来自Redis 5.0.5)包含以下主要字段： 12345678910typedef struct redisDb &#123;    dict *dict;                /* 数据库的主键空间，存储所有键值对 */    dict *expires;             /* 存储设置了过期时间的键 */    dict *blocking_keys;       /* 存储有客户端在等待数据的键(BLPOP) */    dict *ready_keys;          /* 接收了PUSH命令的被阻塞的键 */    dict *watched_keys;        /* 被WATCH命令监视的键(用于MULTI/EXEC事务)...</div></div></div></a><a class="pagination-related" href="/2025/03/31/MysqlTutorial08/" title="MysqlTutorial08"><img class="cover" src="/statics/landscape004.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">MysqlTutorial08</div></div><div class="info-2"><div class="info-item-1">主从复制与读写分离过程总共有三步：    写入binlog: 当主库上发生数据变更时，这些变更会被记录到二进制日志(binlog)中。这是一个事务日志，记录了所有修改数据库的操作。 同步binlog: 从库上的IO线程会连接到主库，并请求获取主库上的binlog。主库会通过dump线程发送binlog内容给从库，从库将接收到的binlog信息写入到自己的中继日志(relay log)中。 回放binlog: 从库上的SQL线程会读取relay log中的内容，并在从库上执行这些SQL操作，使从库的数据与主库保持一致。  那么这就不得不提出一个问题：为什么要通过relay日志文件做缓冲呢，从库为什么不能直接请求获取主库的binlog日志并读取呢？ 首先要考虑到数据完整性风险。从库的 IO线程从主库读取二进制日志(binlog)时，如果没有 relaylog，一旦从库发生故障，已读取但未执行的 binlog 内容可能丢失，导致数据不一致。 还有就是复制效率问题：IO 线程和SQL线程的工作节奏不同步。没有 relay log 作为缓冲，SQL线程可能需要等待 IO...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0-Why-Redis%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">0.Why Redis？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0-5-redisObject"><span class="toc-number">2.</span> <span class="toc-text">0.5 redisObject</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-String"><span class="toc-number">3.</span> <span class="toc-text">1.String</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#String%E6%93%8D%E4%BD%9C"><span class="toc-number">3.1.</span> <span class="toc-text">String操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.2.</span> <span class="toc-text">底层实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81SDS%EF%BC%9F"><span class="toc-number">3.2.1.</span> <span class="toc-text">为什么需要SDS？</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-List"><span class="toc-number">4.</span> <span class="toc-text">2.List</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#List%E6%93%8D%E4%BD%9C"><span class="toc-number">4.1.</span> <span class="toc-text">List操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0-1"><span class="toc-number">4.2.</span> <span class="toc-text">底层实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ZIPLIST"><span class="toc-number">4.2.1.</span> <span class="toc-text">ZIPLIST</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%9E%E9%94%81%E6%9B%B4%E6%96%B0%E9%97%AE%E9%A2%98"><span class="toc-number">4.2.1.1.</span> <span class="toc-text">连锁更新问题</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LISTPACK"><span class="toc-number">4.2.2.</span> <span class="toc-text">LISTPACK</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B"><span class="toc-number">4.2.2.1.</span> <span class="toc-text">举例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.2.2.2.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LINKEDLIST"><span class="toc-number">4.2.3.</span> <span class="toc-text">LINKEDLIST</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#QUICKLIST"><span class="toc-number">4.2.4.</span> <span class="toc-text">QUICKLIST</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-Set"><span class="toc-number">5.</span> <span class="toc-text">3.Set</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Set%E6%93%8D%E4%BD%9C"><span class="toc-number">5.1.</span> <span class="toc-text">Set操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0-2"><span class="toc-number">5.2.</span> <span class="toc-text">底层实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-Hash"><span class="toc-number">6.</span> <span class="toc-text">4.Hash</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Hash%E6%93%8D%E4%BD%9C"><span class="toc-number">6.1.</span> <span class="toc-text">Hash操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0-3"><span class="toc-number">6.2.</span> <span class="toc-text">底层实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HASHTABLE"><span class="toc-number">6.2.1.</span> <span class="toc-text">HASHTABLE</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%A9%E5%AE%B9%E6%97%B6%E6%9C%BA"><span class="toc-number">6.2.1.1.</span> <span class="toc-text">扩容时机</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%A9%E5%AE%B9%E6%97%B6%E6%9C%BA"><span class="toc-number">6.2.1.2.</span> <span class="toc-text">缩容时机</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B8%90%E8%BF%9B%E5%BC%8Frehash%E8%BF%87%E7%A8%8B"><span class="toc-number">6.2.1.3.</span> <span class="toc-text">渐进式rehash过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B8%90%E8%BF%9B%E5%BC%8Frehash%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="toc-number">6.2.1.4.</span> <span class="toc-text">渐进式rehash的好处</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-ZSet"><span class="toc-number">7.</span> <span class="toc-text">5.ZSet</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ZSet%E6%93%8D%E4%BD%9C"><span class="toc-number">7.1.</span> <span class="toc-text">ZSet操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0-4"><span class="toc-number">7.2.</span> <span class="toc-text">底层实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%B3%E8%A1%A8"><span class="toc-number">7.2.1.</span> <span class="toc-text">跳表</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B7%B3%E8%A1%A8%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">7.2.1.1.</span> <span class="toc-text">跳表是什么</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B7%B3%E8%A1%A8%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-number">7.2.1.2.</span> <span class="toc-text">跳表的结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Redis%E8%B7%B3%E8%A1%A8%E5%AE%9E%E7%8E%B0%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90"><span class="toc-number">7.2.1.3.</span> <span class="toc-text">Redis跳表实现与源码解析</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93-1"><span class="toc-number">8.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

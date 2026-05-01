@@ -1,0 +1,341 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>PCB01 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="1 项目管理以及工程介绍·新建工程、原理图、PCB，删除 ·版本管理和控制 测试分支使用 ·工程历史、还原、对比，工程回收站 ·设置参数： 元件库设计将尺度改为0.05 inch 找到相关的数据手册 若是双路运放等（LM358），可以拆分为多part器件， ·常规元件设计           ·非常规元件设计 ·多part元件设计 ·封装设计         散热过孔默认为否，在pcb中再设计 ·">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PCB01">
+<meta property="og:url" content="https://0kr.xin/2026/01/17/PCB01/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="1 项目管理以及工程介绍·新建工程、原理图、PCB，删除 ·版本管理和控制 测试分支使用 ·工程历史、还原、对比，工程回收站 ·设置参数： 元件库设计将尺度改为0.05 inch 找到相关的数据手册 若是双路运放等（LM358），可以拆分为多part器件， ·常规元件设计           ·非常规元件设计 ·多part元件设计 ·封装设计         散热过孔默认为否，在pcb中再设计 ·">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape002.jpg">
+<meta property="article:published_time" content="2026-01-17T08:52:09.000Z">
+<meta property="article:modified_time" content="2026-01-18T11:16:31.211Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape002.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2026/01/17/PCB01/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'PCB01',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-01-18 19:16:31'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape002.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">PCB01</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">PCB01</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-01-17T08:52:09.000Z" title="发表于 2026-01-17 16:52:09">2026-01-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-01-18T11:16:31.211Z" title="更新于 2026-01-18 19:16:31">2026-01-18</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>1</p>
+<h1 id="项目管理以及工程介绍"><a href="#项目管理以及工程介绍" class="headerlink" title="项目管理以及工程介绍"></a>项目管理以及工程介绍</h1><p>·新建工程、原理图、PCB，删除</p>
+<p>·版本管理和控制 测试分支使用</p>
+<p>·工程历史、还原、对比，工程回收站</p>
+<p>·设置参数：</p>
+<h1 id="元件库设计"><a href="#元件库设计" class="headerlink" title="元件库设计"></a>元件库设计</h1><p>将尺度改为0.05 inch</p>
+<p>找到相关的数据手册</p>
+<p>若是双路运放等（LM358），可以拆分为多part器件，</p>
+<p>·常规元件设计</p>
+<img src="/2026/01/17/PCB01/image-20260117192007021.png" class title="image-20260117192007021">
+
+<img src="/2026/01/17/PCB01/image-20260117192332923.png" class title="image-20260117192332923">
+
+<img src="/2026/01/17/PCB01/image-20260117192633284.png" class title="image-20260117192633284">
+
+<img src="/2026/01/17/PCB01/image-20260117192944036.png" class title="image-20260117192944036">
+
+<img src="/2026/01/17/PCB01/image-20260117193113514.png" class>
+
+<p>·非常规元件设计</p>
+<p>·多part元件设计</p>
+<p>·封装设计</p>
+<img src="/2026/01/17/PCB01/image-20260117203155230.png" class title="image-20260117203155230">
+
+<img src="/2026/01/17/PCB01/image-20260117203600744.png" class title="image-20260117203600744">
+
+<img src="/2026/01/17/PCB01/image-20260117203851328.png" class title="image-20260117203851328">
+
+<img src="/2026/01/17/PCB01/image-20260117204227793.png" class title="image-20260117204227793">
+
+<p>散热过孔默认为否，在pcb中再设计</p>
+<p>·非常规元件封装设计</p>
+<img src="/2026/01/17/PCB01/image-20260117210645888.png" class title="image-20260117210645888">
+
+<p>·封装绑定</p>
+<img src="/2026/01/17/PCB01/image-20260117212545800.png" class title="image-20260117212545800">
+
+<img src="/2026/01/17/PCB01/image-20260117212621245.png" class>
+
+<img src="/2026/01/17/PCB01/image-20260117212824252.png" class>
+
+<h1 id="原理图设计"><a href="#原理图设计" class="headerlink" title="原理图设计"></a>原理图设计</h1><p>·图纸</p>
+<img src="/2026/01/17/PCB01/image-20260118085527640.png" class>
+
+<img src="/2026/01/17/PCB01/image-20260118090155820.png" class title="image-20260118090155820">
+
+<p>·器件放置</p>
+<p>右键取消</p>
+<img src="/2026/01/17/PCB01/image-20260118090727324.png" class title="image-20260118090727324">
+
+<p>立创商城&#x2F;shift+F</p>
+<p>·多part器件放置</p>
+<p>·属性清单</p>
+<img src="/2026/01/17/PCB01/image-20260118091211895.png" class>
+
+<p>位号编辑，批量编辑位号和封装等操作</p>
+<img src="/2026/01/17/PCB01/image-20260118091250853.png" class>
+
+<p>·器件符号修改</p>
+<p>总线 网络标签 短接标识符 差分对信号 跨页网络标识</p>
+<p>设计-差分对管理器 查看差分对</p>
+<p>·器件标准化与DRC检查</p>
+<p>设计-设计规则 查看修改</p>
+<img src="/2026/01/17/PCB01/image-20260118112159017.png" class>
+
+<p>·设计-分配位号 重新分配电阻等标号</p>
+<img src="/2026/01/17/PCB01/image-20260118112450488.png" class title="image-20260118112450488">
+
+<p>·工具-原理图对比</p>
+<img src="/2026/01/17/PCB01/image-20260118113214225.png" class title="image-20260118113214225">
+
+<p>·设计-工程设置 原理图设置参数</p>
+<p>·属性-器件屏蔽</p>
+<h1 id="PCB"><a href="#PCB" class="headerlink" title="PCB"></a>PCB</h1><p>·布线-分布-元件区域分布 能够快速自动排布元件</p>
+<p>·快速定位——视图板块</p>
+<p>·图层管理 工具-图层管理器 </p>
+<p>·先锁定，再过滤锁定的选项，锁定的元件不会影响后续排版</p>
+<p>·导入导出dxf文件 对导入的图层和缩放比例进行调整，可以设置为板框层&#x2F;顶层装配层</p>
+<p>·设计-设计规则，网络长度、pcb参数、过孔尺寸、铺铜规则设置</p>
+<p>·视图-飞线 crtl+R 显示&#x2F;隐藏飞线</p>
+<p>Layout证书笔记</p>
+<h1 id="第一部分"><a href="#第一部分" class="headerlink" title="第一部分"></a>第一部分</h1><h2 id="第1-9节"><a href="#第1-9节" class="headerlink" title="第1-9节"></a>第1-9节</h2><p>1.分清楚工程之间的关系：</p>
+<p>在一个工程中可以有无数个板子（board），一个board只可以有一个原理图（schematic），但是一个原理图可以有无数个图层（P），一个board只能有一个PCB.</p>
+<p>2.工程版本的管理</p>
+<p>在嘉立创EDA中可以创建分支和节点，目的是为了不同版本的设计和更迭。在菜单中右键可以创建节点和分支。</p>
+<p>3.工程历史管理</p>
+<p>在嘉立创EDA中打开了历史查看模式时候，只能读，不可更改。而且在此模式下可以对比原理图和PCB文件。</p>
+<p>4.关于新建元件</p>
+<p>可以在找到数据手册后截图引脚，在嘉立创上方工具栏中选择规则书提取向导可以将截图粘贴，AI智能提取引脚但是其中的排序和方位需要重新检查。</p>
+<p>在遇到一个有大量引脚的元器件时候，可以使用高级符号向导，在excel表格中跟改好后导入嘉立创EDA中，以批量创建引脚。（文件后缀需要改为.csv）</p>
+<p>5.part元件绘制</p>
+<p>在一个新元件绘制中，如果有多个一样的部分（part）例如LM358中有两个运放，就可以先画好一个部分在右下角有一个加号，创新一个新的part页，将重复部分放入。、</p>
+<p>6.封装绘制</p>
+<p>对于常见的封装在嘉立创EDA中的左侧库设计中向导页，选择对应的类型快速创建。</p>
+<p>7.封装检查</p>
+<p>在封装绘制完成后，可以点击上方工具菜单检查尺寸，检查封装是否符合要求。</p>
+<h2 id="第10-20节"><a href="#第10-20节" class="headerlink" title="第10-20节"></a>第10-20节</h2><p>8.封装关联</p>
+<p>当用户绘制好元器件和封装后，在原理图转化为PCB时没有关联封装会导致转接失败，在主页下方器件找到对应器件，点击进入，左侧库设计封装处可以关联封装，在下方还可以插入数据手册等备注信息。</p>
+<p>9．3D关联</p>
+<p>在元件属性页面中，进去3D管理器选择在线3D,右上角再选择百分百自动校准，在手动微调即可。</p>
+<p>10.图纸设置</p>
+<p>关于图纸大小：右侧基础属性中可以更改。</p>
+<p>右下角信息：右侧基础属性中可以编辑图纸中更改。</p>
+<p>图纸模板：选定好纸张大小和信息后可以在下方图纸另存为一个图纸模板，以便后续直接调用。</p>
+<p>11.属性清单</p>
+<p>选着好元器件，在下方属性清单中可以查看属性，同时也可以批量更改（常用于批量更改封装规格），也可以智能更改编号，类似于AD的smart copy。</p>
+<p>12.网络标号</p>
+<p>在一个原理图中常用相同的网络标号表示相连接，但是有时候不一样的网络标号需要表示链接时候可以用短接表示完成。</p>
+<p>13.跨页标识符</p>
+<p>当一个原理图有多个图层时候，表示两张图纸有连接时候用的就是跨页标识符。</p>
+<p>14．器件标准化、</p>
+<p>将元器件与立创商城的元器件匹配，目的为了更好的生成BOM单和方便元器件采购。</p>
+<h2 id="第21-60节"><a href="#第21-60节" class="headerlink" title="第21-60节"></a>第21-60节</h2><p>15．器件位号自动编写</p>
+<p>设计中的分配位号即可</p>
+<p>16.PCB布局常用快捷键</p>
+<p>Crtl+shift+x依照原理图进行位置发布</p>
+<p>Ctrl+x在目标区域中对选中元器件自动布局</p>
+<p>17.dxf文件</p>
+<p>DXF 文件是一种用于传递机械结构信息的图形交换格式，</p>
+<p>18.安全间距设置</p>
+<p>上方设计菜单里有设计规则可以设置安全间距。</p>
+<p>19.过孔大小设置</p>
+<p>过孔大小一般遵循公式：外直径 &#x3D; 内直径+2环宽。（环宽一般0.1-0.2mm）</p>
+<p>20.缝合孔</p>
+<p>缝合孔是一种批量的放置过孔的方式，用于接地连接，辅助电磁屏蔽故遵循19的过孔规则约束。</p>
+<p>21.关于铺铜</p>
+<p>铺铜需要设置铺铜区域，但是在两个铺铜区域相交时候，需要注意铺铜优先级的影响。</p>
+<p>22.多路布线</p>
+<p>在对于排列整齐并且引脚多的元器件可以用（常见于ic的引脚链接）。布线菜单内有多路布线选择。</p>
+<p>23.类</p>
+<p>在设计菜单中可以添加删除网络类。其目的是将一部分导线规划为一组（类），这样对于这些导线操作时候不需要单独设置，只需要对这一类进行操作即可。</p>
+<p>24.禁止区域</p>
+<p>在目标区域内可以禁止某些操作，例如：元器件放置，填空，铺铜，导线，内电层</p>
+<p>常用于晶振设计中的禁止铺铜区域。</p>
+<p>25．挖槽区域</p>
+<p>在一个目标区域进行挖槽，该区域会被挖空，所以该区域是针对所有层的，而且不能距离边框太近，否则会导致断裂。</p>
+<p>26布尔运算</p>
+<p>在编辑菜单中有布尔运算选项。</p>
+<p>当多个铺铜区域相交时候可以让这两个进行运算。、</p>
+<p>27泪滴</p>
+<p>泪滴通过平滑过渡焊盘与导线的连接，提高机械强度、减少蚀刻风险、改善信号完整性，并给钻孔偏差留出容错空间，从而提升 PCB 的可靠性和生产良率。</p>
+<p><em><strong>*在嘉立创EDA中可以自动添加泪滴从而减轻画图压力。*</strong></em></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2026/01/17/PCB01/">https://0kr.xin/2026/01/17/PCB01/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related  no-desc" href="/2026/01/17/PCB02/" title="PCB02"><img class="cover" src="/statics/landscape003.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">PCB02</div></div></div></a><a class="pagination-related" href="/2025/10/31/PE04/" title="PE04"><img class="cover" src="/statics/landscape001.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">PE04</div></div><div class="info-2"><div class="info-item-1">3.1基于XMC4500单片机的BUCK输出电压闭环控制的编程3.1.1基于APP方式的XM C4500单片机编程打开英飞凌为XMC系列单片机提供的集成开发环境DAVE软件，如图3-1所示，选择新建CE Project项目，然后输入项目名称，选择XMC4500 Relax Kit开发板，平台会自动配置APP方式编程所需的相关文档和文件夹。        为了实现BUCK电路的输出电压闭环控制，需要单片机的ADC电压采集模块、中断模块和PWM模块。如图3-2所示，点击添加新的APP按钮，在出现的对话框中输入PWM进行搜索，选择PWM[4.1.12]后点击Add，然后依次添加INTERRUPT与PWM两个APP。      为了实现BUCK电路的输出电压闭环控制，需要单片机的ADC电压采集模块、中断模块和PWM模块。如图3-2所示，点击添加新的APP按钮，在出现的对话框中输入PWM进行搜索，选择PWM[4.1.12]后点击Add，然后依次添加INTERRUPT与PWM两个APP。     然后正确设置各APP的参数，如下图3-4所示，将ADC...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E4%BB%A5%E5%8F%8A%E5%B7%A5%E7%A8%8B%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">项目管理以及工程介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%83%E4%BB%B6%E5%BA%93%E8%AE%BE%E8%AE%A1"><span class="toc-number">2.</span> <span class="toc-text">元件库设计</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8E%9F%E7%90%86%E5%9B%BE%E8%AE%BE%E8%AE%A1"><span class="toc-number">3.</span> <span class="toc-text">原理图设计</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PCB"><span class="toc-number">4.</span> <span class="toc-text">PCB</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86"><span class="toc-number">5.</span> <span class="toc-text">第一部分</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC1-9%E8%8A%82"><span class="toc-number">5.1.</span> <span class="toc-text">第1-9节</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC10-20%E8%8A%82"><span class="toc-number">5.2.</span> <span class="toc-text">第10-20节</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC21-60%E8%8A%82"><span class="toc-number">5.3.</span> <span class="toc-text">第21-60节</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

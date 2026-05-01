@@ -1,0 +1,320 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>HardWareDesign01 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="周次 模块 本周学习内容 关键知识点 预期输出 学习资源    第1周 电容、电感基础 ❶ 电容基本特性（种类&#x2F;ESR&#x2F;频率特性）❷ 电容常见应用解析（旁路&#x2F;去耦&#x2F;滤波&#x2F;储能）❸ 电感基本特性（饱和&#x2F;DCR&#x2F;自谐振）❹ 电感常见应用解析（储能&#x2F;滤波&#x2F;EMI抑制）❺ 电容电感使用注意事项 ① 电容、电感的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HardWareDesign01">
+<meta property="og:url" content="https://0kr.xin/2026/04/04/HardWareDesign01/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="周次 模块 本周学习内容 关键知识点 预期输出 学习资源    第1周 电容、电感基础 ❶ 电容基本特性（种类&#x2F;ESR&#x2F;频率特性）❷ 电容常见应用解析（旁路&#x2F;去耦&#x2F;滤波&#x2F;储能）❸ 电感基本特性（饱和&#x2F;DCR&#x2F;自谐振）❹ 电感常见应用解析（储能&#x2F;滤波&#x2F;EMI抑制）❺ 电容电感使用注意事项 ① 电容、电感的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape003.jpg">
+<meta property="article:published_time" content="2026-04-04T15:05:52.000Z">
+<meta property="article:modified_time" content="2026-04-05T16:00:22.541Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape003.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2026/04/04/HardWareDesign01/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'HardWareDesign01',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-04-06 00:00:22'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape003.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">HardWareDesign01</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">HardWareDesign01</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-04T15:05:52.000Z" title="发表于 2026-04-04 23:05:52">2026-04-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-05T16:00:22.541Z" title="更新于 2026-04-06 00:00:22">2026-04-06</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>15分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><table>
+<thead>
+<tr>
+<th>周次</th>
+<th>模块</th>
+<th>本周学习内容</th>
+<th>关键知识点</th>
+<th>预期输出</th>
+<th>学习资源</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>第1周</strong></td>
+<td>电容、电感基础</td>
+<td>❶ 电容基本特性（种类&#x2F;ESR&#x2F;频率特性）❷ 电容常见应用解析（旁路&#x2F;去耦&#x2F;滤波&#x2F;储能）❸ 电感基本特性（饱和&#x2F;DCR&#x2F;自谐振）❹ 电感常见应用解析（储能&#x2F;滤波&#x2F;EMI抑制）❺ 电容电感使用注意事项</td>
+<td>① 电容、电感的工作原理 ② 常见计算公式（容抗Xc&#x3D;1&#x2F;2πfC、感抗XL&#x3D;2πfL）③ 常见分析方法（阻抗-频率曲线）④ 常见电容电感应用解析 ⑤ 使用注意事项（降额&#x2F;温度&#x2F;频率）</td>
+<td>电容电感特性对比表 + LTspice RC&#x2F;RL电路仿真</td>
+<td>📺 <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1eg411G7ex/">B站·蓝指针科普：用水管讲透电容电阻电感</a> · 📖 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/372186233">知乎·电容——简单但不一般（深度长文）</a> · 📖 杨建国《新概念模拟电路·第1册·晶体管》ADI官网免费下载 · 🔧 <a target="_blank" rel="noopener" href="https://www.analog.com/en/resources/design-tools-and-calculators/ltspice-simulator.html">LTspice下载</a></td>
+</tr>
+</tbody></table>
+<p>基于第一周的学习要求，我进行笔记。</p>
+<p>1.电容的种类分为三种，分别是固态电容、MLCC和电解电容。MLCC大部分情况下都是够用的。<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV112whefE8f/?spm_id_from=333.788.top_right_bar_window_custom_collection.content.click&vd_source=86c6b09721e0893e43fc3b93d929a6c9">电容选择链接</a></p>
+<img src="/2026/04/04/HardWareDesign01/image-20260404230841225.png" class>
+
+<p>2.电容ESR是等效电阻，由电容的寄生电感决定（存疑）。一般情况下ESR越小越好。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">ESR：等效串联电阻</span><br><span class="line">ESR（Equivalent Series Resistance，等效串联电阻）就是一个理想电容内部&quot;藏&quot;着的一小段电阻。</span><br><span class="line">刚才我们说&quot;理想电容不发热、不消耗有功功率&quot;，但现实中的电容多少都会发热。这是因为真实电容的内部存在一些不可避免的损耗来源，工程上把这些损耗等效为一个串联在理想电容上的小电阻，这就是 ESR。</span><br><span class="line">ESR 从哪来？</span><br><span class="line">一颗真实的电容器，拆开来看有很多物理结构，每个部分都会贡献一点点电阻：</span><br><span class="line">引脚和引线——金属导线本身有电阻，虽然很小，但存在。</span><br><span class="line">极板（电极/箔片）——铝电解电容的铝箔、陶瓷电容的金属电极层，它们的导电性不是无限好的，电流沿着极板表面流动时会有损耗。</span><br><span class="line">电解质——铝电解电容内部有液态或固态电解质，它充当&quot;连接&quot;阳极氧化层和阴极箔的导体，但它的导电率远不如金属，这通常是电解电容 ESR 的最大来源。</span><br><span class="line">介质损耗——电容的绝缘介质（陶瓷、薄膜、氧化层等）在交变电场下，内部分子反复极化会产生微小的热量，就像你反复弯折一根铁丝它会发热一样。</span><br><span class="line">把这些损耗全部加在一起，等效成一个电阻值，就是 ESR。</span><br><span class="line">为什么 ESR 能判断电容质量？</span><br><span class="line">回到我们上一个问题的核心：电容的优势就在于它不消耗有功功率。而 ESR 恰恰代表了电容&quot;偏离理想&quot;的程度——ESR 越大，电容就越像一个电阻，越会发热、越会浪费能量。</span><br><span class="line">具体来说有几个原因：</span><br><span class="line">第一，ESR 大意味着发热大。 电容上的热量 P = I² × ESR。ESR 越大，同样的电流流过，发热就越严重。而发热会进一步加速电解液蒸发（对电解电容而言），导致电容加速老化，形成恶性循环。你可能见过旧电路板上电容&quot;鼓包&quot;甚至漏液，很多时候就是 ESR 升高→发热加剧→电解液蒸发→ESR 进一步升高，最终失效。</span><br><span class="line">第二，ESR 会随老化升高。 一颗新电容的 ESR 可能很低，但随着使用时间增长、电解液逐渐蒸发或变质，ESR 会不断升高。所以测量 ESR 可以判断一颗电容是不是&quot;老了&quot;——如果 ESR 远超出标称值，说明这颗电容快要寿终正寝了，即使它的容量可能看起来还没变太多。</span><br><span class="line">第三，ESR 影响电路性能。 在开关电源、数字电路的去耦（旁路）等应用中，电容需要快速充放电来平滑电压波动。如果 ESR 高，每次快速充放电时 ESR 上就会产生一个压降（V = I × ESR），导致输出电压出现纹波和毛刺，电路性能下降。</span><br><span class="line">一句话总结</span><br><span class="line">ESR 衡量的是一颗电容&quot;有多不像理想电容&quot;。ESR 越低，电容越接近理想状态——损耗小、发热少、性能好、寿命长。所以它自然就成了判断电容质量的关键指标。</span><br></pre></td></tr></table></figure>
+
+<p>3.每个容值都有相对应的阻抗-频率曲线。一般来说，大的电容在低频段的滤波效果比小电容更好。更常见的做法是大小并联，小的靠近芯片滤高频尖峰，大的放外面滤低频。即使有并联谐振也会比单个的效果好很多。</p>
+<img src="/2026/04/04/HardWareDesign01/image-20260404231634753.png" class>
+
+<img src="/2026/04/04/HardWareDesign01/image-20260404231627051.png" class>
+
+<img src="/2026/04/04/HardWareDesign01/image-20260404231719397.png" class>
+
+<p>3.电容原理</p>
+<p>两个电极板之间放一个箔片</p>
+<p>储能——电压、电流随时间变化的图像可知其效果。电压不突变，电流可突变，从正负电荷的流动开始讲的话更清晰。</p>
+<p>4.电容常见作用</p>
+<p>1）降压：与电阻串联，可以降压；相比于电阻减压，还使用无功功率而非有功功率，避免散热</p>
+<p>2）旁路&#x2F;退耦&#x2F;去耦：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1LE421u7gK/?spm_id_from=333.788.top_right_bar_window_custom_collection.content.click&vd_source=86c6b09721e0893e43fc3b93d929a6c9">退耦0.1微法详解</a></p>
+<p><strong>旁路（Bypass）——关注的是噪声的去向</strong></p>
+<p>“旁路”的意思是给高频噪声提供一条”近路”，让它直接通过电容流到地，而不是跑进芯片里去捣乱。想象电源线上混着干净的直流和脏的高频噪声，旁路电容就像一个分流器：直流过不去（电容隔直），高频噪声一看电容这条路阻抗很低，就直接”抄近道”到地了，不会进入芯片。</p>
+<p>重点是：<strong>把不想要的信号引走。</strong></p>
+<p><strong>去耦&#x2F;退耦（Decoupling）——关注的是能量的供给</strong></p>
+<p>“去耦”的意思是让芯片在瞬间需要大电流时，不用等远处的电源慢慢送过来，而是直接从旁边的电容”就近取电”。数字芯片在每个时钟沿切换时会产生瞬间的大电流需求，如果完全依赖远处的电源供电，长长的走线上有电感，电流来不及跟上，电源电压就会瞬间跌落。去耦电容就像一个”本地小水库”，提前蓄好电荷，芯片需要时立刻供给。</p>
+<p>重点是：<strong>在本地提供瞬态能量，让芯片的电源和主电源之间”解耦”，互不干扰。</strong></p>
+<img src="/2026/04/04/HardWareDesign01/image-20260404232526259.png" class>
+
+<p>一般来说这个值是0.1，是成本和实际效果的综合考量。<strong>IC 电源引脚的阻抗</strong> 大于 <strong>旁路电容的阻抗</strong>（在高频段）。所以高频噪声”更愿意”走电容这条低阻抗的路到地，IC 就被保护了。</p>
+<p>实际上，当pcb走线过长导致导线的esr过高等类似的情况发生时，旁路电容不可或缺。</p>
+<p>3）滤波</p>
+<p>高通&#x2F;低通滤波器  <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1ri4y1y7yG/?spm_id_from=333.1391.0.0&vd_source=86c6b09721e0893e43fc3b93d929a6c9"></a></p>
+<img src="/2026/04/04/HardWareDesign01/image-20260404235154869.png" class>
+
+<p>Π型、T型滤波器 <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV17s421T7Wc/?spm_id_from=333.337.search-card.all.click&vd_source=86c6b09721e0893e43fc3b93d929a6c9"></a></p>
+<p>设计一个滤波器 <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV184421S7mw?spm_id_from=333.788.videopod.sections&vd_source=86c6b09721e0893e43fc3b93d929a6c9">设计一个滤波器</a></p>
+<p>后面两个部分可以放到最后</p>
+<p>5.电感</p>
+<p>电感原理：电生磁，磁生电（（变化）电场产生磁场，变化磁场产电流），反电动势由于楞次定律总是比不过正电动势，因此电流一开始为0，随后缓慢增加。电压骤变后缓慢下降。电流超前电压90度。<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1BZFfzmEaL/?spm_id_from=333.1387.homepage.video_card.click&vd_source=86c6b09721e0893e43fc3b93d929a6c9">https://www.bilibili.com/video/BV1BZFfzmEaL/?spm_id_from=333.1387.homepage.video_card.click&amp;vd_source=86c6b09721e0893e43fc3b93d929a6c9</a></p>
+<img src="/2026/04/04/HardWareDesign01/image-20260405074256367.png" class>
+
+<img src="/2026/04/04/HardWareDesign01/image-20260405074407294.png" class>
+
+<p>衡量标准：品质因数&#x2F;dcr</p>
+<p>6.电感作用</p>
+<p>1）储能</p>
+<p>buck&#x2F;boost电路</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1BZFfzmEaL/?spm_id_from=333.1387.homepage.video_card.click&vd_source=86c6b09721e0893e43fc3b93d929a6c9">https://www.bilibili.com/video/BV1BZFfzmEaL/?spm_id_from=333.1387.homepage.video_card.click&amp;vd_source=86c6b09721e0893e43fc3b93d929a6c9</a></p>
+<p>2）滤波</p>
+<p>电感通直流阻交流的特性使它天然适合做滤波。在电源线上<strong>串联</strong>一个电感，直流电能顺利通过，而交流噪声会被电感的感抗阻挡。通常电感和电容配合使用构成LC滤波器，效果远好于单独用电容——电感阻止噪声电流流过，电容把残余的噪声旁路到地，形成双重过滤。</p>
+<p>3）EMI抑制</p>
+<p>磁珠本质上是一个特殊的电感，但它和普通电感的关键区别在于：磁珠的铁氧体材料在高频下会把电磁能量<strong>转化为热量</strong>耗散掉，而不是像电感那样把能量储存后再释放。普通电感对高频噪声是”挡回去”（反射），磁珠是”吃掉”（吸收）。这使得磁珠特别适合用在信号线上抑制EMI——比如数字地和模拟地之间串一颗磁珠，把数字电路产生的高频干扰吸收掉，防止它影响模拟电路。</p>
+<p>7.使用注意事项</p>
+<h3 id="降额使用"><a href="#降额使用" class="headerlink" title="降额使用"></a>降额使用</h3><p>这是工程设计中最基本的原则。电容标称耐压50V，不意味着你可以让它长期工作在50V。通常的降额规则是：</p>
+<p><strong>电容电压降额</strong>：<strong>实际工作电压一般不超过标称耐压的60%~80%。</strong>比如需要在12V电路中使用，应该选16V或25V耐压的电容。陶瓷电容（MLCC）尤其要注意——某些材质（如X5R、Y5V）在接近额定电压时，实际容值会大幅下降，有时甚至掉到标称值的一半以下。这不是坏了，是材料特性决定的。</p>
+<p><strong>电感电流降额</strong>：<strong>电感标称额定电流1A，实际工作电流建议不超过70%<del>80%，即0.7</del>0.8A。</strong>超过额定电流，电感铁芯会饱和——一旦饱和，感量急剧下降，电感就不像电感了，失去储能和滤波能力，电路可能直接失效。</p>
+<h3 id="温度影响"><a href="#温度影响" class="headerlink" title="温度影响"></a>温度影响</h3><p><strong>电容：</strong> 不同介质的电容受温度影响差异巨大。C0G&#x2F;NP0陶瓷电容几乎不受温度影响，非常稳定；X7R在-55℃到+125℃范围内容值变化约±15%；Y5V最差，容值随温度变化可达+22%&#x2F;-82%，在极端温度下几乎没什么容量了。铝电解电容在低温下ESR会急剧升高，在高温下寿命会大幅缩短（经验法则：温度每升高10℃，寿命减半）。</p>
+<h3 id="频率影响"><a href="#频率影响" class="headerlink" title="频率影响"></a>频率影响</h3><p>这其实就是阻抗-频率曲线告诉我们的事情，实际选型时要特别注意：</p>
+<p><strong>电容：</strong> 每种电容都有一个最佳工作频率范围。铝电解电容只适合低频（几kHz以下的纹波滤波）；陶瓷电容适合中高频（几百kHz到几百MHz）；薄膜电容介于两者之间。在自谐振频率以上，电容变成电感，不但不能滤波，反而可能引入问题。所以高频电路中往往要并联多颗不同容值的电容来覆盖宽频段。</p>
+<p><strong>电感：</strong> 同理，电感在自谐振频率以上会变成电容。磁珠也是如此——视频中数据手册的曲线就显示了磁珠在极高频率下阻抗反而下降。所以选择磁珠或电感时，要确保你要抑制的噪声频率落在它的有效工作范围内。</p>
+<h3 id="其他实用注意事项"><a href="#其他实用注意事项" class="headerlink" title="其他实用注意事项"></a>其他实用注意事项</h3><p><strong>电容的极性：</strong> 电解电容和钽电容有极性，接反可能爆炸。陶瓷电容无极性。</p>
+<p><strong>电感的布局：</strong> <strong>电感会向周围辐射磁场，PCB布局时要让电感远离敏感的模拟电路和信号线，或者使用屏蔽型电感（一体成型电感辐射就比开放式电感小得多）。</strong></p>
+<p><strong>电容的纹波电流：</strong> <strong>铝电解电容有最大纹波电流限制，超过会导致内部过热加速老化。选型时除了看容值和耐压，还要核算纹波电流是否在允许范围内。</strong></p>
+<p>这些要点合在一起，基本上就是工程师在实际选型和设计时需要反复权衡的核心因素了。如果有哪个部分想更深入了解，可以继续聊。</p>
+<p>8.范式</p>
+<img src="/2026/04/04/HardWareDesign01/image-20260405000322528.png" class>
+
+<img src="/2026/04/04/HardWareDesign01/image-20260405000404829.png" class>
+
+<p>TLV75733 电路在输入端和输出端各多加了一颗 100nF，这不是因为芯片本身需要，而是因为<strong>整个系统需要</strong>。</p>
+<p><strong>输入端多加 100nF 的原因：</strong> LDO 的上游通常是 DC-DC 开关电源或其他有噪声的电源。1µF 电容负责应对低频纹波和瞬态电流需求，但开关电源产生的高频尖刺（几十 MHz 级别）对于 1µF 电容来说，可能已经超过了它的自谐振频率，滤不干净。100nF 的自谐振频率更高，专门负责把这些高频毛刺旁路掉。这就是我们之前讨论的”大小电容并联覆盖宽频段”的实际应用。</p>
+<p><strong>输出端多加 100nF 的原因：</strong> 如果 LDO 下游接的是数字芯片（比如 MCU），芯片在每个时钟沿切换时会产生瞬间的高频电流需求。1µF 电容响应速度不够快（ESL 较大），而 100nF 陶瓷电容能更快地响应这种高频瞬态电流，帮助维持输出电压的稳定。</p>
+<h2 id="什么时候只用数据手册的最小配置"><a href="#什么时候只用数据手册的最小配置" class="headerlink" title="什么时候只用数据手册的最小配置"></a>什么时候只用数据手册的最小配置</h2><p>如果你的电路环境比较”干净”——比如 LDO 的上游是电池直供（没有开关噪声），下游负载电流变化缓慢平稳（比如驱动一个 LED 或模拟传感器），那数据手册的最小配置就够了。额外的 100nF 并不会带来明显的改善，反而增加了成本和 PCB 面积。</p>
+<h2 id="什么时候需要额外加电容"><a href="#什么时候需要额外加电容" class="headerlink" title="什么时候需要额外加电容"></a>什么时候需要额外加电容</h2><p>当你的系统存在以下情况时，就应该考虑在数据手册基础上增加电容：上游有开关电源或其他高频噪声源；下游接数字电路或高速切换负载；PCB 走线较长，导致寄生电感较大；对输出纹波有严格要求（比如给 ADC 或射频电路供电时）。</p>
+<h2 id="有没有通用的设计范式"><a href="#有没有通用的设计范式" class="headerlink" title="有没有通用的设计范式"></a>有没有通用的设计范式</h2><p>实际工程中，大多数工程师会遵循一个<strong>保守但实用的范式</strong>：</p>
+<p><strong>输入端</strong>放一颗大电容（数据手册要求的，通常 1µF～10µF）加一颗小电容（100nF），大电容提供电荷储备和低频滤波，小电容负责高频旁路。</p>
+<p><strong>输出端</strong>同样放一颗大电容（数据手册要求的）加一颗小电容（100nF），大电容保证环路稳定性和瞬态响应，小电容处理高频噪声。</p>
+<p><strong>靠近芯片引脚</strong>是关键原则——尤其是小电容，必须尽可能靠近芯片的电源引脚放置，走线越短越好，否则走线的寄生电感会抵消小电容的高频优势。</p>
+<p><strong>数据手册是底线，不是最优解。</strong> 先满足数据手册的最低要求，然后根据系统环境判断是否需要额外的电容。大多数情况下，多加一颗 100nF 的成本几乎可以忽略（几分钱），但带来的保险作用很值得，所以很多工程师会把”大电容+100nF”当作默认配置，不管是否严格需要。</p>
+<p>9.补充：纹波</p>
+<p>这个问题需要从 DC-DC 开关电源的工作过程来理解，不能光套公式。</p>
+<h2 id="先理解纹波是怎么产生的"><a href="#先理解纹波是怎么产生的" class="headerlink" title="先理解纹波是怎么产生的"></a>先理解纹波是怎么产生的</h2><p>DC-DC 开关电源（以 Buck 降压为例）的工作方式是：开关管以很高的频率反复导通和关断，电感在导通时储能、关断时释能，输出端的电容负责把这种”脉冲式”的能量平滑成稳定的直流电压。</p>
+<p>但”平滑”永远不可能做到完美。每个开关周期中，电感向输出端灌入的电流是波动的——开关导通时电感电流上升，关断时电感电流下降，形成一个三角波状的纹波电流 ΔI_L。这个纹波电流会流过输出电容，导致电容两端的电压产生波动，这个波动就是输出纹波。</p>
+<h2 id="电容越大纹波越小的物理本质"><a href="#电容越大纹波越小的物理本质" class="headerlink" title="电容越大纹波越小的物理本质"></a>电容越大纹波越小的物理本质</h2><p>输出电容做的事情本质上和我们之前讲的”水池”比喻完全一样，只是这次更具体。</p>
+<p>每个开关周期中，电感的纹波电流有一段时间是在给电容充电（电流大于负载平均电流的那段），有一段时间是在从电容取电（电流小于负载平均电流的那段）。在充电的那半个周期里，会有一定量的电荷 ΔQ 被灌入电容。</p>
+<p>电容上的电压变化量就是纹波的幅度：</p>
+<p><strong>ΔV &#x3D; ΔQ &#x2F; C</strong></p>
+<p>这就是关键公式。ΔQ 是由电感纹波电流和开关频率决定的，和输出电容无关。所以在同样的 ΔQ 条件下，C 越大，ΔV 就越小，纹波就越小。</p>
+<p>用直觉理解：同样一杯水（ΔQ）倒进小水池（小电容），水面升高很多（纹波大）；倒进大水池（大电容），水面几乎不变（纹波小）。</p>
+<h2 id="但实际情况比这复杂一层"><a href="#但实际情况比这复杂一层" class="headerlink" title="但实际情况比这复杂一层"></a>但实际情况比这复杂一层</h2><p>真实的纹波不只是来自 ΔQ&#x2F;C。实际输出纹波由两部分叠加：</p>
+<p><strong>第一部分：容性纹波。</strong> 就是上面讲的 ΔV &#x3D; ΔQ&#x2F;C，这是纹波电流对电容充放电引起的。波形比较光滑，是三角波的形状。增大 C 可以直接减小这部分。</p>
+<p><strong>第二部分：ESR 引起的纹波。</strong> 纹波电流流过电容的等效串联电阻 ESR 时，会产生一个电压降 ΔV_ESR &#x3D; ΔI_L × ESR。这部分纹波和容值无关，只和 ESR 有关。波形比较”尖锐”，是方波或梯形波的形状。</p>
+<p>在很多实际设计中，ESR 引起的纹波反而是主要成分。这就是为什么开关电源设计中不只是追求”电容越大越好”，还要追求”ESR 越低越好”。陶瓷电容的 ESR 极低（几毫欧到几十毫欧），所以现代开关电源设计越来越多地使用 MLCC 而不是铝电解电容。</p>
+<p>还有一个<strong>第三部分</strong>，容易被忽略：ESL 引起的尖刺。电容的寄生电感在电流快速变化的瞬间（开关管导通&#x2F;关断的边沿）会产生 ΔV_ESL &#x3D; ESL × (dI&#x2F;dt)，表现为输出电压上叠加的高频尖刺（spike）。这部分增大容值也没用，必须靠降低 ESL（选小封装的陶瓷电容、多颗并联）来解决。</p>
+<h2 id="所以完整的纹波公式是"><a href="#所以完整的纹波公式是" class="headerlink" title="所以完整的纹波公式是"></a>所以完整的纹波公式是</h2><p><strong>V_ripple ≈ ΔI_L × ESR + ΔQ&#x2F;C + ESL × (dI&#x2F;dt)</strong></p>
+<p>增大 C 只能减小中间那一项。如果你发现增大电容后纹波改善不明显，大概率是 ESR 或 ESL 那两项才是瓶颈。</p>
+<h2 id="那是不是电容越大越好？"><a href="#那是不是电容越大越好？" class="headerlink" title="那是不是电容越大越好？"></a>那是不是电容越大越好？</h2><p>不是。除了成本和体积的考虑，还有一个重要的工程问题：DC-DC 开关电源的控制环路稳定性。输出电容是控制环路的一部分，它的容值和 ESR 会影响环路的增益和相位。电容太大可能导致环路带宽降低，瞬态响应变慢——也就是说虽然稳态纹波小了，但负载突变时电压恢复的时间反而变长了。有些控制器甚至需要一定的 ESR 来提供相位补偿，这时候用 ESR 极低的纯陶瓷电容反而可能让环路不稳定。</p>
+<p>所以实际设计中，输出电容的选择是在<strong>纹波、瞬态响应、环路稳定性、成本和体积</strong>之间做平衡，不是简单的”越大越好”。数据手册通常会给出推荐的容值范围和 ESR 范围，按照推荐来是最稳妥的起点。</p>
+<ol start="10">
+<li></li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2026/04/04/HardWareDesign01/">https://0kr.xin/2026/04/04/HardWareDesign01/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape003.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/04/04/HardWareDesign02/" title="HardWareDesign02"><img class="cover" src="/statics/landscape002.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">HardWareDesign02</div></div><div class="info-2"><div class="info-item-1">0.三极管恒流源设计三极管恒流源设计   1.MOS管原理蓝指针科普 https://www.bilibili.com/video/BV1WyCkBvEFh?spm_id_from=333.788.recommend_more_video.1&amp;trackid=web_related_0.router-related-2479604-6dnm7.1775434329945.471&amp;vd_source=86c6b09721e0893e43fc3b93d929a6c9 2.MOS管分类图中展示了 FET 的两大分支：MOSFET（绝缘栅型）和 JFET（结型），MOSFET 又按工作模式分为增强型和耗尽型，每种再按沟道载流子分为 N 沟道和 P 沟道。   3.MOS管基本特性（Cgs，Ugsth，Rdson等） 释义：g与s之间的寄生电容，影响nmos的打开速度；栅极开关导通的临界电压；mos管被完全打开后ds之间的组织 NMOS可以看做是电压控制电阻的元器件，应用最多的MOS就是NMOS；...</div></div></div></a><a class="pagination-related  no-desc" href="/2026/01/17/PCB03/" title="PCB03"><img class="cover" src="/statics/landscape004.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">PCB03</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%8D%E9%A2%9D%E4%BD%BF%E7%94%A8"><span class="toc-number">1.</span> <span class="toc-text">降额使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%A9%E5%BA%A6%E5%BD%B1%E5%93%8D"><span class="toc-number">2.</span> <span class="toc-text">温度影响</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%91%E7%8E%87%E5%BD%B1%E5%93%8D"><span class="toc-number">3.</span> <span class="toc-text">频率影响</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E5%AE%9E%E7%94%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">4.</span> <span class="toc-text">其他实用注意事项</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E5%8F%AA%E7%94%A8%E6%95%B0%E6%8D%AE%E6%89%8B%E5%86%8C%E7%9A%84%E6%9C%80%E5%B0%8F%E9%85%8D%E7%BD%AE"><span class="toc-number"></span> <span class="toc-text">什么时候只用数据手册的最小配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E9%9C%80%E8%A6%81%E9%A2%9D%E5%A4%96%E5%8A%A0%E7%94%B5%E5%AE%B9"><span class="toc-number"></span> <span class="toc-text">什么时候需要额外加电容</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%89%E6%B2%A1%E6%9C%89%E9%80%9A%E7%94%A8%E7%9A%84%E8%AE%BE%E8%AE%A1%E8%8C%83%E5%BC%8F"><span class="toc-number"></span> <span class="toc-text">有没有通用的设计范式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%88%E7%90%86%E8%A7%A3%E7%BA%B9%E6%B3%A2%E6%98%AF%E6%80%8E%E4%B9%88%E4%BA%A7%E7%94%9F%E7%9A%84"><span class="toc-number"></span> <span class="toc-text">先理解纹波是怎么产生的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%B5%E5%AE%B9%E8%B6%8A%E5%A4%A7%E7%BA%B9%E6%B3%A2%E8%B6%8A%E5%B0%8F%E7%9A%84%E7%89%A9%E7%90%86%E6%9C%AC%E8%B4%A8"><span class="toc-number"></span> <span class="toc-text">电容越大纹波越小的物理本质</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%86%E5%AE%9E%E9%99%85%E6%83%85%E5%86%B5%E6%AF%94%E8%BF%99%E5%A4%8D%E6%9D%82%E4%B8%80%E5%B1%82"><span class="toc-number"></span> <span class="toc-text">但实际情况比这复杂一层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%80%E4%BB%A5%E5%AE%8C%E6%95%B4%E7%9A%84%E7%BA%B9%E6%B3%A2%E5%85%AC%E5%BC%8F%E6%98%AF"><span class="toc-number"></span> <span class="toc-text">所以完整的纹波公式是</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%82%A3%E6%98%AF%E4%B8%8D%E6%98%AF%E7%94%B5%E5%AE%B9%E8%B6%8A%E5%A4%A7%E8%B6%8A%E5%A5%BD%EF%BC%9F"><span class="toc-number"></span> <span class="toc-text">那是不是电容越大越好？</span></a></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

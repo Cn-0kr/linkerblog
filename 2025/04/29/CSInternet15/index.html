@@ -1,0 +1,334 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>CSInternet15 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="网络代理正向代理是位于用户设备和互联网之间的服务器。它代理的是客户端，是站在用户一方的。其真实客户端对于服务器不可见。 反向代理是一种服务器，它接受客户端的请求，将请求转发给网络服务器，然后将结果返回给客户端，就像代理服务器处理了请求一样。反向代理代理的是服务器，是和网络服务器站在一方的。其真实服务器对于客户端不可见。这就是它叫“反向”的原因。 其实就好比租房子，中介就是客户的正向代理，二房东就是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSInternet15">
+<meta property="og:url" content="https://0kr.xin/2025/04/29/CSInternet15/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="网络代理正向代理是位于用户设备和互联网之间的服务器。它代理的是客户端，是站在用户一方的。其真实客户端对于服务器不可见。 反向代理是一种服务器，它接受客户端的请求，将请求转发给网络服务器，然后将结果返回给客户端，就像代理服务器处理了请求一样。反向代理代理的是服务器，是和网络服务器站在一方的。其真实服务器对于客户端不可见。这就是它叫“反向”的原因。 其实就好比租房子，中介就是客户的正向代理，二房东就是">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape004.jpg">
+<meta property="article:published_time" content="2025-04-29T12:33:46.000Z">
+<meta property="article:modified_time" content="2025-05-03T07:46:42.572Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape004.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2025/04/29/CSInternet15/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CSInternet15',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-05-03 15:46:42'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape004.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">CSInternet15</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">CSInternet15</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-04-29T12:33:46.000Z" title="发表于 2025-04-29 20:33:46">2025-04-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-03T07:46:42.572Z" title="更新于 2025-05-03 15:46:42">2025-05-03</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>10分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="网络代理"><a href="#网络代理" class="headerlink" title="网络代理"></a>网络代理</h1><p>正向代理是位于用户设备和互联网之间的服务器。它代理的是客户端，是站在用户一方的。其<strong>真实客户端对于服务器不可见</strong>。</p>
+<p>反向代理是一种服务器，它接受客户端的请求，将请求转发给网络服务器，然后将结果返回给客户端，就像代理服务器处理了请求一样。反向代理代理的是服务器，是和网络服务器站在一方的。其<strong>真实服务器对于客户端不可见</strong>。这就是它叫“反向”的原因。</p>
+<p>其实就好比租房子，中介就是客户的正向代理，二房东就是房东的反向代理。至于二者的作用可以看下图：</p>
+<img src="/2025/04/29/CSInternet15/image-20250503151817641.png" class>
+
+<h1 id="负载均衡（Load-Balancing）"><a href="#负载均衡（Load-Balancing）" class="headerlink" title="负载均衡（Load Balancing）"></a>负载均衡（Load Balancing）</h1><blockquote>
+<p>此处为全文转载。原文网址：<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E4%BB%8E%200%20%E5%BC%80%E5%A7%8B%E5%AD%A6%E6%9E%B6%E6%9E%84/20%20%E9%AB%98%E6%80%A7%E8%83%BD%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%EF%BC%9A%E5%88%86%E7%B1%BB%E5%8F%8A%E6%9E%B6%E6%9E%84.md">https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E4%BB%8E%200%20%E5%BC%80%E5%A7%8B%E5%AD%A6%E6%9E%B6%E6%9E%84/20%20%E9%AB%98%E6%80%A7%E8%83%BD%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%EF%BC%9A%E5%88%86%E7%B1%BB%E5%8F%8A%E6%9E%B6%E6%9E%84.md</a></p>
+</blockquote>
+<p>单服务器无论如何优化，无论采用多好的硬件，总会有一个性能天花板，当单服务器的性能无法满足业务需求时，就需要设计高性能集群来提升系统整体的处理性能。</p>
+<p>高性能集群的本质很简单，通过增加更多的服务器来提升系统整体的计算能力。由于计算本身存在一个特点：同样的输入数据和逻辑，无论在哪台服务器上执行，都应该得到相同的输出。因此高性能集群设计的复杂度主要体现在任务分配这部分，需要设计合理的任务分配策略，将计算任务分配到多台服务器上执行。</p>
+<p><strong>高性能集群的复杂性主要体现在需要增加一个任务分配器，以及为任务选择一个合适的任务分配算法</strong>。对于任务分配器，现在更流行的通用叫法是“负载均衡器”。但这个名称有一定的误导性，会让人潜意识里认为任务分配的目的是要保持各个计算单元的负载达到均衡状态。而实际上任务分配并不只是考虑计算单元的负载均衡，不同的任务分配算法目标是不一样的，有的基于负载考虑，有的基于性能（吞吐量、响应时间）考虑，有的基于业务考虑。考虑到“负载均衡”已经成为了事实上的标准术语，这里我也用“负载均衡”来代替“任务分配”，但请你时刻记住，<strong>负载均衡不只是为了计算单元的负载达到均衡状态</strong>。</p>
+<p>今天我先来讲讲负载均衡的分类及架构，下一期会讲负载均衡的算法。</p>
+<h2 id="负载均衡分类"><a href="#负载均衡分类" class="headerlink" title="负载均衡分类"></a>负载均衡分类</h2><p>常见的负载均衡系统包括3种：DNS负载均衡、硬件负载均衡和软件负载均衡。</p>
+<p><strong>DNS负载均衡</strong></p>
+<p>DNS是最简单也是最常见的负载均衡方式，一般用来实现地理级别的均衡。例如，北方的用户访问北京的机房，南方的用户访问深圳的机房。DNS负载均衡的本质是DNS解析同一个域名可以返回不同的IP地址。例如，同样是<a target="_blank" rel="noopener" href="http://www.baidu.com,北方用户解析后获取的地址是61.135.165.224(这是北京机房的ip),南方用户解析后获取的地址是14.215.177.38(这是深圳机房的ip)./">www.baidu.com，北方用户解析后获取的地址是61.135.165.224（这是北京机房的IP），南方用户解析后获取的地址是14.215.177.38（这是深圳机房的IP）。</a></p>
+<p>下面是DNS负载均衡的简单示意图：</p>
+<img src="/2025/04/29/CSInternet15/dbb61acde016acb2f57212d627d2732f.jpg" class>
+
+<p>DNS负载均衡实现简单、成本低，但也存在粒度太粗、负载均衡算法少等缺点。仔细分析一下优缺点，其优点有：</p>
+<ul>
+<li>简单、成本低：负载均衡工作交给DNS服务器处理，无须自己开发或者维护负载均衡设备。</li>
+<li>就近访问，提升访问速度：DNS解析时可以根据请求来源IP，解析成距离用户最近的服务器地址，可以加快访问速度，改善性能。</li>
+</ul>
+<p>缺点有：</p>
+<ul>
+<li>更新不及时：DNS缓存的时间比较长，修改DNS配置后，由于缓存的原因，还是有很多用户会继续访问修改前的IP，这样的访问会失败，达不到负载均衡的目的，并且也影响用户正常使用业务。</li>
+<li>扩展性差：DNS负载均衡的控制权在域名商那里，无法根据业务特点针对其做更多的定制化功能和扩展特性。</li>
+<li>分配策略比较简单：DNS负载均衡支持的算法少；不能区分服务器的差异（不能根据系统与服务的状态来判断负载）；也无法感知后端服务器的状态。</li>
+</ul>
+<p>针对DNS负载均衡的一些缺点，对于时延和故障敏感的业务，有一些公司自己实现了HTTP-DNS的功能，即使用HTTP协议实现一个私有的DNS系统。这样的方案和通用的DNS优缺点正好相反。</p>
+<p><strong>硬件负载均衡</strong></p>
+<p>硬件负载均衡是通过单独的硬件设备来实现负载均衡功能，这类设备和路由器、交换机类似，可以理解为一个用于负载均衡的基础网络设备。目前业界典型的硬件负载均衡设备有两款：F5和A10。这类设备性能强劲、功能强大，但价格都不便宜，一般只有“土豪”公司才会考虑使用此类设备。普通业务量级的公司一是负担不起，二是业务量没那么大，用这些设备也是浪费。</p>
+<p><strong>软件负载均衡</strong></p>
+<p>软件负载均衡通过负载均衡软件来实现负载均衡功能，常见的有Nginx和LVS，其中Nginx是软件的7层负载均衡，LVS是Linux内核的4层负载均衡。4层和7层的区别就在于<strong>协议</strong>和<strong>灵活性</strong>，Nginx支持HTTP、E-mail协议；而LVS是4层负载均衡，和协议无关，几乎所有应用都可以做，例如，聊天、数据库等。</p>
+<p>软件和硬件的最主要区别就在于性能，硬件负载均衡性能远远高于软件负载均衡性能。Nginx的性能是万级，一般的Linux服务器上装一个Nginx大概能到5万&#x2F;秒；LVS的性能是十万级，据说可达到80万&#x2F;秒；而F5性能是百万级，从200万&#x2F;秒到800万&#x2F;秒都有（数据来源网络，仅供参考，如需采用请根据实际业务场景进行性能测试）。当然，软件负载均衡的最大优势是便宜，一台普通的Linux服务器批发价大概就是1万元左右，相比F5的价格，那就是自行车和宝马的区别了。</p>
+<p>除了使用开源的系统进行负载均衡，如果业务比较特殊，也可能基于开源系统进行定制（例如，Nginx插件），甚至进行自研。</p>
+<p>下面是Nginx的负载均衡架构示意图：</p>
+<img src="/2025/04/29/CSInternet15/136afcb3b3bc964f2609127eb27a0235.jpg" class>
+
+<p>软件负载均衡的优点：</p>
+<ul>
+<li>简单：无论是部署还是维护都比较简单。</li>
+<li>便宜：只要买个Linux服务器，装上软件即可。</li>
+<li>灵活：4层和7层负载均衡可以根据业务进行选择；也可以根据业务进行比较方便的扩展，例如，可以通过Nginx的插件来实现业务的定制化功能。</li>
+</ul>
+<p>其实下面的缺点都是和硬件负载均衡相比的，并不是说软件负载均衡没法用。</p>
+<ul>
+<li>性能一般：一个Nginx大约能支撑5万并发。</li>
+<li>功能没有硬件负载均衡那么强大。</li>
+<li>一般不具备防火墙和防DDoS攻击等安全功能。</li>
+</ul>
+<h2 id="负载均衡典型架构"><a href="#负载均衡典型架构" class="headerlink" title="负载均衡典型架构"></a>负载均衡典型架构</h2><p>前面我们介绍了3种常见的负载均衡机制：DNS负载均衡、硬件负载均衡、软件负载均衡，每种方式都有一些优缺点，但并不意味着在实际应用中只能基于它们的优缺点进行非此即彼的选择，反而是基于它们的优缺点进行组合使用。具体来说，组合的<strong>基本原则</strong>为：DNS负载均衡用于实现地理级别的负载均衡；硬件负载均衡用于实现集群级别的负载均衡；软件负载均衡用于实现机器级别的负载均衡。</p>
+<p>我以一个假想的实例来说明一下这种组合方式，如下图所示。</p>
+<img src="/2025/04/29/CSInternet15/79f371ecbf74818e2a34b4a31664668d.png" class>
+
+<p>整个系统的负载均衡分为三层。</p>
+<ul>
+<li>地理级别负载均衡：<a target="_blank" rel="noopener" href="http://www.xxx.com部署在北京、广州、上海三个机房,当用户访问时,dns会根据用户的地理位置来决定返回哪个机房的ip,图中返回了广州机房的ip地址,这样用户就访问到广州机房了./">www.xxx.com部署在北京、广州、上海三个机房，当用户访问时，DNS会根据用户的地理位置来决定返回哪个机房的IP，图中返回了广州机房的IP地址，这样用户就访问到广州机房了。</a></li>
+<li>集群级别负载均衡：广州机房的负载均衡用的是F5设备，F5收到用户请求后，进行集群级别的负载均衡，将用户请求发给3个本地集群中的一个，我们假设F5将用户请求发给了“广州集群2”。</li>
+<li>机器级别的负载均衡：广州集群2的负载均衡用的是Nginx，Nginx收到用户请求后，将用户请求发送给集群里面的某台服务器，服务器处理用户的业务请求并返回业务响应。</li>
+</ul>
+<p>需要注意的是，上图只是一个示例，一般在大型业务场景下才会这样用，如果业务量没这么大，则没有必要严格照搬这套架构。例如，一个大学的论坛，完全可以不需要DNS负载均衡，也不需要F5设备，只需要用Nginx作为一个简单的负载均衡就足够了。</p>
+<p>这里还有另一种分类的方式，即四层、七层负载均衡的分类，而这种评价和前面讲到的分类是完全两个维度的。我们在这里可以区分一下：</p>
+<p>**四层负载均衡 (L4)**：</p>
+<ul>
+<li>工作在OSI模型的传输层(第4层)</li>
+<li>仅基于IP地址和TCP&#x2F;UDP端口信息进行转发</li>
+<li>处理TCP&#x2F;UDP协议，不解析应用层内容</li>
+<li>特点：处理速度快，资源消耗少，但功能较简单</li>
+</ul>
+<p>**七层负载均衡 (L7)**：</p>
+<ul>
+<li>工作在OSI模型的应用层(第7层)</li>
+<li>能够解析HTTP&#x2F;HTTPS等应用层协议内容</li>
+<li>可基于URL路径、Cookie、HTTP头等信息做出转发决策</li>
+<li>特点：功能丰富，可实现更精细的流量控制，但处理开销较大</li>
+</ul>
+<p><strong>软件负载均衡</strong>：</p>
+<ul>
+<li>以软件形式部署在通用服务器上</li>
+<li>代表产品：Nginx、HAProxy、LVS</li>
+<li>优势：成本低、灵活性高、易于更新</li>
+<li>劣势：性能受限于服务器硬件，高并发场景可能成为瓶颈</li>
+</ul>
+<p><strong>硬件负载均衡</strong>：</p>
+<ul>
+<li>专用硬件设备，有专门的ASIC芯片</li>
+<li>代表产品：F5 BIG-IP、Citrix ADC</li>
+<li>优势：性能强大，处理能力高，可靠性好</li>
+<li>劣势：成本高，扩展性受限，更新升级不便</li>
+</ul>
+<h2 id="两种分类维度的组合应用"><a href="#两种分类维度的组合应用" class="headerlink" title="两种分类维度的组合应用"></a>两种分类维度的组合应用</h2><p>这两种分类方式可以组合：</p>
+<ul>
+<li>硬件设备通常同时支持四层和七层负载均衡</li>
+<li>软件负载均衡解决方案中：<ul>
+<li>LVS主要是四层负载均衡</li>
+<li>Nginx&#x2F;HAProxy既支持四层也支持七层，但以七层为主要优势</li>
+</ul>
+</li>
+</ul>
+<p>选择时需考虑业务需求、预算、性能要求和技术团队能力等因素综合决定。</p>
+<h1 id="负载均衡算法"><a href="#负载均衡算法" class="headerlink" title="负载均衡算法"></a>负载均衡算法</h1><p>负载均衡将网络流量或一组任务以某种算法合理分配给各个处理节点，使得节点得到平等的使用，并及时可靠地返回结果给用户。其应用于各种硬件软件系统中，比如：</p>
+<ol>
+<li>根据 IP 地址进行网络流量负载均衡。在服务进行维护时，可以方便将网络流量切换到临时节点或降级的服务上。</li>
+<li>根据 HTTP 头信息或请求字段进行应用程序负载均衡，用户得到响应的时间更短，并且可以提供分层服务，也方便服务扩容时加入新的节点。</li>
+<li>CDN 根据流量的来源，将流量导入相邻地区的服务器，以获得更短的响应时间和更高的可用性。</li>
+</ol>
+<p>下图显示了 6 种常见算法。</p>
+<img src="/2025/04/29/CSInternet15/image-20250503153019629.png" class>
+
+<p>如果要记忆的话，可以分成静态算法和动态算法两个部分：</p>
+<h3 id="01-静态算法"><a href="#01-静态算法" class="headerlink" title="01 静态算法"></a>01 静态算法</h3><ul>
+<li>循环（Round Robin）</li>
+</ul>
+<p>客户端请求按顺序发送到不同的服务实例。通常要求服务是<strong>无状态</strong>的。这种算法最简单，但是也无法处理某个节点变慢或者客户端操作有连续性的情况。</p>
+<ul>
+<li>粘性循环（Sticky Round Robin）</li>
+</ul>
+<p>这是对循环算法的一种改进。如果 Alice 的第一个请求发送到服务 A，那么接下来的请求也会发送到服务 A。这种负载均衡可以确保一个用户的请求都发往同一个服务节点，适合客户端操作<strong>有连续性</strong>的情况。有时候该服务节点上会保存该用户的一些状态，避免去后端数据库查询。</p>
+<ul>
+<li>加权循环（Weighted Round Robin）</li>
+</ul>
+<p>管理员可以指定每个服务的权重。权重高的服务会比其他服务处理更多请求。</p>
+<ul>
+<li>散列（IP&#x2F;URL Hash）</li>
+</ul>
+<p>该算法对传入请求的 IP 或 URL 应用哈希函数。根据哈希函数的结果将请求路由到相关服务。</p>
+<h3 id="02-动态算法"><a href="#02-动态算法" class="headerlink" title="02 动态算法"></a>02 动态算法</h3><ul>
+<li>最少连接（Least Connections）</li>
+</ul>
+<p>新请求会发送到<strong>并发连接最少</strong>的服务节点。</p>
+<ul>
+<li>响应时间最少（Least Time）</li>
+</ul>
+<p>新请求会发送到<strong>响应时间最快</strong>的服务节点。这样，某个服务节点变慢就不会阻塞后续请求处理了。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2025/04/29/CSInternet15/">https://0kr.xin/2025/04/29/CSInternet15/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape004.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/05/08/OS01/" title="OS01"><img class="cover" src="/statics/landscape002.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">OS01</div></div><div class="info-2"><div class="info-item-1">本篇讲述操作系统的硬件结构相关知识。 一、基础概念 在开始探讨复杂的计算机系统之前，我们需要先了解一些基础概念，包括冯诺依曼模型以及系统的基本组成。这些概念是我们理解后续内容的基础。  1. 冯诺依曼模型介绍冯诺依曼模型是现代计算机体系结构的基础，包含五个基本部件：运算器、控制器、存储器、输入设备和输出设备。该模型的核心思想是”存储程序”，即程序和数据都存储在同一个存储器中。 冯诺依曼模型有哪些组成？    中央处理器（运算器和控制器） 内存（存储器，图中为存储单元） 总线（连接各部件） 输入、输出设备 其他存储设备（图中未显示）  运算器、控制器是在中央处理器里的，存储器就我们常见的内存，输入输出设备则是计算机外接的设备比如键盘就是输入设备，显示器就是输出设备。 存储单元和输入输出设备要与中央处理器打交道的话，离不开总线。所以，它们之间的关系如下图：   接下来，分别介绍内存、中央处理器、总线、输入输出设备。 内存我们的程序和数据都是存储在内存，存储的区域是线性的。 在计算机数据存储中，存储数据的基本单位是字节（byte），1字节等于8位（8...</div></div></div></a><a class="pagination-related" href="/2025/04/29/CSInternet14/" title="CSInternet14"><img class="cover" src="/statics/landscape003.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">CSInternet14</div></div><div class="info-2"><div class="info-item-1">网络攻击及解决方案汇总1.DNS劫持DNS劫持就是黑客劫持了DNS服务器，篡改了DNS解析结果，将client请求的域名解析到错误的IP地址上，让真实服务器拿不到请求，更多发生在诱导、钓鱼、广告植入、诈骗等诸多场景。   当我们访问网站的时候， 实际上是会先进行域名解析得到网站服务器的 IP 地址，然后才进行后续的访问。DNS劫持利用了这个过程中的漏洞，攻击者在DNS服务器上篡改DNS解析结果，将域名解析到攻击者控制的恶意服务器上，这时候我们访问的域名就被重定向到恶意网站上。 2.DNS污染DNS污染是一种让一般用户由于得到虚假目标主机 IP 而不能与其通信的方法，是一种 DNS 缓存投毒攻击(DNS cache poisoning)。 其工作方式是：由于通常的 DNS 查询没有任何认证机制，而且 DNS 查询通常基于的 UDP 是 无连接不可靠 的协议，因此 DNS 的査询非常容易被篡改。通过对 UDP 端口 53 上的 DNS 查询进行入侵检测，经发现与关键词相匹配的请求则立即伪装成目标域名的解析服务器(NS，Name...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E4%BB%A3%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">网络代理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%EF%BC%88Load-Balancing%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">负载均衡（Load Balancing）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%88%86%E7%B1%BB"><span class="toc-number">2.1.</span> <span class="toc-text">负载均衡分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%85%B8%E5%9E%8B%E6%9E%B6%E6%9E%84"><span class="toc-number">2.2.</span> <span class="toc-text">负载均衡典型架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%A4%E7%A7%8D%E5%88%86%E7%B1%BB%E7%BB%B4%E5%BA%A6%E7%9A%84%E7%BB%84%E5%90%88%E5%BA%94%E7%94%A8"><span class="toc-number">2.3.</span> <span class="toc-text">两种分类维度的组合应用</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AE%97%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">负载均衡算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#01-%E9%9D%99%E6%80%81%E7%AE%97%E6%B3%95"><span class="toc-number">3.0.1.</span> <span class="toc-text">01 静态算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#02-%E5%8A%A8%E6%80%81%E7%AE%97%E6%B3%95"><span class="toc-number">3.0.2.</span> <span class="toc-text">02 动态算法</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>OS01 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="本篇讲述操作系统的硬件结构相关知识。 一、基础概念 在开始探讨复杂的计算机系统之前，我们需要先了解一些基础概念，包括冯诺依曼模型以及系统的基本组成。这些概念是我们理解后续内容的基础。  1. 冯诺依曼模型介绍冯诺依曼模型是现代计算机体系结构的基础，包含五个基本部件：运算器、控制器、存储器、输入设备和输出设备。该模型的核心思想是”存储程序”，即程序和数据都存储在同一个存储器中。 冯诺依曼模型有哪些组">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OS01">
+<meta property="og:url" content="https://0kr.xin/2025/05/08/OS01/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="本篇讲述操作系统的硬件结构相关知识。 一、基础概念 在开始探讨复杂的计算机系统之前，我们需要先了解一些基础概念，包括冯诺依曼模型以及系统的基本组成。这些概念是我们理解后续内容的基础。  1. 冯诺依曼模型介绍冯诺依曼模型是现代计算机体系结构的基础，包含五个基本部件：运算器、控制器、存储器、输入设备和输出设备。该模型的核心思想是”存储程序”，即程序和数据都存储在同一个存储器中。 冯诺依曼模型有哪些组">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape002.jpg">
+<meta property="article:published_time" content="2025-05-08T02:05:51.000Z">
+<meta property="article:modified_time" content="2025-05-12T07:07:15.805Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape002.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2025/05/08/OS01/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'OS01',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-05-12 15:07:15'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape002.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">OS01</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">OS01</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-05-08T02:05:51.000Z" title="发表于 2025-05-08 10:05:51">2025-05-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-12T07:07:15.805Z" title="更新于 2025-05-12 15:07:15">2025-05-12</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">5.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>16分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>本篇讲述操作系统的硬件结构相关知识。</p>
+<h2 id="一、基础概念"><a href="#一、基础概念" class="headerlink" title="一、基础概念"></a>一、基础概念</h2><blockquote>
+<p>在开始探讨复杂的计算机系统之前，我们需要先了解一些基础概念，包括冯诺依曼模型以及系统的基本组成。这些概念是我们理解后续内容的基础。</p>
+</blockquote>
+<h3 id="1-冯诺依曼模型介绍"><a href="#1-冯诺依曼模型介绍" class="headerlink" title="1. 冯诺依曼模型介绍"></a>1. 冯诺依曼模型介绍</h3><p>冯诺依曼模型是现代计算机体系结构的基础，包含五个基本部件：运算器、控制器、存储器、输入设备和输出设备。该模型的核心思想是”存储程序”，即程序和数据都存储在同一个存储器中。</p>
+<p>冯诺依曼模型有哪些组成？</p>
+<img src="/2025/05/08/OS01/resize,m_fixed,w_1184.webp" class>
+
+<ul>
+<li>中央处理器（运算器和控制器）</li>
+<li>内存（存储器，图中为存储单元）</li>
+<li>总线（连接各部件）</li>
+<li>输入、输出设备</li>
+<li>其他存储设备（图中未显示）</li>
+</ul>
+<p>运算器、控制器是在中央处理器里的，存储器就我们常见的内存，输入输出设备则是计算机外接的设备比如键盘就是输入设备，显示器就是输出设备。</p>
+<p>存储单元和输入输出设备要与中央处理器打交道的话，离不开总线。所以，它们之间的关系如下图：</p>
+<img src="/2025/05/08/OS01/%E5%86%AF%E8%AF%BA%E4%BE%9D%E6%9B%BC%E6%A8%A1%E5%9E%8B.png" class>
+
+<p>接下来，分别介绍内存、中央处理器、总线、输入输出设备。</p>
+<h4 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h4><p>我们的程序和数据都是存储在内存，存储的区域是线性的。</p>
+<p>在计算机数据存储中，存储数据的基本单位是字节（byte），1字节等于8位（8 bit）。每一个字节都对应一个内存地址。</p>
+<p>内存的地址是从0开始编号的，然后自增排列，最后一个地址为内存总字节数 - 1，这种结构好似我们程序里的数组，所以内存的读写任何一个数据的速度都是一样的。</p>
+<h4 id="CPU"><a href="#CPU" class="headerlink" title="CPU"></a>CPU</h4><p>中央处理器也就是我们常说的CPU（Central Processing Unit），32位和64位CPU最主要区别在于一次能计算多少字节数据:</p>
+<ul>
+<li>32位CPU一次可以计算4个字节；</li>
+<li>64位CPU一次可以计算8个字节；</li>
+</ul>
+<p>这里的32位和64位，通常称为CPU的<strong>位宽</strong>，<strong>代表的是CPU一次可以计算（运算）的数据量</strong>。</p>
+<p>之所以CPU要这样设计，是为了能计算更大的数值，如果是8位的CPU，那么一次只能计算1个字节0-255范围内的数值，这样就无法一次完成计算<code>10000 * 500</code>，于是为了能一次计算大数的运算，CPU需要支持多个byte一起计算；所以CPU位宽越大，可以计算的数值就越大，比如说32位CPU能计算的最大整数是4294967295。</p>
+<p>CPU内部还有一些组件，常见的有寄存器、控制单元和逻辑运算单元等。其中，控制单元负责控制CPU工作，逻辑运算单元负责计算，而寄存器可以分为多种类，每种寄存器的功能又不尽相同。</p>
+<p>CPU中的寄存器主要作用是存储计算时的数据，你可能好奇为什么有了内存还需要寄存器？原因很简单，因为内存离CPU太远了，而寄存器就在CPU里，还紧挨着控制单元和逻辑运算单元，自然计算的速度会很快。后面我们还会再讲到。</p>
+<p>常见的寄存器种类有：</p>
+<ul>
+<li><em>通用寄存器（GR，General register）</em>，可用于传送和暂存数据，也可参与算术逻辑运算，并保存运算结果。除此之外，它们还各自具有一些特殊功能。</li>
+</ul>
+<blockquote>
+<p>比如16位cpu通用寄存器共有8个：AX（累加器(Accumulator Register)）,BX（基地址寄存器(Base Register)）,CX（计数寄存器(Count Register)）,DX（数据寄存器(Data Register)）,BP（基址指针寄存器（Base Pointer））,SP（堆栈指针寄存器（Stack Pointer））,SI（源变址寄存器 （Source Index））,DI（目的变址寄存器（Destination Index））.八个寄存器都可以作为普通的数据寄存器使用。</p>
+</blockquote>
+<ul>
+<li><em>程序计数器（PC，Program counter）</em>，用来存储CPU要执行下一条指令「所在的内存地址」，注意不是存储了下一条要执行的指令，此时指令还在内存中，程序计数器只是存储了下一条指令的地址。当执行一条指令时，首先需要根据PC中存放的指令地址，将指令由内存取到指令寄存器中，此过程称，为“取指令”。与此同时，PC中的地址或自动加1或由转移指针给出下一条指令的地址。此后经过分析指令，执行指令。完成第一条指令的执行，而后根据PC取出第二条指令的地址，如此循环，执行每一条指令。</li>
+<li><em>指令寄存器（IR，Instruction Register）</em>，用来存放当前正在执行的指令，也就是指令本身，指令被执行完成之前，指令都存储在这里。</li>
+</ul>
+<h4 id="总线"><a href="#总线" class="headerlink" title="总线"></a>总线</h4><p>总线是<strong>用于 CPU 和内存以及其他设备之间的通信</strong>，总线可分为3种：</p>
+<ul>
+<li>地址总线，用于指定 CPU 将要操作的内存地址；</li>
+<li>数据总线，用于读写内存的数据；</li>
+<li>控制总线，用于发送和接收信号，比如中断、设备复位等信号，CPU 收到信号后自然进行响应，这时也需要控制总线;</li>
+</ul>
+<p>当 CPU 要读写内存数据的时候，一般需要通过下面这三个总线:</p>
+<ul>
+<li>首先要通过「地址总线」来指定内存的地址;</li>
+<li>然后通过「控制总线」控制是读或写命令;</li>
+<li>最后通过「数据总线」来传输数据;</li>
+</ul>
+<h4 id="输入输出设备"><a href="#输入输出设备" class="headerlink" title="输入输出设备"></a>输入输出设备</h4><p>输入设备向计算机输入数据，计算机经过计算后，把数据输出给输出设备。期间，如果输入设备是键盘,按下按键时是需要和 CPU 进行交互的，这时就需要用到控制总线了。这里的触发顺序个人感觉可以理解为：先用地址总线查找，再用数据总线传输，期间控制总线控制中断或者异常信号。</p>
+<h3 id="3-计算机系统的基本组成"><a href="#3-计算机系统的基本组成" class="headerlink" title="3. 计算机系统的基本组成"></a>3. 计算机系统的基本组成</h3><p>计算机系统由硬件和软件两部分组成。硬件包括CPU、内存、输入输出设备和总线等；软件包括系统软件（如操作系统）和应用软件。</p>
+<p>在这里最需要明确的是操作系统处于电脑中的哪个层次：</p>
+<img src="/2025/05/08/OS01/image-20250512142415756.png" class>
+
+<p>操作系统是在硬件基础上的第一层扩展，很多与硬件有关的工作都是通过操作系统调用反馈到硬件完成的。</p>
+<h2 id="二、CPU执行程序的过程"><a href="#二、CPU执行程序的过程" class="headerlink" title="二、CPU执行程序的过程"></a>二、CPU执行程序的过程</h2><h3 id="1-线路位宽与CPU位宽"><a href="#1-线路位宽与CPU位宽" class="headerlink" title="1. 线路位宽与CPU位宽"></a>1. 线路位宽与CPU位宽</h3><p>到此你可能会问，介绍了总线，那数据如何通过线路传递的呢？其实是通过操作电压，低电压是 0，高电压是 1。</p>
+<p>如果只有一条线路，每次只能传递1个信号，因为你必须在 0,1中选一个。比如你构造高高低低这样的信号，其实就是 1100——这种传递是相当慢的，因为你需要传递 4 次。</p>
+<p>这种一个 bit 一个 bit 发送的方式，我们叫作串行。如果希望每次多传一些数据，就需要增加线路，也就是需要并行。</p>
+<p>如果只有1条地址总线，那每次只能表示 0-1两种情况，所以只能操作2个内存地址；如果有 10 条地址总线，一次就可以表示 2^10 种情况，也就是可以操作 1024 个内存地址；如果你希望操作 4G 的内存，那么就需要 32 条线，因为 2^32 是 4G。</p>
+<p>请注意，我们刚刚所说的都是<strong>线路位宽</strong>，指数据总线一次能传输的位数。那么<strong>CPU位宽</strong>，其实就是指其能处理的数据位数。</p>
+<p>那么很显然，CPU 的位宽最好不要小于线路位宽，比如 32 位 CPU 控制 40 位宽的地址总线和数据总线的话，工作起来就会非常复杂且麻烦，所以 32 位的 CPU 最好和 32 位宽的线路搭配，因为 32 位 CPU 一次最多只能操作32 位宽的地址总线和数据总线。</p>
+<p>如果用 32 位 CPU 去加和两个 64 位大小的数字，就需要把这2个 64 位的数字分成2个低位 32 位数字和2 个高位 32 位数字来计算，先加个两个低位的 32 位数字，算出进位，然后加和两个高位的 32 位数字,最后再加上进位，就能算出结果了，可以发现 32 位 CPU 并不能一次性计算出加和两个 64 位数字的结果。对于 64 位 CPU 就可以一次性算出加和两个 64 位数字的结果，因为 64 位 CPU 可以一次读入 64 位的数字，并且 64 位 CPU 内部的逻辑运算单元也支持 64 位数字的计算。</p>
+<p><strong>但这并不代表 64 位 CPU 性能比 32 位 CPU 高很多。</strong>要知道，大部分应用不需要计算超过 32 位的数字，比如你做一个电商网站，用户的金额通常是 10 万以下的，而 32 位有符号整数，最大可以到20 亿。所以这样的计算在 32 位还是 64 位中没有什么区别。</p>
+<p>另外，32 位 CPU 最大只能操作 4GB 内存，就算你装了8GB 内存条，也没用。而 64 位 CPU 寻址范围则很大，理论最大的寻址空间为2^64。</p>
+<h3 id="2-指令周期"><a href="#2-指令周期" class="headerlink" title="2. 指令周期"></a>2. 指令周期</h3><img src="/2025/05/08/OS01/CPU%E6%8C%87%E4%BB%A4%E5%91%A8%E6%9C%9F.png" class>
+
+<p>CPU执行指令的基本周期包括：</p>
+<ul>
+<li>取指（Fetch）：从内存读取指令</li>
+<li>译码（Decode）：解释指令的含义</li>
+<li>执行（Execute）：执行指令（可能涉及读取操作数、进行计算、访问内存等）</li>
+<li>写回（Write-back）：将结果写回寄存器或内存</li>
+</ul>
+<blockquote>
+<p>这四个步骤构成了CPU执行任何指令的基本循环，无论是简单的加法还是复杂的浮点运算，都遵循这一过程。</p>
+</blockquote>
+<p>事实上，不同的阶段其实是由计算机中的不同组件完成的：</p>
+<img src="/2025/05/08/OS01/%E6%8C%87%E4%BB%A4%E5%91%A8%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%BB%84%E4%BB%B6.png" class>
+
+<h3 id="3-示例：a-1-2-的执行过程"><a href="#3-示例：a-1-2-的执行过程" class="headerlink" title="3. 示例：a &#x3D; 1 + 2 的执行过程"></a>3. 示例：a &#x3D; 1 + 2 的执行过程</h3><p>知道了基本的程序执行过程后，让我们通过一个简单的赋值操作 <code>a = 1 + 2</code> 来理解CPU执行程序的具体过程。</p>
+<p>CPU 是不认识 <code>a = 1 + 2</code> 这个字符串，这些字符串只是方便我们程序员认识，要想这段程序能跑起来，还需要把整个程序翻译成[汇编语言]的程序，这个过程称为编译或汇编代码。</p>
+<p>对于汇编代码，我们还需要用汇编器翻译成机器码，这些机器码由 0 和 1 组成的机器语言，这一条条机器码，就是一条条的[计算机指令]，这个才是 CPU 能够真正认识的东西。</p>
+<p>下面来看看 <code>a = 1 + 2</code> 在 32 位 CPU 的执行过程。</p>
+<p>程序编译过程中，编译器通过分析代码，发现 1 和 2 是数据，于是程序运行时，内存会有个专门的区域来存放这些数据，这个区域就是「数据段」。如下图，数据 1 和 2 的区域位置：</p>
+<ul>
+<li>数据 1 被存放到 0x200 位置；</li>
+<li>数据 2 被存放到 0x204 位置；</li>
+</ul>
+<p>注意，数据和指令是分开区域存放的，存放指令区域的地方称为「正文段」。</p>
+<img src="/2025/05/08/OS01/%E6%95%B0%E6%8D%AE%E6%AE%B5%E4%B8%8E%E6%AD%A3%E6%96%87%E6%AE%B5.png" class>
+
+<p>编译器会把 a&#x3D;1+2翻译成4条指令，存放到正文段中。如图，这4条指令被存放到了 0x100 ~0x10c 的区域中：</p>
+<ul>
+<li>0x100 的内容是 load 指令将 0x200 地址中的数据1装入到寄存器 R ;·</li>
+<li>0x104 的内容是 load 指令将 0x204 地址中的数据2装入到寄存器 R1;</li>
+<li>0x108 的内容是 add 指令将寄存器 R8 和 R1的数据相加，并把结果存放到寄存器 R2;</li>
+<li>0x10c 的内容是 store 指令将寄存器 R2 中的数据存回数据段中的 0x208 地址中，这个地址也就是变量 a 内存中的地址;</li>
+</ul>
+<p>编译完成后，具体执行程序的时候，程序计数器会被设置为 0x100 地址，然后依次执行这4条指令：</p>
+<ol>
+<li><strong>取指</strong>：CPU从程序计数器读取指令地址，从内存中取出”加载数值1到寄存器R1”的指令</li>
+<li><strong>译码</strong>：CPU解析指令，确定需要执行的操作是将常数1加载到寄存器R1</li>
+<li><strong>执行</strong>：CPU将数值1加载到寄存器R1</li>
+<li><strong>取指</strong>：取出”加载数值2到寄存器R2”的指令</li>
+<li><strong>译码</strong>：解析为将常数2加载到寄存器R2</li>
+<li><strong>执行</strong>：CPU将数值2加载到寄存器R2</li>
+<li><strong>取指</strong>：取出”将R1和R2相加，结果存入R3”的指令</li>
+<li><strong>译码</strong>：解析为将R1和R2相加，结果存入R3</li>
+<li><strong>执行</strong>：CPU执行加法运算，1+2&#x3D;3，将结果3存入寄存器R3</li>
+<li><strong>取指</strong>：取出”将R3的值存入变量a的内存地址”的指令</li>
+<li><strong>译码</strong>：解析为存储操作</li>
+<li><strong>执行</strong>：CPU将R3中的值3存入变量a的内存地址</li>
+<li><strong>写回</strong>：操作完成，变量a的值被更新为3</li>
+</ol>
+<p>上面的例子中，由于是在 32 位 CPU 执行的，因此一条指令是占 32 位大小，所以你会发现每条指令间隔4 个字节。</p>
+<p>而数据的大小是根据你在程序中指定的变量类型，比如 int 类型的数据则占4个字节， char 类型的数据则占1个字节。</p>
+<h3 id="4-指令类型"><a href="#4-指令类型" class="headerlink" title="4. 指令类型"></a>4. 指令类型</h3><p>上面的例子中，图中指令的内容我写的是简易的汇编代码，目的是为了方便理解指令的具体内容，事实上指令的内容是一串二进制数字的机器码，每条指令都有对应的机器码，CPU 通过解析机器码来知道指令的内容。</p>
+<p>不同的 CPU 有不同的指令集，也就是对应着不同的汇编语言和不同的机器码，接下来选用最简单的 RISC-V 指令集，来看看机器码是如何生成的，这样也能明白二进制的机器码的具体含义。</p>
+<p>RISC-V 的指令是一个 32 位的整数，高 7 位代表着操作码，表示这条指令是一条什么样的指令，剩下的 25 位不同指令类型所表示的内容也就不相同，主要有六种类型：R、I、S、B、U 和 J。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">                               32 位</span><br><span class="line">                                │</span><br><span class="line">┌───────────────────────────────┴───────────────────────────────┐</span><br><span class="line">│                                                               │</span><br><span class="line">├───────────┬─────────┬─────────┬─────────┬─────────┬───────────┤</span><br><span class="line">│ 指令类型   │   7 位  │   5 位  │   5 位  │   5 位  │   10 位   │</span><br><span class="line">├───────────┼─────────┼─────────┼─────────┼─────────┼───────────┤</span><br><span class="line">│     R     │ opcode  │    rs1  │    rs2  │    rd   │   funct3  │</span><br><span class="line">│           │  操作码  │         │         │         │  功能码   │</span><br><span class="line">├───────────┼─────────┼─────────┼─────────┼─────────┴───────────┤</span><br><span class="line">│     I     │ opcode  │    rs1  │    rd   │    immediate       │</span><br><span class="line">│           │  操作码  │         │         │     立即数         │</span><br><span class="line">├───────────┼─────────┼─────────┼─────────┼─────────┬───────────┤</span><br><span class="line">│     S     │ opcode  │    rs1  │    rs2  │imm[4:0]│ imm[11:5] │</span><br><span class="line">│           │  操作码  │         │         │立即数低位│立即数高位 │</span><br><span class="line">├───────────┼─────────┼─────────┼─────────┼─────────┼───────────┤</span><br><span class="line">│     B     │ opcode  │    rs1  │    rs2  │imm部分1 │  imm部分2 │</span><br><span class="line">│           │  操作码  │         │         │         │           │</span><br><span class="line">├───────────┼─────────┴─────────┴─────────┼─────────┬───────────┤</span><br><span class="line">│     U     │ opcode  │      immediate[31:12]      │    rd     │</span><br><span class="line">│           │  操作码  │           立即数            │           │</span><br><span class="line">├───────────┼─────────┴─────────┬───────────────────┼───────────┤</span><br><span class="line">│     J     │ opcode  │    rd   │    immediate     │           │</span><br><span class="line">│           │  操作码  │         │      立即数       │           │</span><br><span class="line">└───────────┴───────────────────┴───────────────────┴───────────┘</span><br></pre></td></tr></table></figure>
+
+<p>一起具体看看这六种类型的含义：</p>
+<ul>
+<li>R 指令，用在算术和逻辑操作，里面有读取和写入数据的寄存器地址。高7位的操作码指示这是什么类型的指令，接下来有三个5位的寄存器地址字段（rs1源寄存器1，rs2源寄存器2，rd目标寄存器），最后10位包含功能码，用于进一步指定具体操作；</li>
+<li>I 指令，用在立即数操作、加载指令和跳转指令。这个类型的指令，没有rs2寄存器，而是把这部分和后面的位一起合并成了一个12位的立即数字段；</li>
+<li>S 指令，用在存储操作。这个类型有rs1和rs2，但没有rd，因为存储操作不需要写回寄存器，而是把数据写入内存，立即数分成了两部分，表示存储的内存地址偏移；</li>
+<li>B 指令，用在条件分支。与S型类似，但立即数字段被重新排列，以便于计算分支目标地址；</li>
+<li>U 指令，用在长立即数操作。顾名思义，这类指令的立即数字段更大，占据了指令的大部分位置；</li>
+<li>J 指令，用在无条件跳转。与MIPS类似，高7位之外的25位大部分用于表示跳转目标地址。</li>
+</ul>
+<p>接下来，我们把前面例子的这条指令：「add 指令将寄存器 R0 和 R1 的数据相加，并把结果放入到 R2」，翻译成RISC-V机器码。</p>
+<p>在RISC-V中，这条add指令的格式是R型，它的二进制表示为：<code>0000000 00001 00000 000 00010 0110011</code>，其中：</p>
+<ul>
+<li>0110011是操作码，表示这是一个R型整数运算指令</li>
+<li>00010是rd(R2)，目标寄存器</li>
+<li>000是功能码，表示这是加法操作</li>
+<li>00000是rs1(R0)，第一个源寄存器</li>
+<li>00001是rs2(R1)，第二个源寄存器</li>
+<li>0000000是另一部分功能码，进一步指定这是普通加法</li>
+</ul>
+<p>把上面这些数字拼在一起，就是一条 32 位的 RISC-V 加法指令了。编译器在编译程序的时候，会构造指令，这个过程叫做指令的编码。CPU 执行程序的时候，就会解析指令，这个过程叫作指令的解码&#x2F;译码。</p>
+<h3 id="5-指令执行速度"><a href="#5-指令执行速度" class="headerlink" title="5. 指令执行速度"></a>5. 指令执行速度</h3><p>CPU的硬件参数都会有 GHz 这个参数，比如一个 1 GHz 的 CPU，指的是时钟频率是 1 G，代表着 1 秒会产生 1G 次数的脉冲信号，每一次脉冲信号高低电平的转换就是一个周期，称为时钟周期。</p>
+<p>对于 CPU 来说，在一个时钟周期内，CPU 仅能完成一个最基本的动作，时钟频率越高，时钟周期就越短，工作速度也就越快。</p>
+<p>一个时钟周期一定能执行完一条指令吗？答案是不一定的，大多数指令不能在一个时钟周期完成，通常需要若干个时钟周期。不同的指令需要的时钟周期是不同的，加法和乘法都对应着一条 CPU 指令，但是乘法需要的时钟周期就要比加法多。</p>
+<h4 id="如何让程序跑的更快"><a href="#如何让程序跑的更快" class="headerlink" title="如何让程序跑的更快?"></a>如何让程序跑的更快?</h4><p>程序执行的时候，耗费的 CPU 时间少就说明程序是快的，对于程序的 CPU 执行时间，我们可以拆解成<strong>CPU 时钟周期数</strong>（<em>CPU Cycles</em>）和<strong>时钟周期时间</strong>（<em>Clock Cycle Time</em>）的乘积。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">程序的 CPU 执行时间 = CPU 时钟周期数 x 时钟周期时间</span><br></pre></td></tr></table></figure>
+
+<p>时钟周期时间就是我们前面提及的 CPU 主频，主频越高说明 CPU 的工作速度就越快，比如我手头上的电脑的 CPU 是 2.4 GHz 四核 Intel Core i5，这里的 2.4 GHz 就是电脑的主频，时钟周期时间就是 1&#x2F;2.4G。</p>
+<p>要想 CPU 跑的更快，自然缩短时钟周期时间，也就是提升 CPU 主频，但是今非彼日，摩尔定律早已失效，当今的 CPU 主频已经很难再做到翻倍的效果了。</p>
+<p>另外，换一个更好的 CPU，这个也是我们软件工程师控制不了的事情，我们应该把目光放到另外一个乘法因子 —— CPU 时钟周期数，如果能减少程序所需的 CPU 时钟周期数量，一样也是能提升程序的性能的。</p>
+<p>对于 CPU 时钟周期数我们可以进一步拆解成：<strong>指令数 x 每条指令的平均时钟周期数</strong>（<em>Cycles Per Instruction</em>, 简称 CPI），于是程序的 CPU 执行时间的公式可变成如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">程序的 CPU 执行时间 = 指令数 x CPI x 时钟周期时间</span><br></pre></td></tr></table></figure>
+
+<p>因此，要想程序跑的更快，优化这三者即可：</p>
+<ul>
+<li><strong>指令数</strong>，表示执行程序所需要多少条指令，以及哪些指令。这个层面是基本靠编译器来优化，毕竟同样的代码，在不同的编译器，编译出来的计算机指令会有各种不同的表示方式。</li>
+<li><strong>每条指令的平均时钟周期数 CPI</strong>，表示一条指令需要多少个时钟周期数，现代大多数 CPU 通过流水线技术（Pipeline），让一条指令需要的 CPU 时钟周期数尽可能的少；</li>
+<li><strong>时钟周期时间</strong>，表示计算机主频，取决于计算机硬件。有的 CPU 支持超频技术，打开了超频意味着把 CPU 内部的时钟给调快了，于是 CPU 工作速度就变快了，但是也是有代价的，CPU 跑的越快，散热的压力就会越大，CPU 会很容易奔溃。</li>
+</ul>
+<p>很多厂商为了跑分而跑分，基本都是在这三个方面入手的呢，特别是超频这一块。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2025/05/08/OS01/">https://0kr.xin/2025/05/08/OS01/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/05/08/OS02/" title="OS02"><img class="cover" src="/statics/landscape001.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">OS02</div></div><div class="info-2"><div class="info-item-1">本篇讲解计算机存储结构与CPU缓存相关内容。  了解了CPU的基本工作原理后，我们需要研究计算机如何存储和管理数据。为什么计算机需要多种不同的存储设备？为什么不直接使用一种快速的存储介质？这是因为在速度、容量和成本之间存在权衡，理解这种权衡对于理解计算机系统至关重要。  1. 存储器的层次结构计算机的存储层次结构从上到下依次为：  寄存器：CPU内部，速度最快，容量最小 CPU缓存（L1、L2、L3缓存）：CPU内部或附近，速度快，容量较小 内存（RAM）：主板上，速度较快，容量中等 固态硬盘（SSD）：速度中等，容量较大 机械硬盘（HDD）：速度慢，容量大 网络存储&#x2F;磁带&#x2F;光盘等：速度最慢，容量最大  2. 存储器之间的实际价格和性能差距磁盘比内存慢几万倍？...</div></div></div></a><a class="pagination-related" href="/2025/04/29/CSInternet15/" title="CSInternet15"><img class="cover" src="/statics/landscape004.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">CSInternet15</div></div><div class="info-2"><div class="info-item-1">网络代理正向代理是位于用户设备和互联网之间的服务器。它代理的是客户端，是站在用户一方的。其真实客户端对于服务器不可见。 反向代理是一种服务器，它接受客户端的请求，将请求转发给网络服务器，然后将结果返回给客户端，就像代理服务器处理了请求一样。反向代理代理的是服务器，是和网络服务器站在一方的。其真实服务器对于客户端不可见。这就是它叫“反向”的原因。 其实就好比租房子，中介就是客户的正向代理，二房东就是房东的反向代理。至于二者的作用可以看下图：   负载均衡（Load...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="toc-number">1.</span> <span class="toc-text">一、基础概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%86%AF%E8%AF%BA%E4%BE%9D%E6%9B%BC%E6%A8%A1%E5%9E%8B%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.1.</span> <span class="toc-text">1. 冯诺依曼模型介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%85%E5%AD%98"><span class="toc-number">1.1.1.</span> <span class="toc-text">内存</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CPU"><span class="toc-number">1.1.2.</span> <span class="toc-text">CPU</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF"><span class="toc-number">1.1.3.</span> <span class="toc-text">总线</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E8%AE%BE%E5%A4%87"><span class="toc-number">1.1.4.</span> <span class="toc-text">输入输出设备</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90"><span class="toc-number">1.2.</span> <span class="toc-text">3. 计算机系统的基本组成</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81CPU%E6%89%A7%E8%A1%8C%E7%A8%8B%E5%BA%8F%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">二、CPU执行程序的过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%BA%BF%E8%B7%AF%E4%BD%8D%E5%AE%BD%E4%B8%8ECPU%E4%BD%8D%E5%AE%BD"><span class="toc-number">2.1.</span> <span class="toc-text">1. 线路位宽与CPU位宽</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%8C%87%E4%BB%A4%E5%91%A8%E6%9C%9F"><span class="toc-number">2.2.</span> <span class="toc-text">2. 指令周期</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%A4%BA%E4%BE%8B%EF%BC%9Aa-1-2-%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B"><span class="toc-number">2.3.</span> <span class="toc-text">3. 示例：a &#x3D; 1 + 2 的执行过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%8C%87%E4%BB%A4%E7%B1%BB%E5%9E%8B"><span class="toc-number">2.4.</span> <span class="toc-text">4. 指令类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%8C%87%E4%BB%A4%E6%89%A7%E8%A1%8C%E9%80%9F%E5%BA%A6"><span class="toc-number">2.5.</span> <span class="toc-text">5. 指令执行速度</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%AE%A9%E7%A8%8B%E5%BA%8F%E8%B7%91%E7%9A%84%E6%9B%B4%E5%BF%AB"><span class="toc-number">2.5.1.</span> <span class="toc-text">如何让程序跑的更快?</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

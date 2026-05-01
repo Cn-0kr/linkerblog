@@ -1,0 +1,341 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>MysqlTutorial03 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="图片截取及参考文献：1.https:&#x2F;&#x2F;xiaolincoding.com&#x2F;mysql&#x2F;index&#x2F;index_lose.html#%E7%B4%A2%E5%BC%95%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84%E9%95%BF%E4%BB%80%E4%B9%88%E6%A0%B72.https:&#x2F;&#x2F;learn.lianglianglee.com&#x2F;%E4%B8%93">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MysqlTutorial03">
+<meta property="og:url" content="https://0kr.xin/2025/03/12/MysqlTutorial03/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="图片截取及参考文献：1.https:&#x2F;&#x2F;xiaolincoding.com&#x2F;mysql&#x2F;index&#x2F;index_lose.html#%E7%B4%A2%E5%BC%95%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84%E9%95%BF%E4%BB%80%E4%B9%88%E6%A0%B72.https:&#x2F;&#x2F;learn.lianglianglee.com&#x2F;%E4%B8%93">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape003.jpg">
+<meta property="article:published_time" content="2025-03-12T08:46:09.000Z">
+<meta property="article:modified_time" content="2025-03-20T09:30:35.589Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape003.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2025/03/12/MysqlTutorial03/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MysqlTutorial03',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-03-20 17:30:35'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape003.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">MysqlTutorial03</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">MysqlTutorial03</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-03-12T08:46:09.000Z" title="发表于 2025-03-12 16:46:09">2025-03-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-03-20T09:30:35.589Z" title="更新于 2025-03-20 17:30:35">2025-03-20</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>图片截取及参考文献：<br>1.<a target="_blank" rel="noopener" href="https://xiaolincoding.com/mysql/index/index_lose.html#%E7%B4%A2%E5%BC%95%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84%E9%95%BF%E4%BB%80%E4%B9%88%E6%A0%B7">https://xiaolincoding.com/mysql/index/index_lose.html#%E7%B4%A2%E5%BC%95%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84%E9%95%BF%E4%BB%80%E4%B9%88%E6%A0%B7</a><br>2.<a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/MySQL%E5%AE%9E%E6%88%98%E5%AE%9D%E5%85%B8/11%20%20%E7%B4%A2%E5%BC%95%E5%87%BA%E9%94%99%EF%BC%9A%E8%AF%B7%E7%90%86%E8%A7%A3%20CBO%20%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.md">https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/MySQL%E5%AE%9E%E6%88%98%E5%AE%9D%E5%85%B8/11%20%20%E7%B4%A2%E5%BC%95%E5%87%BA%E9%94%99%EF%BC%9A%E8%AF%B7%E7%90%86%E8%A7%A3%20CBO%20%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.md</a><br>3.<a target="_blank" rel="noopener" href="https://juejin.cn/post/7149074488649318431#heading-1">https://juejin.cn/post/7149074488649318431#heading-1</a></p>
+</blockquote>
+<h1 id="索引失效及其场景"><a href="#索引失效及其场景" class="headerlink" title="索引失效及其场景"></a>索引失效及其场景</h1><p>要了解索引失效，必须了解索引的存储过程和查询原理，因此请务必看完上篇再继续阅读。</p>
+<p>接下来，将介绍索引失效的各个场景：</p>
+<h2 id="1-对索引使用左或者左右模糊匹配"><a href="#1-对索引使用左或者左右模糊匹配" class="headerlink" title="1.对索引使用左或者左右模糊匹配"></a>1.对索引使用左或者左右模糊匹配</h2><p><code>like  %xx</code> 或者 <code>like %xx%</code> 都会导致索引失效，而 <code>like xx%</code>不会。如图所示：</p>
+<img src="/2025/03/12/MysqlTutorial03/image-20250320141357195.png" class>
+
+<p>如果是査询 name 前缀为林的用户，那么就会走索引扫描，执行计划中的 type&#x3D;range 表示走索引扫描key&#x3D;index_name 看到实际走了 index_name 索引:</p>
+<img src="/2025/03/12/MysqlTutorial03/image-20250320141416020.png" class>
+
+<p>原理：B+树索引的有序特性，无法进行二分查找，因此只能进行全表扫描。</p>
+<h2 id="2-对索引使用函数"><a href="#2-对索引使用函数" class="headerlink" title="2.对索引使用函数"></a>2.对索引使用函数</h2><img src="/2025/03/12/MysqlTutorial03/image-20250320142427444.png" class>
+
+<p>因为索引保存的是索引原始字段的值，不是函数计算后的值，自然没办法使用索引。</p>
+<p>不过在mysql8.0版本后，支持对函数建立索引啦！</p>
+<img src="/2025/03/12/MysqlTutorial03/image-20250320142445829.png" class>
+
+<h2 id="3-对索引进行表达式计算"><a href="#3-对索引进行表达式计算" class="headerlink" title="3.对索引进行表达式计算"></a>3.对索引进行表达式计算</h2><p>在查询条件中对索引进行表达式计算，也是无法走索引的。</p>
+<p>比如，下面这条查询语句，执行计划中 type&#x3D;ALL，说明是通过全表扫描的方式查询数据的:</p>
+<img src="/2025/03/12/MysqlTutorial03/image-20250320142719878.png" class>
+
+<p>改成<code>where id = 10 -1</code>就可以：</p>
+<img src="/2025/03/12/MysqlTutorial03/image-20250320142803485.png" class>
+
+<p>原理和上面的函数部分类似。</p>
+<h2 id="4-对索引隐式类型转换"><a href="#4-对索引隐式类型转换" class="headerlink" title="4.对索引隐式类型转换"></a>4.对索引隐式类型转换</h2><p>mysql遇到字符串和数字比较时，会把字符串自动转化为数字进行比较。如果在查询过程中对变量发生了类型上的隐式转换，则会发生索引失效。</p>
+<img src="/2025/03/12/MysqlTutorial03/image-20250320143750880.png" class>
+
+<p>这条语句相当于：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t <span class="keyword">user</span> <span class="keyword">where</span> <span class="built_in">CAST</span>(phone <span class="keyword">As</span> signed <span class="type">int</span>)<span class="operator">=</span> <span class="number">1300000001</span>;</span><br></pre></td></tr></table></figure>
+
+<p>因此失效。</p>
+<p>反过来，若对变量无影响，则照常走索引：</p>
+<img src="/2025/03/12/MysqlTutorial03/image-20250320144107424.png" class>
+
+<h2 id="5-联合索引的非最左匹配"><a href="#5-联合索引的非最左匹配" class="headerlink" title="5.联合索引的非最左匹配"></a>5.联合索引的非最左匹配</h2><p>上一篇也有讲到，但是我们这里再着重讲一下<strong>索引下推</strong>。</p>
+<p>比如建立了索引（a,b,c），查询<code>where a = 1 and c = 3</code>，还走索引嘛？符合最左匹配嘛？</p>
+<p>MySQL 5.5 的话，前面a会走索引，在联合索引找到主键值后，开始回表，到主键索引读取数据行Server 层从存储引擎层获取到数据行后，然后在 Server 层再比对c字段的值。</p>
+<p>从 MvSOL5.6之后，有一个索引下推功能，可以在存储引擎层进行索引遍历过程中，对索引中包含的字段先做判断，直接过滤掉不满足条件的记录，再返还给 Server 层，从而减少回表次数。</p>
+<p>索引下推的大概原理是：截断的字段不会在 Server 层进行条件判断，而是会被下推到「存储引擎层」进行条件判断(因为c字段的值是在(a，b，c)联合索引里的)，然后过滤出符合条件的数据后再返回给Server 层。由于在引擎层就过滤掉大量的数据，无需再回表读取数据来进行判断，减少回表次数，从而提升了性能。</p>
+<p>比如下面这条 <code>where a=1 and c=0</code>语句，我们可以从执行计划中的<code>Extra=Using index condition</code>使用了索引下推功能。</p>
+<img src="/2025/03/12/MysqlTutorial03/image-20250320144735414.png" class>
+
+<h2 id="6-WHERE句子中的OR"><a href="#6-WHERE句子中的OR" class="headerlink" title="6.WHERE句子中的OR"></a>6.WHERE句子中的OR</h2><p>如果or的两个条件其中有一个不是索引，那就会走全表扫描使得索引失效。</p>
+<p>其实也很好理解，or的意思是只要满足一个条件就行，那肯定是以最麻烦的那个为准咯。</p>
+<img src="/2025/03/12/MysqlTutorial03/image-20250320145054551.png" class>
+
+<p>解决方法？将age设置为索引呗。</p>
+<img src="/2025/03/12/MysqlTutorial03/image-20250320145126680.png" class>
+
+<p>可以看到 type&#x3D;index merge， index merge 的意思就是对id 和 age 分别进行了扫描，然后将这两个结果集进行了合并，这样做的好处就是避免了全表扫描。</p>
+<h1 id="索引选择及其标准"><a href="#索引选择及其标准" class="headerlink" title="索引选择及其标准"></a>索引选择及其标准</h1><p>很显然，涉及到查询路径的问题那就和server层的sql优化器脱不了关系。这里介绍的是：<strong>CBO（Cost-based Optimizer，基于成本的优化器）</strong>。</p>
+<p>在 MySQL中，<strong>一条 SQL 的计算成本计算如下所示：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Cost  = Server Cost + <span class="type">Engine</span> <span class="variable">Cost</span></span><br><span class="line"></span><br><span class="line">      <span class="operator">=</span> CPU Cost + IO Cost</span><br></pre></td></tr></table></figure>
+
+<p>其中，CPU Cost 表示计算的开销，比如索引键值的比较、记录值的比较、结果集的排序……这些操作都在 Server 层完成；</p>
+<p>IO Cost 表示引擎层 IO 的开销，MySQL 8.0 可以通过区分一张表的数据是否在内存中，分别计算读取内存 IO 开销以及读取磁盘 IO 的开销。</p>
+<p>数据库 mysql 下的表 server_cost、engine_cost 则记录了对于各种成本的计算，如：</p>
+<img src="/2025/03/12/MysqlTutorial03/CioPOWCvUQuALARKAASaAs1r1GE632.png" class>
+
+<p>表 server_cost 记录了 Server 层优化器各种操作的成本，这里面包括了所有 CPU Cost，其具体含义如下。</p>
+<ul>
+<li>disk_temptable_create_cost：创建磁盘临时表的成本，默认为20。</li>
+<li>disk_temptable_row_cost：磁盘临时表中每条记录的成本，默认为0.5。</li>
+<li>key_compare_cost：索引键值比较的成本，默认为0.05，成本最小。</li>
+<li>memory_temptable_create_cost：创建内存临时表的成本：默认为1。</li>
+<li>memory_temptable_row_cost：内存临时表中每条记录的成本，默认为0.1。</li>
+<li>row_evaluate_cost：记录间的比较成本，默认为0.1。</li>
+</ul>
+<p>可以看到， <strong>MySQL 优化器认为如果一条 SQL 需要创建基于磁盘的临时表，则这时的成本是最大的，其成本是基于内存临时表的 20 倍</strong>。而索引键值的比较、记录之间的比较，其实开销是非常低的，但如果要比较的记录数非常多，则成本会变得非常大。</p>
+<p>而表 engine_cost 记录了存储引擎层各种操作的成本，这里包含了所有的 IO Cost，具体含义如下。</p>
+<ul>
+<li>io_block_read_cost：从磁盘读取一个页的成本，默认值为1。</li>
+<li>memory_block_read_cost：从内存读取一个页的成本，默认值为0.25。</li>
+</ul>
+<p>也就是说， <strong>MySQL 优化器认为从磁盘读取的开销是内存开销的 4 倍</strong>。</p>
+<p>在知道 MySQL 索引选择是基于 SQL 执行成本之后，接下来，我们就能分析一些索引出错问题到底是怎么回事了。</p>
+<h2 id="1-未能使用创建的索引"><a href="#1-未能使用创建的索引" class="headerlink" title="1.未能使用创建的索引"></a>1.未能使用创建的索引</h2><p>MySQL 优化器永远是根据成本，选择出最优的执行计划。哪怕是同一条 SQL 语句，只要范围不同，优化器的选择也可能不同。</p>
+<p>如下面这两条 SQL：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> orders</span><br><span class="line"></span><br><span class="line"><span class="keyword">WHERE</span> o_orderdate <span class="operator">&gt;</span> <span class="string">&#x27;1994-01-01&#x27;</span> <span class="keyword">and</span> o_orderdate <span class="operator">&lt;</span> <span class="string">&#x27;1994-12-31&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> orders </span><br><span class="line"></span><br><span class="line"><span class="keyword">WHERE</span> o_orderdate <span class="operator">&gt;</span> <span class="string">&#x27;1994-02-01&#x27;</span> <span class="keyword">and</span> o_orderdate <span class="operator">&lt;</span> <span class="string">&#x27;1994-12-31&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>上面这两条 SQL 都是通过索引字段 o_orderdate 进行查询，然而第一条 SQL 语句的执行计划并未使用索引 idx_orderdate，而是使用了如下的执行计划：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">EXPLAIN <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> orders </span><br><span class="line"></span><br><span class="line"><span class="keyword">WHERE</span> o_orderdate <span class="operator">&gt;</span> <span class="string">&#x27;1994-01-01&#x27;</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">AND</span> o_orderdate <span class="operator">&lt;</span> <span class="string">&#x27;1994-12-31&#x27;</span>\G</span><br><span class="line"></span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">1.</span> <span class="type">row</span> <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span></span><br><span class="line"></span><br><span class="line">           id: <span class="number">1</span></span><br><span class="line"></span><br><span class="line">  select_type: SIMPLE</span><br><span class="line"></span><br><span class="line">        <span class="keyword">table</span>: orders</span><br><span class="line"></span><br><span class="line">   partitions: <span class="keyword">NULL</span></span><br><span class="line"></span><br><span class="line">         type: <span class="keyword">ALL</span></span><br><span class="line"></span><br><span class="line">possible_keys: idx_orderdate</span><br><span class="line"></span><br><span class="line">          key: <span class="keyword">NULL</span></span><br><span class="line"></span><br><span class="line">      key_len: <span class="keyword">NULL</span></span><br><span class="line"></span><br><span class="line">          <span class="keyword">ref</span>: <span class="keyword">NULL</span></span><br><span class="line"></span><br><span class="line">         <span class="keyword">rows</span>: <span class="number">5799601</span></span><br><span class="line"></span><br><span class="line">     filtered: <span class="number">32.35</span></span><br><span class="line"></span><br><span class="line">        Extra: <span class="keyword">Using</span> <span class="keyword">where</span></span><br></pre></td></tr></table></figure>
+
+<p>从上述执行计划中可以发现，优化器已经通过 possible_keys 识别出可以使用索引 idx_orderdate，<strong>但最终却使用全表扫描的方式取出结果。</strong> 最为根本的原因在于：优化器认为使用通过主键进行全表扫描的成本比通过二级索引 idx_orderdate 的成本要低，可以通过 FORMAT&#x3D;tree 观察得到：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">EXPLAIN FORMAT<span class="operator">=</span>tree </span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> orders </span><br><span class="line"></span><br><span class="line"><span class="keyword">WHERE</span> o_orderdate <span class="operator">&gt;</span> <span class="string">&#x27;1994-01-01&#x27;</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">AND</span> o_orderdate <span class="operator">&lt;</span> <span class="string">&#x27;1994-12-31&#x27;</span>\G</span><br><span class="line"></span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">1.</span> <span class="type">row</span> <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span></span><br><span class="line"></span><br><span class="line">EXPLAIN: <span class="operator">-</span><span class="operator">&gt;</span> <span class="keyword">Filter</span>: ((orders.O_ORDERDATE <span class="operator">&gt;</span> <span class="type">DATE</span><span class="string">&#x27;1994-01-01&#x27;</span>) <span class="keyword">and</span> (orders.O_ORDERDATE <span class="operator">&lt;</span> <span class="type">DATE</span><span class="string">&#x27;1994-12-31&#x27;</span>))  (cost<span class="operator">=</span><span class="number">592267.11</span> <span class="keyword">rows</span><span class="operator">=</span><span class="number">1876082</span>)</span><br><span class="line"></span><br><span class="line">    <span class="operator">-</span><span class="operator">&gt;</span> <span class="keyword">Table</span> scan <span class="keyword">on</span> orders  (cost<span class="operator">=</span><span class="number">592267.11</span> <span class="keyword">rows</span><span class="operator">=</span><span class="number">5799601</span>)</span><br><span class="line"></span><br><span class="line">EXPLAIN FORMAT<span class="operator">=</span>tree </span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> orders FORCE INDEX(idx_orderdate)</span><br><span class="line"></span><br><span class="line"><span class="keyword">WHERE</span> o_orderdate <span class="operator">&gt;</span> <span class="string">&#x27;1994-01-01&#x27;</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">AND</span> o_orderdate <span class="operator">&lt;</span> <span class="string">&#x27;1994-12-31&#x27;</span>\G</span><br><span class="line"></span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">1.</span> <span class="type">row</span> <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span></span><br><span class="line"></span><br><span class="line">EXPLAIN: <span class="operator">-</span><span class="operator">&gt;</span> Index <span class="keyword">range</span> scan <span class="keyword">on</span> orders <span class="keyword">using</span> idx_orderdate, <span class="keyword">with</span> index <span class="keyword">condition</span>: ((orders.O_ORDERDATE <span class="operator">&gt;</span> <span class="type">DATE</span><span class="string">&#x27;1994-01-01&#x27;</span>) <span class="keyword">and</span> (orders.O_ORDERDATE <span class="operator">&lt;</span> <span class="type">DATE</span><span class="string">&#x27;1994-12-31&#x27;</span>))  (cost<span class="operator">=</span><span class="number">844351.87</span> <span class="keyword">rows</span><span class="operator">=</span><span class="number">1876082</span>)</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，MySQL 认为全表扫描，然后再通过 WHERE 条件过滤的成本为 592267.11，对比强制使用二级索引 idx_orderdate 的成本为 844351.87。</p>
+<p>成本上看，全表扫描低于使用二级索引。故，MySQL 优化器没有使用二级索引 idx_orderdate。</p>
+<p><strong>为什么全表扫描比二级索引查询快呢？</strong> 因为二级索引需要回表，当回表的记录数非常大时，成本就会比直接扫描要慢，因此这取决于回表的记录数。</p>
+<p>所以，第二条 SQL 语句，只是时间范围发生了变化，但是 MySQL 优化器就会自动使用二级索引 idx_orderdate了：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">EXPLAIN <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> orders </span><br><span class="line"></span><br><span class="line"><span class="keyword">WHERE</span> o_orderdate <span class="operator">&gt;</span> <span class="string">&#x27;1994-02-01&#x27;</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">AND</span> o_orderdate <span class="operator">&lt;</span> <span class="string">&#x27;1994-12-31&#x27;</span>\G</span><br><span class="line"></span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">1.</span> <span class="type">row</span> <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span></span><br><span class="line"></span><br><span class="line">           id: <span class="number">1</span></span><br><span class="line"></span><br><span class="line">  select_type: SIMPLE</span><br><span class="line"></span><br><span class="line">        <span class="keyword">table</span>: orders</span><br><span class="line"></span><br><span class="line">   partitions: <span class="keyword">NULL</span></span><br><span class="line"></span><br><span class="line">         type: <span class="keyword">range</span></span><br><span class="line"></span><br><span class="line">possible_keys: idx_orderdate</span><br><span class="line"></span><br><span class="line">          key: idx_orderdate</span><br><span class="line"></span><br><span class="line">      key_len: <span class="number">3</span></span><br><span class="line"></span><br><span class="line">          <span class="keyword">ref</span>: <span class="keyword">NULL</span></span><br><span class="line"></span><br><span class="line">         <span class="keyword">rows</span>: <span class="number">1633884</span></span><br><span class="line"></span><br><span class="line">     filtered: <span class="number">100.00</span></span><br><span class="line"></span><br><span class="line">        Extra: <span class="keyword">Using</span> index <span class="keyword">condition</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-数据倾斜造成优化器误判"><a href="#2-数据倾斜造成优化器误判" class="headerlink" title="2.数据倾斜造成优化器误判"></a>2.数据倾斜造成优化器误判</h2><p>此时可以创立直方图，对mysql优化器进行矫正。</p>
+<p>原文如下：</p>
+<p>……由于字段 o_orderstatus 仅有三个值，分别为 ‘O’、’P’、’F’。但 MySQL 并不知道这三个列的分布情况，认为这三个值是平均分布的，但其实是这三个值存在严重倾斜：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> o_orderstatus,<span class="built_in">count</span>(<span class="number">1</span>) </span><br><span class="line"></span><br><span class="line"><span class="keyword">FROM</span> orders <span class="keyword">GROUP</span> <span class="keyword">BY</span> o_orderstatus;</span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">---------------+----------+</span></span><br><span class="line"></span><br><span class="line"><span class="operator">|</span> o_orderstatus <span class="operator">|</span> <span class="built_in">count</span>(<span class="number">1</span>) <span class="operator">|</span></span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">---------------+----------+</span></span><br><span class="line"></span><br><span class="line"><span class="operator">|</span> F             <span class="operator">|</span>  <span class="number">2923619</span> <span class="operator">|</span></span><br><span class="line"></span><br><span class="line"><span class="operator">|</span> O             <span class="operator">|</span>  <span class="number">2923597</span> <span class="operator">|</span></span><br><span class="line"></span><br><span class="line"><span class="operator">|</span> P             <span class="operator">|</span>   <span class="number">152784</span> <span class="operator">|</span></span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">---------------+----------+</span></span><br></pre></td></tr></table></figure>
+
+<p>因此，优化器会认为订单状态为 P 的订单占用 1⁄3 的数据，使用全表扫描，避免二级索引回表的效率会更高。</p>
+<p>然而，由于数据倾斜，订单状态为 P 的数据非常少，根据索引 idx_orderstatus 查询的效率会更高。这种情况下，我们可以利用 MySQL 8.0 的直方图功能，创建一个直方图，让优化器知道数据的分布，从而更好地选择执行计划。直方图的创建命令如下所示：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ANALYZE <span class="keyword">TABLE</span> orders </span><br><span class="line"></span><br><span class="line"><span class="keyword">UPDATE</span> HISTOGRAM <span class="keyword">ON</span> o_orderstatus;</span><br></pre></td></tr></table></figure>
+
+<p>在创建完直方图后，MySQL会收集到字段 o_orderstatus 的数值分布，可以通过下面的命令查询得到：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> </span><br><span class="line"></span><br><span class="line">v <span class="keyword">value</span>, </span><br><span class="line"></span><br><span class="line">CONCAT(round((c <span class="operator">-</span> <span class="built_in">LAG</span>(c, <span class="number">1</span>, <span class="number">0</span>) <span class="keyword">over</span>()) <span class="operator">*</span> <span class="number">100</span>,<span class="number">1</span>), <span class="string">&#x27;%&#x27;</span>) ratio</span><br><span class="line"></span><br><span class="line"><span class="keyword">FROM</span> information_schema.column_statistics, </span><br><span class="line"></span><br><span class="line"><span class="built_in">JSON_TABLE</span>(histogram<span class="operator">-</span><span class="operator">&gt;</span><span class="string">&#x27;$.buckets&#x27;</span>,<span class="string">&#x27;$[*]&#x27;</span> COLUMNS(v <span class="type">VARCHAR</span>(<span class="number">60</span>) PATH <span class="string">&#x27;$[0]&#x27;</span>, c <span class="keyword">double</span> PATH <span class="string">&#x27;$[1]&#x27;</span>)) hist</span><br><span class="line"></span><br><span class="line"><span class="keyword">WHERE</span> column_name <span class="operator">=</span> <span class="string">&#x27;o_orderstatus&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">-------+-------+</span></span><br><span class="line"></span><br><span class="line"><span class="operator">|</span> <span class="keyword">value</span> <span class="operator">|</span> ratio <span class="operator">|</span></span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">-------+-------+</span></span><br><span class="line"></span><br><span class="line"><span class="operator">|</span> F     <span class="operator">|</span> <span class="number">49</span><span class="operator">%</span>   <span class="operator">|</span></span><br><span class="line"></span><br><span class="line"><span class="operator">|</span> O     <span class="operator">|</span> <span class="number">48.5</span><span class="operator">%</span> <span class="operator">|</span></span><br><span class="line"></span><br><span class="line"><span class="operator">|</span> P     <span class="operator">|</span> <span class="number">2.5</span><span class="operator">%</span>  <span class="operator">|</span></span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">-------+-------+</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到，现在 MySQL 知道状态为 P 的订单只占 2.5%，因此再去查询状态为 P 的订单时，就会使用到索引 idx_orderstatus了，如：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">EXPLAIN SELECT * FROM orders </span><br><span class="line"></span><br><span class="line">WHERE o<span class="emphasis">_orderstatus = &#x27;P&#x27;\G</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis"><span class="strong">****</span><span class="strong">****</span><span class="strong">****</span><span class="strong">****</span><span class="strong">****</span><span class="strong">****</span><span class="strong">*** 1. row **</span><span class="strong">****</span><span class="strong">****</span><span class="strong">****</span><span class="strong">****</span><span class="strong">****</span><span class="strong">****</span>*</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">           id: 1</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">  select_</span>type: SIMPLE</span><br><span class="line"></span><br><span class="line"><span class="code">        table: orders</span></span><br><span class="line"><span class="code"></span></span><br><span class="line">   partitions: NULL</span><br><span class="line"></span><br><span class="line"><span class="code">         type: ref</span></span><br><span class="line"><span class="code"></span></span><br><span class="line">possible<span class="emphasis">_keys: idx_</span>orderstatus</span><br><span class="line"></span><br><span class="line"><span class="code">          key: idx_orderstatus</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">      key_len: 4</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          ref: const</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">         rows: 306212</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     filtered: 100.00</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">        Extra: Using index condition</span></span><br></pre></td></tr></table></figure>
+
+<p>感觉在实际工作中，应用explain和format&#x3D;tree等命令进行查询命令的优化是非常重要的必修课！</p>
+<h1 id="索引应用"><a href="#索引应用" class="headerlink" title="索引应用"></a>索引应用</h1><p>引入索引机制后，能够给数据库带来的优势很明显：</p>
+<ul>
+<li>①整个数据库中，数据表的查询速度直线提升，<strong>数据量越大时效果越明显</strong>。</li>
+<li>②通过创建<strong>唯一索引</strong>，可以确保数据表中的数据唯一性，无需额外建立唯一约束。</li>
+<li>③在使用<strong>分组和排序</strong>时，同样可以显著减少<code>SQL</code>查询的分组和排序的时间。</li>
+<li>④<strong>连表查询</strong>时，基于主外键字段上建立索引，可以带来十分明显的性能提升。</li>
+<li>⑤索引默认是<code>B+Tree</code>有序结构，基于索引字段做<strong>范围查询</strong>时，效率会明显提高。</li>
+<li>⑥从<code>MySQL</code>整体架构而言，减少了查询<code>SQL</code>的执行时间，提高了数据库整体吞吐量。</li>
+</ul>
+<p>感觉索引好处很大啊，对于这点确实毋庸置疑，but at what cost？</p>
+<p>建立索引的同时也会带来一系列弊端，如：</p>
+<ul>
+<li>①建立索引会生成本地磁盘文件，需要额外的空间存储索引数据，磁盘占用率会变高。</li>
+<li>②写入数据时，需要额外维护索引结构，增、删、改数据时，都需要额外操作索引。</li>
+<li>③写入数据时维护索引需要额外的时间开销，执行写<code>SQL</code>时效率会降低，性能会下降。</li>
+</ul>
+<p>其实就是说，<strong>数据库很小&#x2F;频繁插入&#x2F;删除&#x2F;更新</strong>的数据库都是不太适合索引的。当然，但对数据库整体来说，索引带来的优势会大于劣势。不过也正由于索引存在弊端，它不是越多越好，合理建立索引才是最佳选择。</p>
+<p>那么怎么样建立合适的索引呢？其实也没有标准，不过有几条经验之谈：</p>
+<ul>
+<li>①查询<code>SQL</code>中尽量不要使用<code>OR</code>关键字，可以使用多<code>SQL</code>或子查询代替。</li>
+<li>②模糊查询尽量不要以<code>%</code>开头，如果实在要实现这个功能可以建立全文索引。</li>
+<li>③编写<code>SQL</code>时一定要注意字段的数据类型，否则<code>MySQL</code>的隐式转换会导致索引失效。</li>
+<li>④一定不要在编写<code>SQL</code>时让索引字段执行计算工作，尽量将计算工作放在客户端中完成。</li>
+<li>⑤对于索引字段尽量不要使用计算类函数，一定要使用时请记得将函数计算放在<code>=</code>后面。</li>
+<li>⑥多条件的查询<code>SQL</code>一定要使用联合索引中的第一个字段，否则会打破最左匹配原则。</li>
+<li>⑦对于需要对比多个字段的查询业务时，可以拆分为连表查询，使用临时表代替。</li>
+<li>⑧在<code>SQL</code>中不要使用反范围性的查询条件，大部分反范围性、不等性查询都会让索引失效。</li>
+<li>⑨<code>.......</code></li>
+</ul>
+<p>实际上无非就是根据前面给出的索引失效情况，尽量让自己编写的<code>SQL</code>不会导致索引失效即可，写出来的<code>SQL</code>能走索引查询，那就能在很大程度上提升数据检索的效率。</p>
+<hr>
+<p>索引篇，至此结束！</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2025/03/12/MysqlTutorial03/">https://0kr.xin/2025/03/12/MysqlTutorial03/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape003.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/03/12/MysqlTutorial04/" title="MysqlTutorial04"><img class="cover" src="/statics/landscape002.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">MysqlTutorial04</div></div><div class="info-2"><div class="info-item-1">事务事务的概念及性质引入  事务性质（ACID）事务看起来感觉简单，但是要实现事务必须要遵守4个特性，分别如下:  原子性(Atomicity):一个事务中的所有操作，要么全部完成，要么全部不完成，不会结束在中间某个环节，而且事务在执行过程中发生错误，会被回滚到事务开始前的状态，就像这个事务从来没有执行过一样，就好比买一件商品，购买成功时，则给商家付了钱，商品到手;购买失败时，则商品在商家手中，消费者的钱也没花出去。 一致性(Consistency):是指事务操作前和操作后，数据满足完整性约束，数据库保持一致性状态。比如，用户 A和用户 B在银行分别有 800 元和 600 元，总共 1400 元，用户 A给用户 B转账 200 元分为两个步骤，从 A的账户扣除 200 元和对 B的账户增加 200 元。一致性就是要求上述步骤操作后最后的结果是用户 A 还有 600 元，用户 B有 800 元，总共 1400 元，而不会出现用户 A 扣除了 200元，但用户B未增加的情况(该情况，用户A和B均为 600 元，总共 1200...</div></div></div></a><a class="pagination-related" href="/2025/03/12/MysqlTutorial02/" title="MysqlTutorial02"><img class="cover" src="/statics/landscape002.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">MysqlTutorial02</div></div><div class="info-2"><div class="info-item-1">索引1. 索引数据结构什么是索引？为什么索引能加快查询？索引是数据库中一种特殊的数据结构，它像书籍的目录一样，能帮助数据库系统快速定位和访问数据。索引能加快查询的原因在于：  减少数据访问量：通过索引，数据库只需要访问包含目标数据的部分，而不是扫描整个表。 有序存储：索引中的数据是按照特定顺序存储的，使得搜索、排序和分组操作更高效。 快速定位：使用树形结构等高效的数据结构，可以在大量数据中快速定位目标记录。  没有索引时，数据库需要进行全表扫描，时间复杂度为O(n)；而使用索引后，查询时间复杂度可降至O(log n)。 B+ 树和（B 树和红黑树）有什么区别？为什么选择用 B+...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88%E5%8F%8A%E5%85%B6%E5%9C%BA%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">索引失效及其场景</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%AF%B9%E7%B4%A2%E5%BC%95%E4%BD%BF%E7%94%A8%E5%B7%A6%E6%88%96%E8%80%85%E5%B7%A6%E5%8F%B3%E6%A8%A1%E7%B3%8A%E5%8C%B9%E9%85%8D"><span class="toc-number">1.1.</span> <span class="toc-text">1.对索引使用左或者左右模糊匹配</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%AF%B9%E7%B4%A2%E5%BC%95%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.</span> <span class="toc-text">2.对索引使用函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%AF%B9%E7%B4%A2%E5%BC%95%E8%BF%9B%E8%A1%8C%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%AE%A1%E7%AE%97"><span class="toc-number">1.3.</span> <span class="toc-text">3.对索引进行表达式计算</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%AF%B9%E7%B4%A2%E5%BC%95%E9%9A%90%E5%BC%8F%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="toc-number">1.4.</span> <span class="toc-text">4.对索引隐式类型转换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95%E7%9A%84%E9%9D%9E%E6%9C%80%E5%B7%A6%E5%8C%B9%E9%85%8D"><span class="toc-number">1.5.</span> <span class="toc-text">5.联合索引的非最左匹配</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-WHERE%E5%8F%A5%E5%AD%90%E4%B8%AD%E7%9A%84OR"><span class="toc-number">1.6.</span> <span class="toc-text">6.WHERE句子中的OR</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E9%80%89%E6%8B%A9%E5%8F%8A%E5%85%B6%E6%A0%87%E5%87%86"><span class="toc-number">2.</span> <span class="toc-text">索引选择及其标准</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%9C%AA%E8%83%BD%E4%BD%BF%E7%94%A8%E5%88%9B%E5%BB%BA%E7%9A%84%E7%B4%A2%E5%BC%95"><span class="toc-number">2.1.</span> <span class="toc-text">1.未能使用创建的索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C%E9%80%A0%E6%88%90%E4%BC%98%E5%8C%96%E5%99%A8%E8%AF%AF%E5%88%A4"><span class="toc-number">2.2.</span> <span class="toc-text">2.数据倾斜造成优化器误判</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E5%BA%94%E7%94%A8"><span class="toc-number">3.</span> <span class="toc-text">索引应用</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

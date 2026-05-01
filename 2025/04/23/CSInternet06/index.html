@@ -1,0 +1,556 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>CSInternet06 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="通过Wireshark抓包分析TCP会话前言本文基于Wireshark抓包工具捕获的真实TCP会话数据，详细展示了客户端（100.80.77.84）与服务器（39.156.68.81，百度服务器）之间的TCP连接全过程。通过系统分析这些按时间顺序排列的数据包，我们可以清晰地了解TCP的三次握手、TLS握手、数据传输和连接维护的完整过程。 当然，你可以理解为这是计网的一次动手实践，我们的目标只是高屋">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSInternet06">
+<meta property="og:url" content="https://0kr.xin/2025/04/23/CSInternet06/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="通过Wireshark抓包分析TCP会话前言本文基于Wireshark抓包工具捕获的真实TCP会话数据，详细展示了客户端（100.80.77.84）与服务器（39.156.68.81，百度服务器）之间的TCP连接全过程。通过系统分析这些按时间顺序排列的数据包，我们可以清晰地了解TCP的三次握手、TLS握手、数据传输和连接维护的完整过程。 当然，你可以理解为这是计网的一次动手实践，我们的目标只是高屋">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape003.jpg">
+<meta property="article:published_time" content="2025-04-22T16:53:43.000Z">
+<meta property="article:modified_time" content="2025-04-22T23:45:16.706Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape003.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2025/04/23/CSInternet06/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CSInternet06',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-04-23 07:45:16'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape003.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">CSInternet06</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">CSInternet06</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-04-22T16:53:43.000Z" title="发表于 2025-04-23 00:53:43">2025-04-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-04-22T23:45:16.706Z" title="更新于 2025-04-23 07:45:16">2025-04-23</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>13分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="通过Wireshark抓包分析TCP会话"><a href="#通过Wireshark抓包分析TCP会话" class="headerlink" title="通过Wireshark抓包分析TCP会话"></a>通过Wireshark抓包分析TCP会话</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本文基于Wireshark抓包工具捕获的真实TCP会话数据，详细展示了客户端（100.80.77.84）与服务器（39.156.68.81，百度服务器）之间的TCP连接全过程。通过系统分析这些按时间顺序排列的数据包，我们可以清晰地了解TCP的三次握手、TLS握手、数据传输和连接维护的完整过程。</p>
+<p>当然，你可以理解为这是计网的一次动手实践，我们的目标只是高屋建瓴地认识TCP会话的过程而已。细节部分会在之后的博客更新。</p>
+<h2 id="〇、简易抓包示例"><a href="#〇、简易抓包示例" class="headerlink" title="〇、简易抓包示例"></a>〇、简易抓包示例</h2><p>在windows系统中使用Wireshark抓包无疑是最舒适的；如果是Linux系统的话还需要使用tcpdump，比较麻烦，感兴趣可以看这篇小林的文档：<a target="_blank" rel="noopener" href="https://xiaolincoding.com/network/3_tcp/tcp_tcpdump.html#_4-3-tcp-%E5%AE%9E%E6%88%98%E6%8A%93%E5%8C%85%E5%88%86%E6%9E%90">https://xiaolincoding.com/network/3_tcp/tcp_tcpdump.html#_4-3-tcp-%E5%AE%9E%E6%88%98%E6%8A%93%E5%8C%85%E5%88%86%E6%9E%90</a></p>
+<p>首先我们要做的是要知道客户端和服务器的ip地址：</p>
+<ul>
+<li>打开cmd，使用ipconfig即可查看自己的ip：</li>
+</ul>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">C:\<span class="title">Users</span>\<span class="title">zhuho</span>&gt;<span class="title">ipconfig</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">Windows</span> <span class="title">IP</span> 配置</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">......</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">无线局域网适配器 <span class="title">WLAN</span>:</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">   连接特定的 <span class="title">DNS</span> 后缀 . . . . . . . : <span class="title">tongji.edu.cn</span></span></span><br><span class="line"><span class="function">   <span class="title">IPv6</span> 地址 . . . . . . . . . . . . : 2001:<span class="title">da8</span>:8002:6<span class="title">bd1:c247</span>:<span class="title">e162:bc85</span>:<span class="title">f373</span></span></span><br><span class="line"><span class="function">   临时 <span class="title">IPv6</span> 地址. . . . . . . . . . : 2001:<span class="title">da8</span>:8002:6<span class="title">bd1:f81e</span>:<span class="title">f68b:f2ce</span>:43<span class="title">e0</span></span></span><br><span class="line"><span class="function">   本地链接 <span class="title">IPv6</span> 地址. . . . . . . . : <span class="title">fe80</span>::38<span class="title">a7:fc59</span>:80<span class="title">ba</span>:96<span class="title">ab</span>%11</span></span><br><span class="line"><span class="function">   <span class="title">IPv4</span> 地址 . . . . . . . . . . . . : 100.80.77.84</span></span><br><span class="line"><span class="function">   子网掩码  . . . . . . . . . . . . : 255.254.0.0</span></span><br><span class="line"><span class="function">   默认网关. . . . . . . . . . . . . : <span class="title">fe80</span>::9<span class="title">e54:c2ff</span>:<span class="title">fe0d</span>:5002%11</span></span><br><span class="line"><span class="function">                                       100.81.255.254</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用ping命令即可查看</li>
+</ul>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">C:\<span class="title">Users</span>\<span class="title">zhuho</span>&gt;<span class="title">ping</span> <span class="title">baidu.com</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">正在 <span class="title">Ping</span> <span class="title">baidu.com</span> [39.156.66.10] 具有 32 字节的数据:</span></span><br><span class="line"><span class="function">来自 39.156.66.10 的回复: 字节=32 时间=30<span class="title">ms</span> <span class="title">TTL</span>=47</span></span><br><span class="line"><span class="function">来自 39.156.66.10 的回复: 字节=32 时间=30<span class="title">ms</span> <span class="title">TTL</span>=47</span></span><br><span class="line"><span class="function">来自 39.156.66.10 的回复: 字节=32 时间=30<span class="title">ms</span> <span class="title">TTL</span>=47</span></span><br><span class="line"><span class="function">来自 39.156.66.10 的回复: 字节=32 时间=30<span class="title">ms</span> <span class="title">TTL</span>=47</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">39.156.66.10 的 <span class="title">Ping</span> 统计信息:</span></span><br><span class="line"><span class="function">    数据包: 已发送 = 4，已接收 = 4，丢失 = 0 (0% 丢失)，</span></span><br><span class="line"><span class="function">往返行程的估计时间(以毫秒为单位):</span></span><br><span class="line"><span class="function">    最短 = 30<span class="title">ms</span>，最长 = 30<span class="title">ms</span>，平均 = 30<span class="title">ms</span></span></span><br></pre></td></tr></table></figure>
+
+<p>请注意：不要在输入网址时开头添加https:&#x2F;&#x2F;这样的协议名称！这是因为Ping使用ICMP协议工作在网络层，其目标是测试特定IP地址的可达性；具体方式是，在向指定的目标主机发送ICMP Echo的请求数据包并等待响应。ICMP协议工作在网络层(与IP协议同层——实际上ICMP是IP协议的一个组成部分，它依赖于IP协议来传送消息。)，而HTTP协议在应用层。</p>
+<p>Ping不关心目标主机上运行什么服务(HTTP、FTP、SMTP等)，它只测试主机是否可达和响应ICMP请求，这是比应用层服务更基础的网络功能。所以，正确的用法应该是直接ping域名本身：<code>ping baidu.com</code>，而不是 <code>ping https://baidu.com</code>.</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">C:\<span class="title">Users</span>\<span class="title">zhuho</span>&gt;<span class="title">ping</span> <span class="title">https</span>://<span class="title">baidu.com</span></span></span><br><span class="line"><span class="function"><span class="title">Ping</span> 请求找不到主机 <span class="title">https</span>://<span class="title">baidu.com</span>。请检查该名称，然后重试。</span></span><br></pre></td></tr></table></figure>
+
+<p>安装好wireshark之后，选择用管理员身份打开，点击WLAN就能查看数据包交流的痕迹啦：</p>
+<img src="/2025/04/23/CSInternet06/image-20250423065801437.png" class>
+
+<p>Wireshark提供了编号、时间、源地址、目标地址、协议、包长度、网络包信息在内的数据包传输内容。在选择其中一个之后，下方还会显示协议栈各层的详细信息，用这里的例子，从上到下就是：数据帧、数据链路层、IP层、UDP层和DNS应用层。下方右侧就是该数据包完整的报文。</p>
+<p>接下来，我们需要使用<strong>过滤器</strong>来对特定的IP之间的交互进行选择。选择和我们之前得到的有相同ip地址的数据包，在IP地址上选择作为过滤器应用：</p>
+<img src="/2025/04/23/CSInternet06/image-20250423071045882.png" class>
+
+<p>第二个IP地址找到后也如此操作，选择“且选中”：</p>
+<img src="/2025/04/23/CSInternet06/image-20250423071423749.png" class>
+
+<p>这里上方会显示类似如图所示的信息：</p>
+<img src="/2025/04/23/CSInternet06/image-20250423071555073.png" class>
+
+<p>为了查看交互情况而不是单向传输情况，我们需要将.src与.dst修改为.addr。修改完成后，按下回车即可。</p>
+<img src="/2025/04/23/CSInternet06/image-20250423071850376.png" class>
+
+<p>接下来，我们根据抓包结果来逐步分析。</p>
+<h2 id="一、TCP三次握手过程"><a href="#一、TCP三次握手过程" class="headerlink" title="一、TCP三次握手过程"></a>一、TCP三次握手过程</h2><p>TCP连接的建立需要经过三次握手（Three-way Handshake）过程。</p>
+<img src="/2025/04/23/CSInternet06/image-20250423072021766.png" class>
+
+<p>从捕获的数据包中，我们可以清晰地看到这一过程：</p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>时间</th>
+<th>源IP</th>
+<th>目标IP</th>
+<th>协议</th>
+<th>标志</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>3432</td>
+<td>70.931320</td>
+<td>100.80.77.84</td>
+<td>39.156.68.81</td>
+<td>TCP</td>
+<td>[SYN]</td>
+<td>客户端发起连接请求</td>
+</tr>
+<tr>
+<td>3489</td>
+<td>70.961079</td>
+<td>39.156.68.81</td>
+<td>100.80.77.84</td>
+<td>TCP</td>
+<td>[SYN, ACK]</td>
+<td>服务器确认，并请求连接</td>
+</tr>
+<tr>
+<td>3490</td>
+<td>70.961200</td>
+<td>100.80.77.84</td>
+<td>39.156.68.81</td>
+<td>TCP</td>
+<td>[ACK]</td>
+<td>客户端确认连接</td>
+</tr>
+</tbody></table>
+<ol>
+<li><strong>第一次握手</strong>（包3432）：<ul>
+<li>客户端向服务器发送SYN包</li>
+<li>Seq&#x3D;0，Win&#x3D;65535，MSS&#x3D;1460，WS&#x3D;256</li>
+<li>SYN标志位置为1</li>
+<li>客户端进入SYN-SENT状态</li>
+</ul>
+</li>
+<li><strong>第二次握手</strong>（包3489）：<ul>
+<li>服务器收到SYN包后，回复SYN+ACK包</li>
+<li>Seq&#x3D;0，Ack&#x3D;1，Win&#x3D;8192，MSS&#x3D;1452，WS&#x3D;32</li>
+<li>SYN和ACK标志位都置为1</li>
+<li>服务器进入SYN-RECEIVED状态</li>
+</ul>
+</li>
+<li><strong>第三次握手</strong>（包3490）：<ul>
+<li>客户端收到SYN+ACK包后，回复ACK包</li>
+<li>Seq&#x3D;1，Ack&#x3D;1，Win&#x3D;65280，Len&#x3D;0</li>
+<li>ACK标志位置为1</li>
+<li>双方都进入ESTABLISHED状态，连接建立成功</li>
+</ul>
+</li>
+</ol>
+<h2 id="二、数据传输过程"><a href="#二、数据传输过程" class="headerlink" title="二、数据传输过程"></a>二、数据传输过程</h2><p>连接建立后，客户端与服务器之间开始数据传输。从捕获的数据包中，我们可以看到多种数据传输的典型特征：</p>
+<h3 id="1-HTTP请求-响应"><a href="#1-HTTP请求-响应" class="headerlink" title="1. HTTP请求&#x2F;响应"></a>1. HTTP请求&#x2F;响应</h3><p>紧接着三次握手完成后，客户端与服务器开始了HTTPS通信（通过TLSv1.2协议）：</p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>时间</th>
+<th>源IP</th>
+<th>目标IP</th>
+<th>协议</th>
+<th>长度</th>
+<th>信息</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>3491</td>
+<td>70.961545</td>
+<td>100.80.77.84</td>
+<td>39.156.68.81</td>
+<td>TCP</td>
+<td>1506</td>
+<td>[ACK] Seq&#x3D;1 Ack&#x3D;1 Win&#x3D;65280 Len&#x3D;1452 [TCP PDU reassembled in 3492]</td>
+</tr>
+<tr>
+<td>3492</td>
+<td>70.961545</td>
+<td>100.80.77.84</td>
+<td>39.156.68.81</td>
+<td>TLSv1.2</td>
+<td>432</td>
+<td>Client Hello (SNI&#x3D;connector.baidu.com)</td>
+</tr>
+<tr>
+<td>3513</td>
+<td>70.992140</td>
+<td>39.156.68.81</td>
+<td>100.80.77.84</td>
+<td>TCP</td>
+<td>56</td>
+<td>[ACK] Seq&#x3D;1 Ack&#x3D;1453 Win&#x3D;8192 Len&#x3D;0</td>
+</tr>
+<tr>
+<td>3514</td>
+<td>70.992574</td>
+<td>39.156.68.81</td>
+<td>100.80.77.84</td>
+<td>TCP</td>
+<td>56</td>
+<td>[ACK] Seq&#x3D;1 Ack&#x3D;1831 Win&#x3D;8476 Len&#x3D;0</td>
+</tr>
+<tr>
+<td>3515</td>
+<td>70.993034</td>
+<td>39.156.68.81</td>
+<td>100.80.77.84</td>
+<td>TLSv1.2</td>
+<td>212</td>
+<td>Server Hello, Change Cipher Spec, Encrypted Handshake Message</td>
+</tr>
+<tr>
+<td>3516</td>
+<td>70.993261</td>
+<td>100.80.77.84</td>
+<td>39.156.68.81</td>
+<td>TLSv1.2</td>
+<td>105</td>
+<td>Change Cipher Spec, Encrypted Handshake Message</td>
+</tr>
+</tbody></table>
+<p>这里可以清晰看到TLS握手的完整过程：</p>
+<ol>
+<li>客户端发送Client Hello（指定SNI&#x3D;connector.baidu.com）</li>
+<li>服务器回应ACK确认收到</li>
+<li>服务器发送Server Hello和加密参数</li>
+<li>客户端回应Change Cipher Spec，完成密钥交换</li>
+</ol>
+<p>此阶段完成后，双方将使用协商好的加密参数进行后续安全通信。</p>
+<img src="/2025/04/23/CSInternet06/tls%E6%8F%A1%E6%89%8B.png" class>
+
+<h3 id="2-数据包传输特征"><a href="#2-数据包传输特征" class="headerlink" title="2. 数据包传输特征"></a>2. 数据包传输特征</h3><p>在数据传输阶段，我们可以观察到TCP协议的几个关键特性：</p>
+<ul>
+<li><strong>数据分段</strong>：大量的TCP报文显示了TCP如何将应用数据分段传输</li>
+<li><strong>确认机制</strong>：每个数据包都有相应的ACK确认</li>
+<li><strong>窗口大小调整</strong>：可以看到窗口大小(Win&#x3D;)的变化，体现了TCP的流量控制</li>
+<li><strong>序列号与确认号</strong>：体现了TCP的可靠传输机制</li>
+</ul>
+<p>从抓包中可以清晰看到数据传输的过程，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">3517 70.993448    100.80.77.84    39.156.68.81    TCP    1506 58685 → 443 [ACK] Seq=1882 Ack=159 Win=65280 Len=1452 [TCP PDU reassembled in 3518]</span><br><span class="line">3518 70.993448    100.80.77.84    39.156.68.81    TLSv1.2    348 Application Data</span><br><span class="line"></span><br><span class="line">// 服务器回应确认</span><br><span class="line">3563 71.024057    39.156.68.81    100.80.77.84    TCP    56 443 → 58685 [ACK] Seq=159 Ack=1882 Win=8476 Len=0</span><br><span class="line">3564 71.024057    39.156.68.81    100.80.77.84    TCP    56 443 → 58685 [ACK] Seq=159 Ack=3334 Win=8768 Len=0</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/04/23/CSInternet06/d2b20d1cc03936332adb2a68512eb167-20230309230757148.png" class>
+
+<p>更有代表性的是从包3724到3735的连续传输，清晰展示了TCP的分段传输和PDU重组机制：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">3724 71.545624    100.80.77.84    39.156.68.81    TCP    1506 58685 → 443 [ACK] Seq=3628 Ack=516 Win=64768 Len=1452 [TCP PDU reassembled in 3735]</span><br><span class="line">3725 71.545624    100.80.77.84    39.156.68.81    TCP    1506 58685 → 443 [ACK] Seq=5080 Ack=516 Win=64768 Len=1452 [TCP PDU reassembled in 3735]</span><br><span class="line">3726 71.545624    100.80.77.84    39.156.68.81    TCP    1506 58685 → 443 [ACK] Seq=6532 Ack=516 Win=64768 Len=1452 [TCP PDU reassembled in 3735]</span><br><span class="line">...</span><br><span class="line">3734 71.545624    100.80.77.84    39.156.68.81    TCP    1506 58685 → 443 [ACK] Seq=18148 Ack=516 Win=64768 Len=1452 [TCP PDU reassembled in 3735]</span><br><span class="line">3735 71.545624    100.80.77.84    39.156.68.81    TLSv1.2    495 Application Data</span><br></pre></td></tr></table></figure>
+
+<p>这些包展示了一个大型PDU（协议数据单元）被分为多个TCP段传输，并最终在包3735中重组完成为应用层数据。序列号的连续增长（3628→5080→6532→…→18148）体现了数据的有序传输。</p>
+<h3 id="3-服务器响应与状态维护"><a href="#3-服务器响应与状态维护" class="headerlink" title="3. 服务器响应与状态维护"></a>3. 服务器响应与状态维护</h3><p>从数据包中可以观察到服务器如何处理和<strong>维护TCP连接状态</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 服务器对客户端数据的确认</span><br><span class="line">3743 71.576388    39.156.68.81    100.80.77.84    TCP    56 443 → 58685 [ACK] Seq=516 Ack=6532 Win=96384 Len=0</span><br><span class="line">3744 71.576940    39.156.68.81    100.80.77.84    TCP    56 443 → 58685 [ACK] Seq=516 Ack=9436 Win=102144 Len=0</span><br><span class="line">3745 71.576940    39.156.68.81    100.80.77.84    TCP    56 443 → 58685 [ACK] Seq=516 Ack=13792 Win=110976 Len=0</span><br></pre></td></tr></table></figure>
+
+<p>这部分数据包显示了服务器如何对客户端发送的多个数据段进行确认，并且逐步增加接收窗口大小(Win值从96384增加到110976)，表明服务器有足够的缓冲区接收更多数据。</p>
+<p>某些包中还可以看到TCP的选择性确认(<strong>SACK</strong>)功能：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">3746 71.576940    39.156.68.81    100.80.77.84    TCP    66 443 → 58685 [ACK] Seq=516 Ack=16696 Win=119680 Len=0 SLE=19680 SRE=20041</span><br><span class="line">3747 71.576940    39.156.68.81    100.80.77.84    TCP    66 443 → 58685 [ACK] Seq=516 Ack=9436 Win=108032 Len=0 SLE=10888 SRE=13792</span><br></pre></td></tr></table></figure>
+
+<p>这里的SLE(Start of Left Edge)和SRE(Start of Right Edge)表示选择性确认的范围，允许接收方只确认已正确接收的数据段，提高重传效率。</p>
+<img src="/2025/04/23/CSInternet06/13.jpg" class>
+
+<p>此外，在完整的抓包中还观察到TCP的保活(<strong>Keep-Alive</strong>)机制，用于在空闲时保持连接活跃状态。</p>
+<h2 id="三、TCP四次挥手过程"><a href="#三、TCP四次挥手过程" class="headerlink" title="三、TCP四次挥手过程"></a>三、TCP四次挥手过程</h2><p>这里在百度抓包的时候犯轴了，关闭百度的时候传的全是RTT异常终止的包，没一次成功挥手的。后来用静态网页做测试的时候发现，其实只要把整个浏览器进程结束掉就没问题了。这里用我的博客<a target="_blank" rel="noopener" href="https://0krblog.yqbirdmp.com/%E5%81%9A%E6%B5%8B%E8%AF%95%EF%BC%9A">https://0krblog.yqbirdmp.com/做测试：</a></p>
+<img src="/2025/04/23/CSInternet06/image-20250423073841476.png" class>
+
+<p>在此我们可以清晰地看到完整的TCP四次挥手（Four-way Handshake）过程：</p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>时间</th>
+<th>源IP</th>
+<th>目标IP</th>
+<th>协议</th>
+<th>标志</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>5785</td>
+<td>237.080675</td>
+<td>76.76.21.123</td>
+<td>100.80.77.84</td>
+<td>TCP</td>
+<td>[ACK]</td>
+<td>连接活跃状态</td>
+</tr>
+<tr>
+<td>6020</td>
+<td>252.294784</td>
+<td>100.80.77.84</td>
+<td>76.76.21.123</td>
+<td>TCP</td>
+<td>[FIN, ACK]</td>
+<td>客户端发起连接终止</td>
+</tr>
+<tr>
+<td>6041</td>
+<td>252.362367</td>
+<td>76.76.21.123</td>
+<td>100.80.77.84</td>
+<td>TCP</td>
+<td>[FIN, ACK]</td>
+<td>服务器确认并发起自身连接终止</td>
+</tr>
+<tr>
+<td>6048</td>
+<td>252.362657</td>
+<td>100.80.77.84</td>
+<td>76.76.21.123</td>
+<td>TCP</td>
+<td>[ACK]</td>
+<td>客户端确认服务器的终止请求</td>
+</tr>
+</tbody></table>
+<ol>
+<li><strong>第一次挥手</strong>（包6020）：<ul>
+<li>客户端发送FIN+ACK包，表示不再发送数据</li>
+<li>Seq&#x3D;5143，Ack&#x3D;5922，FIN和ACK标志位置为1</li>
+<li>客户端进入FIN-WAIT-1状态</li>
+</ul>
+</li>
+<li><strong>第二次挥手</strong>（包6041）：<ul>
+<li>服务器回复FIN+ACK包，既确认了客户端的FIN，又表示自己也准备关闭</li>
+<li>Seq&#x3D;5922，Ack&#x3D;5144，FIN和ACK标志位置为1</li>
+<li>服务器进入LAST-ACK状态，客户端收到后进入TIME-WAIT状态</li>
+</ul>
+</li>
+<li><strong>第三次挥手</strong>：<ul>
+<li>实际上在这个捕获中，服务器合并了传统的第二次和第三次挥手（一个ACK和一个FIN）为一个FIN+ACK包</li>
+<li>这是TCP协议优化的常见做法，称为”合并FIN与ACK”</li>
+</ul>
+</li>
+<li><strong>第四次挥手</strong>（包6048）：<ul>
+<li>客户端收到服务器的FIN+ACK后，回复最后一个ACK</li>
+<li>Seq&#x3D;5144，Ack&#x3D;5923，只有ACK标志位置为1</li>
+<li>客户端进入TIME-WAIT状态，等待2MSL（最大报文生存时间）后关闭</li>
+<li>服务器收到ACK后立即关闭连接</li>
+</ul>
+</li>
+</ol>
+<p>这个抓包完美展示了实际网络中的TCP四次挥手过程，特别是捕捉到了优化后的”三次挥手”形式（因为服务器合并了ACK和FIN）。</p>
+<h3 id="标准四次挥手过程："><a href="#标准四次挥手过程：" class="headerlink" title="标准四次挥手过程："></a>标准四次挥手过程：</h3><ol>
+<li><p>第一次挥手：</p>
+<ul>
+<li>主动关闭方发送FIN包</li>
+<li>FIN标志位置为1</li>
+<li>主动方进入FIN-WAIT-1状态</li>
+</ul>
+</li>
+<li><p>第二次挥手：</p>
+<ul>
+<li>被动关闭方收到FIN包后，回复ACK包</li>
+<li>ACK标志位置为1</li>
+<li>被动方进入CLOSE-WAIT状态，主动方进入FIN-WAIT-2状态</li>
+</ul>
+</li>
+<li><p>第三次挥手：</p>
+<ul>
+<li>被动关闭方发送FIN包</li>
+<li>FIN标志位置为1</li>
+<li>被动方进入LAST-ACK状态</li>
+</ul>
+</li>
+<li><p>第四次挥手：</p>
+<ul>
+<li>主动关闭方收到FIN后，回复ACK包</li>
+<li>ACK标志位置为1</li>
+<li>主动方进入TIME-WAIT状态，等待2MSL后关闭</li>
+<li>被动方收到ACK后立即关闭连接</li>
+</ul>
+</li>
+</ol>
+<img src="/2025/04/23/CSInternet06/25.jpg" class>
+
+<h2 id="四、TCP连接的重要特性分析"><a href="#四、TCP连接的重要特性分析" class="headerlink" title="四、TCP连接的重要特性分析"></a>四、TCP连接的重要特性分析</h2><p>基于我们的抓包分析，我们可以总结出TCP连接的几个关键特性：</p>
+<ol>
+<li>可靠性保证</li>
+</ol>
+<ul>
+<li><strong>序列号和确认号</strong>：每个包都有明确的Seq和Ack值，如包3724有Seq&#x3D;3628，Ack&#x3D;516</li>
+<li><strong>累积确认</strong>：服务器使用包3743、3744等进行连续确认</li>
+<li><strong>分段与重组</strong>：大量的[TCP PDU reassembled]标记显示了TCP如何处理大数据</li>
+<li>**选择性确认(SACK)**：如包3746中的SLE&#x3D;19680、SRE&#x3D;20041表示对特定范围数据的确认</li>
+</ul>
+<ol start="2">
+<li>流量控制</li>
+</ol>
+<ul>
+<li><strong>窗口大小动态调整</strong>：Win值从初始的8192到后来的131328的变化</li>
+<li><strong>接收窗口通告</strong>：服务器通过Win字段告知客户端它能接收多少数据</li>
+<li><strong>零窗口处理</strong>：虽然在抓包中未看到，但TCP会处理接收方缓冲区满的情况</li>
+</ul>
+<ol start="3">
+<li>拥塞控制</li>
+</ol>
+<ul>
+<li><strong>慢启动</strong>：可从初始数据传输量较小逐渐增大的过程推断</li>
+<li><strong>拥塞避免</strong>：虽然直接看不到算法执行，但稳定传输阶段体现了此特性</li>
+<li><strong>MSS协商</strong>：握手时的MSS&#x3D;1460和MSS&#x3D;1452表明双方协商了最大段大小</li>
+</ul>
+<ol start="4">
+<li>全双工通信</li>
+</ol>
+<ul>
+<li><strong>独立的数据流</strong>：客户端和服务器有各自的序列号空间</li>
+<li><strong>同时传输</strong>：时间戳相近的包显示双方可以同时发送数据</li>
+<li><strong>独立的流量控制</strong>：各自维护接收窗口</li>
+</ul>
+<p>（你别说，ai总结的还是很到位的，所以这里贴上。）</p>
+<p>好了，本篇就讲到这里，明天就正式开始TCP的博客更新！🎉🎉🎉🎉🎉🎉</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2025/04/23/CSInternet06/">https://0kr.xin/2025/04/23/CSInternet06/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape003.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/04/23/CSInternet07/" title="CSInternet07"><img class="cover" src="/statics/landscape003.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">CSInternet07</div></div><div class="info-2"><div class="info-item-1">传输层概述之前课程所介绍的计算机网络体系结构中的物理层、数据链路层以及网络层它们共同解决了将主机通过异构网络互联起来所面临的问题，实现了主机到主机的通信；但实际上在计算机网络中进行通信的真正实体是位于通信两端主机中的进程。 如何为运行在不同主机上的应用进程提供直接的通信服务是运输层的任务，运输层协议又称为端到端协议。 运输层向高层用户屏蔽了下面网络核心的细节(如网络拓扑、所采用的路由选择协议等)，它使应用进程看见的就好像是在两个运输层实体之间有一条端到端的逻辑通信信道。 根据应用需求的不同，因特网的运输层为应用层提供了两种不同的运输协议，即面向连接的TCP和无连接的UDP，这两种协议就是本章要讨论的主要内容。 通信、端口、IP复用&#x2F;分用也许你知道IP首部中有一个协议字段，用来标识网络层(IP)的上一层所采用的是哪一种传输层协议。根据这个字段的协议号，就可以识别IP传输的数据部分究竟是 TCP的内容，还是UDP的内容。同样，传输层的 TCP和...</div></div></div></a><a class="pagination-related" href="/2025/04/08/FeatureEngineering05/" title="FeatureEngineering05"><img class="cover" src="/statics/landscape002.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">FeatureEngineering05</div></div><div class="info-2"><div class="info-item-1">  引言欢迎来到特征工程项目，这个项目是为 House Prices - Advanced Regression Techniques 竞赛准备的！本次竞赛使用的数据与在 [特征工程](Feature Engineering) 课程练习中使用的数据几乎相同。我们将把您之前完成的工作整合成一个完整的项目，您可以在此基础上加入自己的想法。 第一步 - 准备工作导入和配置我们首先导入在练习中使用的包，并设置一些笔记本默认值： 123456789101112131415161718192021222324252627282930313233import osimport warningsfrom pathlib import Pathimport matplotlib.pyplot as pltimport numpy as npimport pandas as pdimport seaborn as snsfrom IPython.display import displayfrom pandas.api.types import CategoricalDtypefrom...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%80%9A%E8%BF%87Wireshark%E6%8A%93%E5%8C%85%E5%88%86%E6%9E%90TCP%E4%BC%9A%E8%AF%9D"><span class="toc-number">1.</span> <span class="toc-text">通过Wireshark抓包分析TCP会话</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%87%E3%80%81%E7%AE%80%E6%98%93%E6%8A%93%E5%8C%85%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.2.</span> <span class="toc-text">〇、简易抓包示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B"><span class="toc-number">1.3.</span> <span class="toc-text">一、TCP三次握手过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93%E8%BF%87%E7%A8%8B"><span class="toc-number">1.4.</span> <span class="toc-text">二、数据传输过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-HTTP%E8%AF%B7%E6%B1%82-%E5%93%8D%E5%BA%94"><span class="toc-number">1.4.1.</span> <span class="toc-text">1. HTTP请求&#x2F;响应</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%95%B0%E6%8D%AE%E5%8C%85%E4%BC%A0%E8%BE%93%E7%89%B9%E5%BE%81"><span class="toc-number">1.4.2.</span> <span class="toc-text">2. 数据包传输特征</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%93%8D%E5%BA%94%E4%B8%8E%E7%8A%B6%E6%80%81%E7%BB%B4%E6%8A%A4"><span class="toc-number">1.4.3.</span> <span class="toc-text">3. 服务器响应与状态维护</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81TCP%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B%E8%BF%87%E7%A8%8B"><span class="toc-number">1.5.</span> <span class="toc-text">三、TCP四次挥手过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%87%E5%87%86%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="toc-number">1.5.1.</span> <span class="toc-text">标准四次挥手过程：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81TCP%E8%BF%9E%E6%8E%A5%E7%9A%84%E9%87%8D%E8%A6%81%E7%89%B9%E6%80%A7%E5%88%86%E6%9E%90"><span class="toc-number">1.6.</span> <span class="toc-text">四、TCP连接的重要特性分析</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,0 +1,447 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>FeatureEngineering03 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="主成分分析（Principal Component Analysis）在前一课中，我们了解了特征工程的第一个基于模型的方法：聚类。在本课中，我们将学习下一个方法：主成分分析（PCA）。就像聚类是基于接近度对数据集进行划分一样，PCA可以被视为对数据变异性的划分。PCA是探索数据中重要关系并创建更具信息量特征的有效工具。   说明：PCA通常应用于标准化数据。对于标准化数据，”变异性”意味着”相关性">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FeatureEngineering03">
+<meta property="og:url" content="https://0kr.xin/2025/03/19/FeatureEngineering03/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="主成分分析（Principal Component Analysis）在前一课中，我们了解了特征工程的第一个基于模型的方法：聚类。在本课中，我们将学习下一个方法：主成分分析（PCA）。就像聚类是基于接近度对数据集进行划分一样，PCA可以被视为对数据变异性的划分。PCA是探索数据中重要关系并创建更具信息量特征的有效工具。   说明：PCA通常应用于标准化数据。对于标准化数据，”变异性”意味着”相关性">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape003.jpg">
+<meta property="article:published_time" content="2025-03-19T12:11:12.000Z">
+<meta property="article:modified_time" content="2025-03-20T11:10:48.318Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape003.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2025/03/19/FeatureEngineering03/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'FeatureEngineering03',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-03-20 19:10:48'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape003.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">FeatureEngineering03</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">FeatureEngineering03</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-03-19T12:11:12.000Z" title="发表于 2025-03-19 20:11:12">2025-03-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-03-20T11:10:48.318Z" title="更新于 2025-03-20 19:10:48">2025-03-20</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="主成分分析（Principal-Component-Analysis）"><a href="#主成分分析（Principal-Component-Analysis）" class="headerlink" title="主成分分析（Principal Component Analysis）"></a>主成分分析（Principal Component Analysis）</h1><p>在前一课中，我们了解了特征工程的第一个基于模型的方法：聚类。在本课中，我们将学习下一个方法：主成分分析（PCA）。就像聚类是基于接近度对数据集进行划分一样，PCA可以被视为对数据变异性的划分。PCA是探索数据中重要关系并创建更具信息量特征的有效工具。</p>
+<blockquote>
+<p> 说明：PCA通常应用于标准化数据。对于标准化数据，”变异性”意味着”相关性”。对于未标准化数据，”变异性”意味着”协方差”，我们也不需要这玩意儿（详情理论可以学习概率论相关知识）。本课程中的所有数据在应用PCA前都将被标准化。</p>
+</blockquote>
+<h2 id="主成分分析"><a href="#主成分分析" class="headerlink" title="主成分分析"></a>主成分分析</h2><p>我们使用的是Abalone数据集，其中包含了几千个塔斯马尼亚鲍鱼的物理测量值。我们现在只看两个特征：”高度”和”直径”。</p>
+<p>您可以想象，在这些数据中存在”变异性轴（variation）”，描述了鲍鱼之间的差异方式。在图形上，这些轴表现为沿数据自然维度的<strong>垂直线</strong>，每个原始特征对应一个轴。</p>
+<img src="/2025/03/19/FeatureEngineering03/image-20250319233509199.png" class>
+
+<p>通常，我们可以为这些变异性轴命名。较长的轴我们可以称为”Size”成分：小高度和小直径（左下方）与大高度和大直径（右上方）形成对比。较短的轴我们可以称为”Shape”成分：小高度和大直径（扁平形状）与大高度和小直径（圆形形状）形成对比。</p>
+<p>注意，我们不必用”高度”和”直径”来描述鲍鱼，也可以用”大小”和”形状”来描述。<strong>这实际上就是PCA的核心思想：我们不用原始特征描述数据，而是用它的变异性轴。这些变异性轴成为新的特征。</strong></p>
+<blockquote>
+<p>译者注：不是翻得不好原文就是很拗口，我再说明一下。PCA的作用就是，将新的特征&#x2F;坐标轴沿着数据变异的主要方向设置。这样做的好处就是，变换后，数据可以用更少、更有解释性的特征来描述，比如说size和shape。Is that clearer？</p>
+</blockquote>
+<img src="/2025/03/19/FeatureEngineering03/image-20250319233826966.png" class>
+
+<p>PCA构造的新特征实际上只是原始特征的线性组合（加权和）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df[&quot;Size&quot;] = 0.707 * X[&quot;Height&quot;] + 0.707 * X[&quot;Diameter&quot;]</span><br><span class="line">df[&quot;Shape&quot;] = 0.707 * X[&quot;Height&quot;] - 0.707 * X[&quot;Diameter&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>这些新特征被称为数据的<strong>主成分（principal components）</strong>。这些权重被称为<strong>载荷（loadings）</strong>。原始数据集有多少特征，就会有多少主成分：如果我们使用了十个特征而不是两个，我们会得到十个成分。</p>
+<p>一个成分的载荷通过正负号和大小告诉我们它表达了什么变异性：</p>
+<table>
+<thead>
+<tr>
+<th>Features \ Components</th>
+<th>Size (PC1)</th>
+<th>Shape (PC2)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Height</td>
+<td>0.707</td>
+<td>0.707</td>
+</tr>
+<tr>
+<td>Diameter</td>
+<td>0.707</td>
+<td>-0.707</td>
+</tr>
+</tbody></table>
+<p>这个载荷表显示，在”大小”成分中，”高度”和”直径”朝同一方向变化（同号），但在”形状”成分中，它们朝相反方向变化（异号）。在每个成分中，载荷大小相同，因此两个特征在两个成分中的贡献均等。</p>
+<p>PCA还告诉我们每个成分中变异性的数量。从图中可以看出，数据在”大小”成分上的变异性比在”形状”成分上的大。PCA通过每个成分的解释方差百分比精确地量化了这一点。</p>
+<img src="/2025/03/19/FeatureEngineering03/image-20250319235927883.png" class>
+
+<p>“大小”成分解释了约96%的”高度”和”直径”之间的方差，而”形状”成分解释了约4%。</p>
+<p>需要记住的是，成分中的方差量不一定对应于它作为预测因子的好坏：这取决于你要预测什么。</p>
+<blockquote>
+<p>译者注：这里可以多举几个例子方便理解。</p>
+<p>预测特征的有效性主要取决于它与预测目标的相关性，而不仅仅是它在原始数据中解释的方差量。例如：如果你要预测鲍鱼的年龄，可能”形状”特征（尽管只解释4%的方差）与年龄的相关性比”大小”特征更强；如果预测鲍鱼的重量，”大小”特征可能更有用。</p>
+<p>在疾病诊断中，某些罕见但关键的生物标志物可能只在数据中占很小的变异性，但对特定疾病的诊断却至关重要；</p>
+<p>在图像识别中，背景像素可能占据大部分图像方差，但对识别目标对象的贡献却很小。</p>
+<p>因此，低方差成分虽然只占据很小的变异量，但是在异常检测和离群值识别任务中可能有奇效。It depends.</p>
+</blockquote>
+<h2 id="PCA用于特征工程"><a href="#PCA用于特征工程" class="headerlink" title="PCA用于特征工程"></a>PCA用于特征工程</h2><p>使用PCA进行特征工程有两种方式：</p>
+<p>第一种是将其作为描述性技术。由于成分能告诉你关于变异性的信息，你可以计算成分的MI分数，看看哪种变异性最能预测你的目标。这可以启发你创建什么类型的特征 —— 如果”大小”很重要，可以是”高度”和”直径”的乘积，或者如果”形状”很重要，可以是”高度”和”直径”的比率。你甚至可以尝试在一个或多个高分成分上进行聚类。</p>
+<p>第二种方式是直接将这些成分用作特征。由于这些成分直接揭示了数据的变异结构，它们通常比原始特征更具信息量。以下是一些用例：</p>
+<ul>
+<li>降维：当特征高度冗余（特别是共线性）时，PCA会将冗余分离到一个或多个接近零方差的成分中，你可以丢弃这些成分，因为它们几乎不包含信息。</li>
+<li>异常检测：在原始特征中不明显的异常变异通常会在低方差成分中显现。这些成分在异常或离群值检测任务中可能非常有信息量。</li>
+<li>降噪：传感器读数集合通常会共享一些共同的背景噪声。PCA有时可以将（信息量大的）信号收集到较少的特征中，同时将噪声分离出来，从而提高信噪比。</li>
+<li>去相关：一些机器学习算法在处理高度相关的特征时表现不佳。PCA将相关特征转换为不相关的成分，这可能使算法更容易处理。</li>
+</ul>
+<p>PCA基本上让你直接访问数据的相关结构。你肯定会想出自己的应用！</p>
+<h2 id="PCA最佳实践"><a href="#PCA最佳实践" class="headerlink" title="PCA最佳实践"></a>PCA最佳实践</h2><p>应用PCA时需要牢记几点：</p>
+<ul>
+<li>PCA只适用于数值特征，如连续量或计数。</li>
+<li>PCA对尺度敏感。除非你有充分理由不这样做，否则最好在应用PCA之前标准化你的数据。</li>
+<li>考虑移除或约束离群值，因为它们可能对结果产生过度影响。</li>
+</ul>
+<h2 id="示例：1985年汽车数据PCA分析"><a href="#示例：1985年汽车数据PCA分析" class="headerlink" title="示例：1985年汽车数据PCA分析"></a>示例：1985年汽车数据PCA分析</h2><p>在这个例子中，我们将回到我们的汽车数据集并应用PCA，将其用作发现特征的描述性技术。我们将在练习中查看其他用例。</p>
+<p>这个隐藏单元加载数据并定义函数plot_variance和make_mi_scores。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># .........</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">plot_variance</span>(<span class="params">pca, width=<span class="number">8</span>, dpi=<span class="number">100</span></span>):</span><br><span class="line">    <span class="comment"># Create figure</span></span><br><span class="line">    fig, axs = plt.subplots(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    n = pca.n_components_</span><br><span class="line">    grid = np.arange(<span class="number">1</span>, n + <span class="number">1</span>)</span><br><span class="line">    <span class="comment"># Explained variance</span></span><br><span class="line">    evr = pca.explained_variance_ratio_</span><br><span class="line">    axs[<span class="number">0</span>].bar(grid, evr)</span><br><span class="line">    axs[<span class="number">0</span>].<span class="built_in">set</span>(</span><br><span class="line">        xlabel=<span class="string">&quot;Component&quot;</span>, title=<span class="string">&quot;% Explained Variance&quot;</span>, ylim=(<span class="number">0.0</span>, <span class="number">1.0</span>)</span><br><span class="line">    )</span><br><span class="line">    <span class="comment"># Cumulative Variance</span></span><br><span class="line">    cv = np.cumsum(evr)</span><br><span class="line">    axs[<span class="number">1</span>].plot(np.r_[<span class="number">0</span>, grid], np.r_[<span class="number">0</span>, cv], <span class="string">&quot;o-&quot;</span>)</span><br><span class="line">    axs[<span class="number">1</span>].<span class="built_in">set</span>(</span><br><span class="line">        xlabel=<span class="string">&quot;Component&quot;</span>, title=<span class="string">&quot;% Cumulative Variance&quot;</span>, ylim=(<span class="number">0.0</span>, <span class="number">1.0</span>)</span><br><span class="line">    )</span><br><span class="line">    <span class="comment"># Set up figure</span></span><br><span class="line">    fig.<span class="built_in">set</span>(figwidth=<span class="number">8</span>, dpi=<span class="number">100</span>)</span><br><span class="line">    <span class="keyword">return</span> axs</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">make_mi_scores</span>(<span class="params">X, y, discrete_features</span>):</span><br><span class="line">    mi_scores = mutual_info_regression(X, y, discrete_features=discrete_features)</span><br><span class="line">    mi_scores = pd.Series(mi_scores, name=<span class="string">&quot;MI Scores&quot;</span>, index=X.columns)</span><br><span class="line">    mi_scores = mi_scores.sort_values(ascending=<span class="literal">False</span>)</span><br><span class="line">    <span class="keyword">return</span> mi_scores</span><br></pre></td></tr></table></figure>
+
+<p>我们选择了四个覆盖一系列属性的特征。这些特征中的每一个与目标price也有较高的MI分数。我们将标准化数据，因为这些特征在自然状态下不在同一尺度上。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">features = [<span class="string">&quot;highway_mpg&quot;</span>, <span class="string">&quot;engine_size&quot;</span>, <span class="string">&quot;horsepower&quot;</span>, <span class="string">&quot;curb_weight&quot;</span>]</span><br><span class="line"></span><br><span class="line">X = df.copy()</span><br><span class="line">y = X.pop(<span class="string">&#x27;price&#x27;</span>)</span><br><span class="line">X = X.loc[:, features]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 标准化</span></span><br><span class="line">X_scaled = (X - X.mean(axis=<span class="number">0</span>)) / X.std(axis=<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>现在我们可以拟合scikit-learn的PCA估计器并创建主成分。您可以在这里看到转换后数据集的前几行。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.decomposition <span class="keyword">import</span> PCA</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建主成分</span></span><br><span class="line">pca = PCA()</span><br><span class="line">X_pca = pca.fit_transform(X_scaled)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 转换为df</span></span><br><span class="line">component_names = [<span class="string">f&quot;PC<span class="subst">&#123;i+<span class="number">1</span>&#125;</span>&quot;</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(X_pca.shape[<span class="number">1</span>])]</span><br><span class="line">X_pca = pd.DataFrame(X_pca, columns=component_names)</span><br><span class="line"></span><br><span class="line">X_pca.head()</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>PC1</th>
+<th>PC2</th>
+<th>PC3</th>
+<th>PC4</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0.382486</td>
+<td>-0.400222</td>
+<td>0.124122</td>
+<td>0.169539</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0.382486</td>
+<td>-0.400222</td>
+<td>0.124122</td>
+<td>0.169539</td>
+</tr>
+<tr>
+<td>2</td>
+<td>1.550890</td>
+<td>-0.107175</td>
+<td>0.598361</td>
+<td>-0.256081</td>
+</tr>
+<tr>
+<td>3</td>
+<td>-0.408859</td>
+<td>-0.425947</td>
+<td>0.243335</td>
+<td>0.013920</td>
+</tr>
+<tr>
+<td>4</td>
+<td>1.132749</td>
+<td>-0.814565</td>
+<td>-0.202885</td>
+<td>0.224138</td>
+</tr>
+</tbody></table>
+<p>拟合后，PCA实例在其<code>components_</code>属性中包含<code>loadings</code>。（不幸的是，PCA的术语表达还没有统一。我们这里把X_pca中转换后的列称为components，否则它们将没有名称。）我们将把<code>loadings</code>包装到<code>dataframe</code>中：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">loadings = pd.DataFrame(</span><br><span class="line">    pca.components_.T,    <span class="comment"># 转置loadings矩阵</span></span><br><span class="line">    columns=component_names,    <span class="comment"># 使列为主成分</span></span><br><span class="line">    index=X.columns,    <span class="comment"># 使行为原始特征</span></span><br><span class="line">)</span><br><span class="line">loadings</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>PC1</th>
+<th>PC2</th>
+<th>PC3</th>
+<th>PC4</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>highway_mpg</td>
+<td>-0.492347</td>
+<td>0.770892</td>
+<td>0.070142</td>
+<td>-0.397996</td>
+</tr>
+<tr>
+<td>engine_size</td>
+<td>0.503859</td>
+<td>0.626709</td>
+<td>0.019960</td>
+<td>0.594107</td>
+</tr>
+<tr>
+<td>horsepower</td>
+<td>0.500448</td>
+<td>0.013788</td>
+<td>0.731093</td>
+<td>-0.463534</td>
+</tr>
+<tr>
+<td>curb_weight</td>
+<td>0.503262</td>
+<td>0.113008</td>
+<td>-0.678369</td>
+<td>-0.523232</td>
+</tr>
+</tbody></table>
+<p>记住，组件loadings的符号和幅度告诉我们它捕获了什么类型的变异。第一组件（PC1）显示了大型、强力车辆与油耗差，和较小、更经济的车辆与良好油耗之间的对比。我们可能称之为”豪华&#x2F;经济”轴。下图显示我们选择的四个特征主要沿着豪华&#x2F;经济轴变化。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看解释方差</span></span><br><span class="line">plot_variance(pca);</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p>让我们也看看组件的MI分数。不出所料，PC1高度信息丰富，尽管其余组件尽管方差小，但与price仍有显著关系。检查这些组件可能值得发现未被主要豪华&#x2F;经济轴捕获的关系。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mi_scores = make_mi_scores(X_pca, y, discrete_features=<span class="literal">False</span>)</span><br><span class="line">mi_scores</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/19/FeatureEngineering03/image-20250320182536076.png" class>
+
+<p>第三个组件显示了horsepower和curb_weight之间的对比 – 看起来是跑车与旅行车的对比。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 显示按PC3排序的数据框</span></span><br><span class="line">idx = X_pca[<span class="string">&quot;PC3&quot;</span>].sort_values(ascending=<span class="literal">False</span>).index</span><br><span class="line">cols = [<span class="string">&quot;make&quot;</span>, <span class="string">&quot;body_style&quot;</span>, <span class="string">&quot;horsepower&quot;</span>, <span class="string">&quot;curb_weight&quot;</span>]</span><br><span class="line">df.loc[idx, cols]</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/19/FeatureEngineering03/image-20250320182549444.png" class>
+
+
+
+<p>为了表达这种对比，让我们创建一个新的比率特征：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">&quot;sports_or_wagon&quot;</span>] = X.curb_weight / X.horsepower</span><br><span class="line">sns.regplot(x=<span class="string">&quot;sports_or_wagon&quot;</span>, y=<span class="string">&#x27;price&#x27;</span>, data=df, order=<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/03/19/FeatureEngineering03/image-20250320182606552.png" class title="图表显示了sports_or_wagon（x轴）与价格（y轴）的关系，呈U形曲线，中间值价格最低，两端价格较高">
+
+<blockquote>
+<p>译者注：说明几个问题</p>
+<p><strong>1.components选取标准</strong></p>
+<p>从定义上讲，主成分实际上是原始特征的线性组合，每个主成分的选取标准是：</p>
+<ol>
+<li>第一主成分(PC1)：寻找数据中方差最大的方向</li>
+<li>第二主成分(PC2)：寻找与第一主成分正交（垂直）且方差第二大的方向</li>
+<li>依此类推…</li>
+</ol>
+<p>这种参考是纯数学的 - PCA算法本身不了解这些数字代表”汽车”，它只是找到数据中变化最显著的方向。</p>
+<p><strong>2.载荷矩阵的解释</strong></p>
+<p>loadings矩阵告诉我们每个原始特征对主成分的贡献程度：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">                PC1       PC2       PC3       PC4</span><br><span class="line">highway_mpg  -0.492347  0.770892  0.070142 -0.397996</span><br><span class="line">engine_size   0.503859  0.626709  0.019960  0.594107</span><br><span class="line">horsepower    0.500448  0.013788  0.731093 -0.463534</span><br><span class="line">curb_weight   0.503262  0.113008 -0.678369 -0.523232</span><br></pre></td></tr></table></figure>
+
+<p>看PC1列，我们可以解读为：</p>
+<ul>
+<li>highway_mpg（高速公路每加仑英里数，或高速公路油耗效率）与其他特征呈负相关（-0.49 vs ~0.50）</li>
+<li>这意味着PC1捕获了”省油但小型低功率”与”耗油但大型高功率”车辆之间的对比</li>
+</ul>
+<p>豪华车通常引擎大、马力高、车身重、耗油多；而经济车则引擎小、马力低、车身轻、省油多。所以研究人员将PC1命名为”豪华&#x2F;经济轴”是有意义的 - 这是基于对数据模式的人类解释，而不是算法的内置功能。</p>
+<p><strong>3.为什么计算MI值？</strong></p>
+<p>这里的关键点是：PCA本身只关心数据的变异性，不关心这些变异与目标变量（这里是价格）的关系。</p>
+<p>计算互信息(MI)是为了回答：<strong>这些新找到的主成分对预测价格有多大用处？</strong></p>
+<p>结果显示：</p>
+<ul>
+<li>PC1的MI值最高(1.01)：说明豪华&#x2F;经济轴与价格关系最密切</li>
+<li>其他主成分的MI值较低：但仍然包含与价格相关的信息</li>
+</ul>
+<p>例如，PC3（”运动车vs旅行车”轴）的MI值为0.31，说明它包含的信息对预测价格有中等程度的帮助。我们不妨对其分析一下：</p>
+<p>PC3主要由两个特征驱动：horsepower（马力）和curb_weight（整备重量），因为它们的绝对值最大。</p>
+<p>当一辆车在PC3上得分高时，它通常具有：</p>
+<ul>
+<li>较高的horsepower（高马力）</li>
+<li>较低的curb_weight（轻车身）</li>
+</ul>
+<p>当一辆车在PC3上得分低时，它通常具有：</p>
+<ul>
+<li>较低的horsepower（低马力）</li>
+<li>较高的curb_weight（重车身）</li>
+</ul>
+<p>这种组合很好地描述了”高性能跑车”与”重型&#x2F;实用车”之间的区别：</p>
+<ul>
+<li>跑车：追求高马力与轻车身的组合，以获得更好的加速性能和操控性</li>
+<li>旅行车&#x2F;大型车：马力可能不高但车身较重，注重实用性和空间</li>
+</ul>
+<p>因此，研究人员将PC3解释为”运动车vs旅行车”轴是合理的，表格也证实了这一点：PC3得分高的车辆确实多为运动型车，而PC3得分低的车辆多为大型车或旅行车。这个主成分虽然只解释了原始数据中较小部分的变异，但它捕获了汽车市场中一个非常有意义的维度。根据最后的图片我们也可以知道，PC3得分越低价格越高，得分中等的车辆最多价格也最少。</p>
+<p>所以说呢，结合上上一讲的互信息，目前PCA最好与MI联合使用：</p>
+<p>1.先用MI筛选评分最高的几个特征</p>
+<p>2.使用PCA划分组件</p>
+<p>3.使用载荷矩阵查看占比</p>
+<p>4.再次MI分析，打上更具有解释性意义的标签</p>
+</blockquote>
+<hr>
+<p>WOW，为什么我觉得自己讲的比原作者明白多了？（逃</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2025/03/19/FeatureEngineering03/">https://0kr.xin/2025/03/19/FeatureEngineering03/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape003.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/03/20/FeatureEngineering04/" title="FeatureEngineering04"><img class="cover" src="/statics/landscape002.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">FeatureEngineering04</div></div><div class="info-2"><div class="info-item-1">我们在本课程中看到的大多数技术都是针对数值特征的。而我们将在本课中看到的技术，target encoding，则是针对分类特征的。它是一种将类别编码为数字的方法，类似于独热编码或标签编码，区别在于它还使用 target 来创建编码。这使它成为我们所称的监督特征工程（supervised feature engineering）技术。 目标编码（target encoding）目标编码是任何一种用从目标派生的某个数字替换特征类别的编码。 一个简单有效的版本是应用第3课中的分组聚合，如均值。使用 Automobiles 数据集，它计算每种车辆品牌的平均价格： 1234# 每个品牌的所有车型都会被替换为该品牌所有车型的平均价格autos[&quot;make_encoded&quot;] = autos.groupby(&quot;make&quot;)[&quot;price&quot;].transform(&quot;mean&quot;)autos[[&quot;make&quot;, &quot;price&quot;,...</div></div></div></a><a class="pagination-related" href="/2025/03/19/FeatureEngineering02/" title="FeatureEngineering02"><img class="cover" src="/statics/landscape003.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">FeatureEngineering02</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90%EF%BC%88Principal-Component-Analysis%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">主成分分析（Principal Component Analysis）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90"><span class="toc-number">1.1.</span> <span class="toc-text">主成分分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PCA%E7%94%A8%E4%BA%8E%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B"><span class="toc-number">1.2.</span> <span class="toc-text">PCA用于特征工程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PCA%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="toc-number">1.3.</span> <span class="toc-text">PCA最佳实践</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A1985%E5%B9%B4%E6%B1%BD%E8%BD%A6%E6%95%B0%E6%8D%AEPCA%E5%88%86%E6%9E%90"><span class="toc-number">1.4.</span> <span class="toc-text">示例：1985年汽车数据PCA分析</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>PE03 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="电阻相关设计定式介绍1.电阻分类与参数介绍  以下选择常用的电阻进行详细介绍： 一般电阻（贴片&#x2F;色环电阻）阻值(Resistance): E24(5%精度)E96(1%精度)，单位为欧姆()。 精度(Tolerance):  实际阻值与标称值的偏差范围，通常以百分比表示。 额定功率(Power Rating):  在环境 70℃中可以连续工作状态下的最大功率值。单位为瓦特 (W)。 温度">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PE03">
+<meta property="og:url" content="https://0kr.xin/2025/10/07/PE03/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="电阻相关设计定式介绍1.电阻分类与参数介绍  以下选择常用的电阻进行详细介绍： 一般电阻（贴片&#x2F;色环电阻）阻值(Resistance): E24(5%精度)E96(1%精度)，单位为欧姆()。 精度(Tolerance):  实际阻值与标称值的偏差范围，通常以百分比表示。 额定功率(Power Rating):  在环境 70℃中可以连续工作状态下的最大功率值。单位为瓦特 (W)。 温度">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape002.jpg">
+<meta property="article:published_time" content="2025-10-07T00:15:31.000Z">
+<meta property="article:modified_time" content="2025-10-07T05:26:18.690Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape002.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2025/10/07/PE03/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'PE03',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-10-07 13:26:18'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape002.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">PE03</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">PE03</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-10-07T00:15:31.000Z" title="发表于 2025-10-07 08:15:31">2025-10-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-10-07T05:26:18.690Z" title="更新于 2025-10-07 13:26:18">2025-10-07</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">4.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>15分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="电阻相关设计定式介绍"><a href="#电阻相关设计定式介绍" class="headerlink" title="电阻相关设计定式介绍"></a>电阻相关设计定式介绍</h1><h2 id="1-电阻分类与参数介绍"><a href="#1-电阻分类与参数介绍" class="headerlink" title="1.电阻分类与参数介绍"></a>1.电阻分类与参数介绍</h2><img src="/2025/10/07/PE03/image-20251007090744779.png" class title="电阻器分类">
+
+<p>以下选择常用的电阻进行详细介绍：</p>
+<h3 id="一般电阻（贴片-色环电阻）"><a href="#一般电阻（贴片-色环电阻）" class="headerlink" title="一般电阻（贴片&#x2F;色环电阻）"></a>一般电阻（贴片&#x2F;色环电阻）</h3><p><strong>阻值(Resistance):</strong> E24(5%精度)E96(1%精度)，单位为欧姆()。</p>
+<p><strong>精度(Tolerance):</strong>  实际阻值与标称值的偏差范围，通常以百分比表示。</p>
+<p><strong>额定功率(Power Rating):</strong>  在环境 70℃中可以连续工作状态下的最大功率值。单位为瓦特 (W)。</p>
+<p><strong>温度系数(Temperature Coefficient):</strong> 电阻值随温度变化的程度，通常以 ppm&#x2F;°℃表示。</p>
+<p><strong>额定电压:</strong> 电阻的额定耐压值。</p>
+<p><strong>封装:</strong> 一般电子产品 0402，0603。</p>
+<h3 id="NTC热敏电阻"><a href="#NTC热敏电阻" class="headerlink" title="NTC热敏电阻"></a>NTC热敏电阻</h3><p><em>在开关电源中，串一个热敏电阻，是抑制开机瞬间的浪涌电流。</em></p>
+<p><strong>标称电阻值(R25):</strong> 在 25°C时的电阻值，通常作为选型的基础参数。</p>
+<p><strong>B值(热敏指数):</strong> 表示电阻随温度变化的敏感度，B值越大，电阻随温度变化的幅度越大。</p>
+<p><strong>允许工作最大电流:</strong> 热敏电阻在环境温度于25℃允许通过NTC电阻的最大持续电流值。</p>
+<p><strong>热时间常数(τ):</strong> 在零功率条件下，当温度发生突然变化的时候，NTC 电阻变化到实际温度后相应阻值所需时间的 63.2%。描述电阻响应温度变化的速度，较小的值表示响应更快。</p>
+<img src="/2025/10/07/PE03/image-20251007094344022.png" class>
+
+<h3 id="PTC热敏电阻（自恢复保险丝）"><a href="#PTC热敏电阻（自恢复保险丝）" class="headerlink" title="PTC热敏电阻（自恢复保险丝）"></a>PTC热敏电阻（自恢复保险丝）</h3><p><em>PTC 正温度系数热敏电阻，主要用于限制电路电流，是一种过流保护器件。</em></p>
+<p><strong>最大工作电压(额定电压):</strong> PTC 热敏电阻能够承受持续施加的最大电压值</p>
+<p><strong>最大电流(lmax):</strong> 器件可以在额定电压下承受的最大电流。单位为安培(A)。</p>
+<p><strong>保持电流(Ihold):</strong> 指在规定的时间和温度条件下，不导致 PTC热敏电阻呈现高阻态的最大电流。</p>
+<p><strong>动作电流(ltrip):</strong> 指在规定的时间和温度条件下,使 PTC热敏电阻阻值呈阶跃型增加时的最小电流。</p>
+<p><strong>最大动作时间(Maximum Time To Trip):</strong> 自恢复保险丝从正常工作状态到动作状态所需的最长时间。</p>
+<p><strong>Rmin(Ω):</strong> 初始(未焊接)状态下的最小电阻值。</p>
+<p><strong>R1max (Ω):</strong> 在特定环境温度下测量并在触发动作或回流焊接后1小时内测量的最大电阻值。</p>
+<img src="/2025/10/07/PE03/image-20251007094426791.png" class>
+
+<h3 id="压敏电阻"><a href="#压敏电阻" class="headerlink" title="压敏电阻"></a>压敏电阻</h3><p><strong>压敏电压:</strong> 一般是 1mA直流电流通入压敏电阻时测试得到的电压值。指击穿电压或阈值电压。</p>
+<p><strong>最大工作电压:</strong> 交流和直流两种情况。最高电压不能超过这个值。</p>
+<p><strong>最大钳位电压(V clamp):</strong> 压敏电阻通过一定电流值时，两端呈现出的最高电压。</p>
+<p><strong>最大浪涌电流(max):</strong> 指的是施加规定的脉冲能量波形(如 8&#x2F;20us)时，压敏电阻能承受的最大电流，单位为安培(A)。</p>
+<p><strong>能量耐量(E):</strong> 指施加规定的脉冲能量波形压敏电阻能够吸收的最大能量，单位为焦耳(J)。</p>
+<p><strong>响应时间</strong>:电阻对瞬态电压变化的响应速度。</p>
+<p><strong>静电电容:</strong> 是在特定频率(如 1KHz)下测得的压敏电阻电容值，单位为皮法(pf)。</p>
+<img src="/2025/10/07/PE03/image-20251007094440627.png" class>
+
+<h2 id="2-常见电路设计定式"><a href="#2-常见电路设计定式" class="headerlink" title="2.常见电路设计定式"></a>2.常见电路设计定式</h2><img src="/2025/10/07/PE03/image-20251007091852739.png" class>
+
+<h3 id="1）上拉-下拉电阻"><a href="#1）上拉-下拉电阻" class="headerlink" title="1）上拉&#x2F;下拉电阻"></a>1）上拉&#x2F;下拉电阻</h3><p>上拉电阻是用来解决总线驱动能力不足时提供电流的问题的。一般说法是上拉增大电流，下拉电阻是用来吸收电流（抵抗干扰）。上拉是将电压拉高，下拉是将电压拉低，主要用在三极管或场管的控制极的电位，因为只有满足电压差才会工作。为了完全理解，下面我们从单片机开始讲起：</p>
+<p>单片机的每一个输出如P1.0，都是有输出电阻的Ro，如果你拆开单片机看内部结构，输出电阻与Vcc之间并不是直接相连，而是有电阻的Rc(等效来看)，所以当单片机输出高电平时，由于Rc的分压作用，一般是低于Vcc的。</p>
+<p>那么，这样就会产生一个问题，Vo不低于多少伏才能算是高电平呢？假如Vcc是5v，多高才能算是高电平，大于2.5v？还是大于3v？</p>
+<p>当然都是可以的，这跟不同的单片机内部结构和负载情况有关，但为了保证不同型号单片机之间的通信，避免误码，通常越接近Vcc越好了。所以就需要上拉电阻来保证Vo更接近于Vcc。</p>
+<p>因此，当接上一个电阻时，相当于与Rc并联，阻值变小，那么Ro上的分压自然就更大了，所以电压被上拉了。</p>
+<p>如下图所示：</p>
+<img src="/2025/10/07/PE03/image-20251007103720433.png" class title="上拉电阻器示例电路">
+
+
+<p>若选择低电阻值则称为强上拉（电流流动较多），高电阻值则称为弱上拉（电流较少）。</p>
+<h4 id="规则-1：阻值不能太高。"><a href="#规则-1：阻值不能太高。" class="headerlink" title="规则 1：阻值不能太高。"></a>规则 1：阻值不能太高。</h4><p>上拉值越高，输入端的电压就越低。电压要足够高，芯片才能将其视为高电平或逻辑1输入。例如，如果使用具有 10V 电源的 CD4017，则输入端至少需要 7V 才能将其视为 HIGH。</p>
+<h4 id="规则2：但它也不能太小。"><a href="#规则2：但它也不能太小。" class="headerlink" title="规则2：但它也不能太小。"></a>规则2：但它也不能太小。</h4><p>例如，如果选择100 Ω，那么当按下按钮时，就会有大量电流流经它。使用9V电源时，可以在100 Ω（90 mA）获得9V电压。这是不必要的功率浪费，但这也意味着电阻器需要承受0.81W。<strong>大多数电阻器只能处理高达0.25W的功率。</strong></p>
+<img src="/2025/10/07/PE03/84e6d1422f2645723deba98a7910893d.png" class title="原理图 内部上拉">
+
+<h4 id="经验法则"><a href="#经验法则" class="headerlink" title="经验法则"></a>经验法则</h4><p>一般规则是使用比输入引脚的输入阻抗（R2）<strong>小一个数量级（1&#x2F;10）</strong>的上拉电阻（R1），小10倍的电阻值。</p>
+<p><strong>通常，10 kΩ的上拉值就可以解决问题。</strong>但是，如果想了解它的工作原理，请继续阅读。</p>
+<h4 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h4><p>可以使用分压器公式查找未按下按钮时输入引脚上的电压：</p>
+<img src="/2025/10/07/PE03/d3530ec42281c018521ac14cf811622d.png" class>
+
+
+<p>如果对上拉R1使用1MΩ电阻，并且输入引脚的阻抗R2约为1MΩ（形成分压器），则输入引脚上的电压约为VCC的一半，并且微控制器可能不会将引脚记录为处于高电平状态。在5V系统上，输入电压为2.5V</p>
+<p>以下作为计算实例：</p>
+<p>假设的芯片的输入阻抗为1MΩ（对于许多芯片来说，100kΩ至1MΩ是正常的）。如果的电源是9V，并且选择10 kΩ的上拉电阻值，那么输入引脚上的电压是多少？</p>
+<img src="/2025/10/07/PE03/51633a1fbe2b9430f523b6546db9b64e.png" class>
+
+
+<p>输入引脚上的电压为8.9V，足以用作高电平输入。</p>
+<p>通常，如果坚持使用不超过输入阻抗十倍的上拉电阻的经验法则，将确保输入引脚上始终具有至少90%的VDD电压。</p>
+<hr>
+<p>需要使用上拉电阻还是下拉电阻，主要取决于电路系统本身的需要，比如，对于高有效的使能控制信号（EN），我们希望电路系统在上电后应处于无效状态，则会使用下拉电阻。</p>
+<p>假设这个使能信号是用来控制电机的，如果悬空的话，此信号线可能在上电后（或在运行中）受到其它噪声干扰而误触发为高电平，从而导致电机出现不期望的转动，这肯定不是我们想要的，此时可以增加一个下拉电阻。</p>
+<p>而相应的，对于低有效的复位控制信号（RST#），我们希望上电复位后处于无效状态，则应使用上拉电阻。</p>
+<h3 id="2）-限流电阻"><a href="#2）-限流电阻" class="headerlink" title="2） 限流电阻"></a>2） 限流电阻</h3><img src="/2025/10/07/PE03/image-20251007123542216.png" class title="限流电阻示例；最重要的部分就是功耗检验！">
+
+<p>限流电阻是用来限制流过某个器件的电流，防止过流损坏的。最典型的应用就是LED电路。</p>
+<p>LED（发光二极管）是一种特殊的二极管，它具有正向导通特性——当正向电压超过一定阈值（红色LED约1.8-2.2V，蓝&#x2F;白色LED约3.0-3.4V）后，电流会急剧增加。如果直接将LED接到电源上，由于LED的动态电阻很小，会产生很大的电流，瞬间烧毁LED。</p>
+<p>LED电路中基本计算公式为：</p>
+<p>$$<br>R &#x3D; \frac{V_{CC} - V_F}{I_F}<br>$$</p>
+<p>其中：</p>
+<ul>
+<li>VCC：电源电压</li>
+<li>VF：LED正向压降（Forward Voltage）</li>
+<li>IF：期望的工作电流（Forward Current）</li>
+</ul>
+<p><strong>指示灯应用：</strong></p>
+<ul>
+<li>5V系统，红色LED：<strong>330Ω ~ 470Ω</strong>（电流约5-8mA）</li>
+<li>3.3V系统，红色LED：<strong>220Ω ~ 330Ω</strong></li>
+<li>高亮应用：可适当减小电阻，但电流不超过15-20mA</li>
+<li>低功耗应用：1kΩ ~ 2.2kΩ，电流1-3mA</li>
+</ul>
+<h4 id="工作原理与计算实例"><a href="#工作原理与计算实例" class="headerlink" title="工作原理与计算实例"></a>工作原理与计算实例</h4><p>假设使用5V电源，普通红色LED（VF &#x3D; 2V），期望电流为8mA（既有足够亮度又不过热）：</p>
+<p>$$<br>R &#x3D; \frac{5V - 2V}{8mA} &#x3D; 375Ω<br>$$<br>查E24系列标准值，最接近的是<strong>390Ω或330Ω</strong>：</p>
+<ul>
+<li>选390Ω：实际电流 &#x3D; 3V &#x2F; 390Ω ≈ 7.7mA ✓</li>
+<li>选330Ω：实际电流 &#x3D; 3V &#x2F; 330Ω ≈ 9.1mA ✓</li>
+</ul>
+<p>两者都在合理范围内，<strong>330Ω成为经典值</strong>就是这个原因。</p>
+<h4 id="功率校验（非常重要）"><a href="#功率校验（非常重要）" class="headerlink" title="功率校验（非常重要）"></a>功率校验（非常重要）</h4><p>限流电阻还需要考虑功率耗散：<br>$$<br>P &#x3D; I^2 × R<br>$$<br>以330Ω、10mA为例： P &#x3D; (0.01A)^2 × 330Ω &#x3D; 0.033W</p>
+<p>常规的0805封装1&#x2F;8W（0.125W）电阻完全够用。但如果是大功率LED（1W、3W），就需要使用更大功率的电阻或恒流驱动芯片了。</p>
+<h4 id="其他应用场景"><a href="#其他应用场景" class="headerlink" title="其他应用场景"></a>其他应用场景</h4><p>限流电阻不仅用于LED，还常见于：</p>
+<ol>
+<li><strong>三极管基极限流</strong>：防止基极电流过大（通常1-5kΩ）</li>
+<li><strong>按键消抖电路</strong>：与电容配合时的充电限流（1kΩ左右）</li>
+<li><strong>GPIO保护</strong>：输出端串联小电阻（22Ω-100Ω）防止短路</li>
+</ol>
+<hr>
+<h3 id="3）芯片协同电阻"><a href="#3）芯片协同电阻" class="headerlink" title="3）芯片协同电阻"></a>3）芯片协同电阻</h3><img src="/2025/10/07/PE03/image-20251007123855398.png" class title="芯片协同示例">
+
+<p>芯片之间进行信号传输时，往往需要电阻来实现<strong>阻抗匹配</strong>、<strong>信号完整性保证</strong>或<strong>电平转换</strong>。为了完全理解，下面我们从信号传输的基本问题讲起：</p>
+<p>当一个数字信号从芯片A传输到芯片B时，如果传输线较长或频率较高，信号会像在一根”天线”上传播，产生<strong>反射、振铃、过冲</strong>等问题。这是因为传输线存在特征阻抗（通常PCB走线是50Ω或75Ω），如果源端和终端的阻抗不匹配，信号能量会反射回来。</p>
+<p>那么这样就会产生一个问题：应该在哪里、加多大的电阻，才能保证信号质量？</p>
+<h4 id="源端串联电阻（Series-Termination）"><a href="#源端串联电阻（Series-Termination）" class="headerlink" title="源端串联电阻（Series Termination）"></a>源端串联电阻（Series Termination）</h4><img src="/2025/10/07/PE03/image-20251007124030823.png" class title="法1：源端串联电阻">
+
+<p>在<strong>信号源附近串联一个电阻</strong>，阻值约为 Rs &#x3D; Z0 - Zout，其中：</p>
+<ul>
+<li>Z0：传输线特征阻抗（PCB走线通常50Ω）</li>
+<li>Zout：驱动芯片的输出阻抗（通常10-30Ω）</li>
+</ul>
+<p>假设没有这个电阻R1，当芯片击穿后，芯片内部的VCC引脚跟GND短路，VCC引脚又直接跟电源15V连接，15V就会被直接拉到地，造成电源的损坏；接上电阻R1，当芯片被击穿后，15V电压就不会直接被拉到地，所以这个电阻的作用是防止芯片击穿后电源短路，起到<strong>保护电源</strong>的作用；当15V电压突然波动比较大，瞬间产生一个大的脉冲电压时，由于电阻R1的存在，它可以起到分压作用，减小输入到芯片的电压，起到<strong>保护芯片</strong>的作用。</p>
+<p>注意:电阻R1串接在15V和芯片之间，本身会产生一定的压降，所以这个电阻不能太大，一般取值在几十欧姆。</p>
+<p><strong>经验值：22Ω ~ 33Ω</strong></p>
+<h4 id="判断何时需要添加串联电阻？"><a href="#判断何时需要添加串联电阻？" class="headerlink" title="判断何时需要添加串联电阻？"></a>判断何时需要添加串联电阻？</h4><ul>
+<li>信号频率 &gt; 10MHz</li>
+<li>PCB走线长度 &gt; 5cm（经验值，实际取决于上升时间）</li>
+<li>时钟信号、SPI、高速UART</li>
+<li>判断标准：<strong>走线长度 &gt; 信号上升时间 × 传播速度 &#x2F; 6</strong></li>
+</ul>
+<p><strong>典型应用：</strong></p>
+<table>
+<thead>
+<tr>
+<th>信号类型</th>
+<th>位置</th>
+<th>阻值</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SPI&#x2F;UART高速</td>
+<td>源端串联</td>
+<td>22Ω ~ 33Ω</td>
+<td>减少振铃</td>
+</tr>
+<tr>
+<td>时钟CLK</td>
+<td>源端串联</td>
+<td>22Ω ~ 47Ω</td>
+<td>减缓边沿，降低EMI</td>
+</tr>
+<tr>
+<td>差分USB</td>
+<td>差分对共模</td>
+<td>90Ω</td>
+<td>阻抗匹配</td>
+</tr>
+<tr>
+<td>CAN总线</td>
+<td>终端并联</td>
+<td>120Ω</td>
+<td>阻抗匹配</td>
+</tr>
+</tbody></table>
+<h4 id="工作原理与计算实例-1"><a href="#工作原理与计算实例-1" class="headerlink" title="工作原理与计算实例"></a>工作原理与计算实例</h4><p>假设有一个SPI时钟信号，频率20MHz，芯片输出阻抗20Ω，PCB走线特征阻抗50Ω，走线长度10cm。</p>
+<p><strong>步骤1：判断是否需要匹配</strong></p>
+<ul>
+<li>20MHz信号的上升时间约 <strong>5ns</strong>（假设tr &#x3D; 0.5 &#x2F; f）</li>
+<li>信号传播速度约 <strong>15cm&#x2F;ns</strong>（FR4板材）</li>
+<li>临界长度 &#x3D; 5ns × 15cm&#x2F;ns &#x2F; 6 ≈ <strong>12.5cm</strong></li>
+</ul>
+<p>走线10cm接近临界值，<strong>建议添加串联电阻</strong>。</p>
+<p><strong>步骤2：计算电阻值</strong> R_s &#x3D; Z_0 - Z_out&#x3D; 50Ω - 20Ω &#x3D; 30Ω</p>
+<p>选择标准值 <strong>33Ω</strong>。</p>
+<h4 id="特殊情况：电平转换"><a href="#特殊情况：电平转换" class="headerlink" title="特殊情况：电平转换"></a>特殊情况：电平转换</h4><p>当3.3V芯片与5V芯片通信时，有时也会用分压电阻：</p>
+<ul>
+<li>从5V到3.3V：使用 <strong>2kΩ + 3.3kΩ</strong> 分压（但更推荐专用电平转换芯片，这个部分已经非常成熟了，有很多技巧可使用）</li>
+<li>从3.3V到5V：通常不需要，5V芯片能识别3.3V高电平</li>
+</ul>
+<hr>
+<h3 id="4）反馈电阻"><a href="#4）反馈电阻" class="headerlink" title="4）反馈电阻"></a>4）反馈电阻</h3><p>反馈电阻主要用于<strong>运算放大器（Op-Amp）和 电源管理电路</strong>中，通过反馈网络设定增益或输出电压。</p>
+<p>运算放大器有两个输入端（同相端+和反相端-）和一个输出端。理想运放遵循”虚短”和”虚断”原则：</p>
+<ul>
+<li><strong>虚短</strong>：当负反馈时，两个输入端电压相等（V+ &#x3D; V-）</li>
+<li><strong>虚断</strong>：输入端不吸收电流（输入阻抗无穷大）</li>
+</ul>
+<p>利用这两个特性，通过外接的反馈电阻可以精确控制放大倍数。</p>
+<p>那么，反馈电阻应该选多大？太大或太小会有什么影响？</p>
+<img src="/2025/10/07/PE03/image-20251007125722344.png" class>
+
+<p>因此，<strong>运放反馈网络的”黄金区间”为1kΩ ~ 100kΩ</strong>，最常用值为<strong>10kΩ</strong>。这个值平衡了噪声性能（不太大，噪声可控）、驱动能力（不太小，运放输出轻松）和带宽（与寄生电容形成的极点在合理频率），是最佳选择。</p>
+<h4 id="工作原理与计算实例-2"><a href="#工作原理与计算实例-2" class="headerlink" title="工作原理与计算实例"></a>工作原理与计算实例</h4><p><strong>例1：同相放大器</strong></p>
+<img src="/2025/10/07/PE03/v2-75ba714d8d9923e49433eb4b2613281e_1440w.jpg" class>
+<p>$$<br>A_v &#x3D; 1 + \frac{R_f}{R_1}<br>$$<br>假设需要增益10倍：</p>
+<ul>
+<li>选择 Rf &#x3D; <strong>90kΩ</strong>，R1 &#x3D; <strong>10kΩ</strong></li>
+<li>增益 &#x3D; 1 + 90k&#x2F;10k &#x3D; 10 ✓</li>
+</ul>
+<p><strong>例2：反相放大器</strong></p>
+<img src="/2025/10/07/PE03/v2-23bb609c0f46ddbc568183632ef276ff_1440w.jpg" class>
+<p>$$<br>A_v &#x3D; -\frac{R_f}{R_1}<br>$$<br>假设需要增益-5倍：</p>
+<ul>
+<li>选择 Rf &#x3D; <strong>50kΩ</strong>，R1 &#x3D; <strong>10kΩ</strong></li>
+<li>增益 &#x3D; -50k&#x2F;10k &#x3D; -5 ✓</li>
+</ul>
+<p><strong>例3：输入偏置电流补偿</strong></p>
+<img src="/2025/10/07/PE03/image-20251007130929044.png" class>
+
+<p>为了减小失调误差，同相端应加平衡电阻：<br>$$<br>R_b &#x3D; R_1 &#x2F;&#x2F; R_f &#x3D; \frac{R_1 × R_f}{R_1 + R_f}<br>$$<br>对于上述反相放大器（R1&#x3D;10kΩ，Rf&#x3D;50kΩ）：<br>$$<br> R_b &#x3D; \frac{10k × 50k}{10k + 50k} &#x3D; 8.33kΩ<br>$$<br>经计算，选择标准值 <strong>8.2kΩ</strong>。</p>
+<h4 id="电源反馈电阻（Voltage-Divider）"><a href="#电源反馈电阻（Voltage-Divider）" class="headerlink" title="电源反馈电阻（Voltage Divider）"></a>电源反馈电阻（Voltage Divider）</h4><img src="/2025/10/07/PE03/0c3491a45b3e63a9b117c9804ed0d756.png" class title="电阻分压式反馈拓扑">
+
+<p>在DC-DC转换器或LDO中，输出电压通过分压网络反馈到控制端：<br>$$<br>V_{out} &#x3D; V_{ref} × (1 + \frac{R_1}{R_2})<br>$$<br><strong>总电阻值通常选择 10kΩ ~ 100kΩ</strong>。</p>
+<p><strong>实例计算：</strong></p>
+<p>某LDO芯片内部基准电压Vref &#x3D; 0.8V，需要输出3.3V：<br>$$<br>3.3V &#x3D; 0.8V × (1 + \frac{R_1}{R_2})<br>$$</p>
+<p>$$<br>\frac{R_1}{R_2} &#x3D; 3.125<br>$$</p>
+<p>选择 R2 &#x3D; <strong>10kΩ</strong>，则 R1 &#x3D; 31.25kΩ，取标准值 <strong>31.6kΩ</strong>。验证：<br>$$<br>V_{out} &#x3D; 0.8V × (1 + \frac{31.6k}{10k}) &#x3D; 3.328V<br>$$<br>误差小于1%，满足要求。</p>
+<hr>
+<h4 id="5）RC滤波电阻"><a href="#5）RC滤波电阻" class="headerlink" title="5）RC滤波电阻"></a>5）RC滤波电阻</h4><p>RC滤波器由电阻和电容组成，用于<strong>滤除高频噪声</strong>或<strong>信号平滑</strong>。</p>
+<img src="/2025/10/07/PE03/image-20251007131858154.png" class>
+
+<p>一个简单的RC低通滤波器，截止频率（-3dB点）为：<br>$$<br>f_c &#x3D; \frac{1}{2πRC}<br>$$<br>低于fc的频率可以通过，高于fc的频率被衰减。这个特性被广泛用于电源去耦、ADC输入抗混叠滤波、PWM信号平滑和按键消抖等场景。</p>
+<p>那么，R和C应该如何搭配？电阻选多大合适？</p>
+<p><strong>ADC输入滤波：1kΩ ~ 10kΩ</strong></p>
+<ul>
+<li>配合100nF电容：fc &#x3D; 1.6kHz ~ 160Hz</li>
+<li>既能滤除高频噪声，又不影响ADC采样</li>
+</ul>
+<p><strong>电源去耦：0Ω ~ 100Ω</strong></p>
+<ul>
+<li>有些设计直接用0Ω（铁氧体磁珠），配合μF级电容</li>
+<li>或用10Ω-100Ω配合10μF电容，fc在几百Hz到几kHz</li>
+</ul>
+<p><strong>按键消抖：10kΩ</strong></p>
+<ul>
+<li>配合0.1μF电容：fc &#x3D; 159Hz，τ &#x3D; 1ms</li>
+<li>可以滤除机械抖动（通常几十ms内的高频抖动）</li>
+</ul>
+<h4 id="工作原理与计算实例-3"><a href="#工作原理与计算实例-3" class="headerlink" title="工作原理与计算实例"></a>工作原理与计算实例</h4><p><strong>例1：ADC输入抗混叠滤波</strong></p>
+<p>假设ADC采样率10kHz，根据奈奎斯特定理，信号带宽应小于5kHz。为了防止混叠，设计一个截止频率fc &#x3D; 2kHz的低通滤波器。</p>
+<p>选择电阻 R &#x3D; <strong>10kΩ</strong>（常规ADC输入阻抗在MΩ级别，10kΩ影响很小）<br>$$<br>C &#x3D; \frac{1}{2π × f_c × R} &#x3D; \frac{1}{2π × 2000 × 10000} ≈ 8nF<br>$$<br>选择标准值 <strong>10nF</strong>，实际截止频率：<br>$$<br> f_c &#x3D; \frac{1}{2π × 10kΩ × 10nF} ≈ 1.6kHz<br>$$<br><strong>例2：电源输入滤波</strong></p>
+<p>某模拟电路对电源纹波敏感，需要在100kHz处衰减20dB以上。</p>
+<p>20dB衰减需要二阶滤波器（-40dB&#x2F;decade），或一阶滤波器在10倍频率处（-20dB&#x2F;decade在10fc）。</p>
+<p>设fc &#x3D; 10kHz，选择：</p>
+<ul>
+<li>R &#x3D; <strong>10Ω</strong>（不影响电源输出能力）</li>
+<li>C &#x3D; 1&#x2F;(2π × 10k × 10) ≈ <strong>1.6μF</strong></li>
+</ul>
+<p>取标准值 <strong>2.2μF</strong>。</p>
+<p><strong>例3：按键消抖</strong></p>
+<p>机械按键的抖动时间通常10-50ms，频率特征在几十Hz。设计消抖电路：</p>
+<p>选择时间常数 τ &#x3D; 10ms（抖动会在3τ &#x3D; 30ms内完全消除）</p>
+<p>RC &#x3D; 10ms</p>
+<p>选择 R &#x3D; <strong>10kΩ</strong>（常规GPIO上拉值）<br>$$<br>C &#x3D; \frac{10ms}{10kΩ} &#x3D; 1μF<br>$$<br>选择标准值 <strong>1μF</strong>。</p>
+<h4 id="多级滤波策略"><a href="#多级滤波策略" class="headerlink" title="多级滤波策略"></a>多级滤波策略</h4><p>对于电源这类要求高的场景，通常采用多级RC滤波：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Vin ──R1──┬──R2──┬── Vout</span><br><span class="line">         C1      C2</span><br><span class="line">         │       │</span><br><span class="line">        GND     GND</span><br></pre></td></tr></table></figure>
+
+<p><strong>经典组合：</strong></p>
+<ul>
+<li>第一级：R1 &#x3D; 10Ω，C1 &#x3D; 10μF（滤除中高频）</li>
+<li>第二级：R2 &#x3D; 100Ω，C2 &#x3D; 1μF（进一步衰减）</li>
+</ul>
+<p>但要注意：每增加一级，压降和响应时间都会增加，需要权衡。</p>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>无论是限流、匹配、反馈还是滤波，电阻选型的核心思想都是<strong>权衡</strong>：</p>
+<ul>
+<li><strong>太小</strong>：功耗大、驱动负担重、滤波效果差</li>
+<li><strong>太大</strong>：易受干扰、响应慢、噪声大</li>
+</ul>
+<p>掌握这些经验范式后，大部分电路设计都能快速找到合适的起点，再根据实测结果微调优化。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>1.一文读懂上拉电阻：工作原理和阻值确定（<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_46152804/article/details/123397704%EF%BC%89">https://blog.csdn.net/m0_46152804/article/details/123397704）</a></p>
+<p>2.一个视频学会电阻的应用（<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV11T4y1Z7mS/?spm_id_from=333.337.search-card.all.click&vd_source=86c6b09721e0893e43fc3b93d929a6c9%EF%BC%89">https://www.bilibili.com/video/BV11T4y1Z7mS/?spm_id_from=333.337.search-card.all.click&amp;vd_source=86c6b09721e0893e43fc3b93d929a6c9）</a></p>
+<p>3.【硬件电路设计30】电阻、电容关键参数选型解析（<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1gKXCYVEnK/?spm_id_from=333.337.search-card.all.click&vd_source=86c6b09721e0893e43fc3b93d929a6c9%EF%BC%89">https://www.bilibili.com/video/BV1gKXCYVEnK/?spm_id_from=333.337.search-card.all.click&amp;vd_source=86c6b09721e0893e43fc3b93d929a6c9）</a></p>
+<p>4.<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/23167435/answer/129524634">https://www.zhihu.com/question/23167435/answer/129524634</a></p>
+<p>5.<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/23167435/answer/741844497">https://www.zhihu.com/question/23167435/answer/741844497</a></p>
+<p>6.5V转3.3V电平的19种方法技巧（<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/11978994982%EF%BC%89">https://zhuanlan.zhihu.com/p/11978994982）</a></p>
+<p>7.DC系列-DC-DC的分压电阻为什么不能随便取值（<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_21794157/article/details/131406567%EF%BC%89">https://blog.csdn.net/qq_21794157/article/details/131406567）</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2025/10/07/PE03/">https://0kr.xin/2025/10/07/PE03/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/10/31/PE04/" title="PE04"><img class="cover" src="/statics/landscape001.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">PE04</div></div><div class="info-2"><div class="info-item-1">3.1基于XMC4500单片机的BUCK输出电压闭环控制的编程3.1.1基于APP方式的XM C4500单片机编程打开英飞凌为XMC系列单片机提供的集成开发环境DAVE软件，如图3-1所示，选择新建CE Project项目，然后输入项目名称，选择XMC4500 Relax Kit开发板，平台会自动配置APP方式编程所需的相关文档和文件夹。        为了实现BUCK电路的输出电压闭环控制，需要单片机的ADC电压采集模块、中断模块和PWM模块。如图3-2所示，点击添加新的APP按钮，在出现的对话框中输入PWM进行搜索，选择PWM[4.1.12]后点击Add，然后依次添加INTERRUPT与PWM两个APP。      为了实现BUCK电路的输出电压闭环控制，需要单片机的ADC电压采集模块、中断模块和PWM模块。如图3-2所示，点击添加新的APP按钮，在出现的对话框中输入PWM进行搜索，选择PWM[4.1.12]后点击Add，然后依次添加INTERRUPT与PWM两个APP。     然后正确设置各APP的参数，如下图3-4所示，将ADC...</div></div></div></a><a class="pagination-related" href="/2025/10/07/PE02/" title="PE02"><img class="cover" src="/statics/landscape003.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">PE02</div></div><div class="info-2"><div class="info-item-1">I²C 介绍 版权声明：本文为CSDN博主「fuhrman82」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。原文链接：https://blog.csdn.net/abcfh123802/article/details/140153815   首先说一下串口通讯，只能在两个设备之间进行，如下图：    若三个设备相互通讯，则每个设备需要两组串口。它们其实是三组相互独立的串口通讯。如下图：   若是四个设备相互通讯就更麻烦了，以此类推。这样一来，最突出的问题是线路连接复杂。   为了解决上述痛点，大佬们设计了一种总线通讯，总线通讯有很多种协议，如：   这里主要介绍IIC（常读作I方C）  通讯，全称Inter-Integrated...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%94%B5%E9%98%BB%E7%9B%B8%E5%85%B3%E8%AE%BE%E8%AE%A1%E5%AE%9A%E5%BC%8F%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">电阻相关设计定式介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%94%B5%E9%98%BB%E5%88%86%E7%B1%BB%E4%B8%8E%E5%8F%82%E6%95%B0%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.1.</span> <span class="toc-text">1.电阻分类与参数介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E8%88%AC%E7%94%B5%E9%98%BB%EF%BC%88%E8%B4%B4%E7%89%87-%E8%89%B2%E7%8E%AF%E7%94%B5%E9%98%BB%EF%BC%89"><span class="toc-number">1.1.1.</span> <span class="toc-text">一般电阻（贴片&#x2F;色环电阻）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NTC%E7%83%AD%E6%95%8F%E7%94%B5%E9%98%BB"><span class="toc-number">1.1.2.</span> <span class="toc-text">NTC热敏电阻</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PTC%E7%83%AD%E6%95%8F%E7%94%B5%E9%98%BB%EF%BC%88%E8%87%AA%E6%81%A2%E5%A4%8D%E4%BF%9D%E9%99%A9%E4%B8%9D%EF%BC%89"><span class="toc-number">1.1.3.</span> <span class="toc-text">PTC热敏电阻（自恢复保险丝）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%8B%E6%95%8F%E7%94%B5%E9%98%BB"><span class="toc-number">1.1.4.</span> <span class="toc-text">压敏电阻</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%B8%B8%E8%A7%81%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1%E5%AE%9A%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">2.常见电路设计定式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%BC%89%E4%B8%8A%E6%8B%89-%E4%B8%8B%E6%8B%89%E7%94%B5%E9%98%BB"><span class="toc-number">1.2.1.</span> <span class="toc-text">1）上拉&#x2F;下拉电阻</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%84%E5%88%99-1%EF%BC%9A%E9%98%BB%E5%80%BC%E4%B8%8D%E8%83%BD%E5%A4%AA%E9%AB%98%E3%80%82"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">规则 1：阻值不能太高。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%84%E5%88%992%EF%BC%9A%E4%BD%86%E5%AE%83%E4%B9%9F%E4%B8%8D%E8%83%BD%E5%A4%AA%E5%B0%8F%E3%80%82"><span class="toc-number">1.2.1.2.</span> <span class="toc-text">规则2：但它也不能太小。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%8F%E9%AA%8C%E6%B3%95%E5%88%99"><span class="toc-number">1.2.1.3.</span> <span class="toc-text">经验法则</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">1.2.1.4.</span> <span class="toc-text">工作原理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%BC%89-%E9%99%90%E6%B5%81%E7%94%B5%E9%98%BB"><span class="toc-number">1.2.2.</span> <span class="toc-text">2） 限流电阻</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E8%AE%A1%E7%AE%97%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">工作原理与计算实例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%9F%E7%8E%87%E6%A0%A1%E9%AA%8C%EF%BC%88%E9%9D%9E%E5%B8%B8%E9%87%8D%E8%A6%81%EF%BC%89"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">功率校验（非常重要）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">其他应用场景</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%EF%BC%89%E8%8A%AF%E7%89%87%E5%8D%8F%E5%90%8C%E7%94%B5%E9%98%BB"><span class="toc-number">1.2.3.</span> <span class="toc-text">3）芯片协同电阻</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BA%90%E7%AB%AF%E4%B8%B2%E8%81%94%E7%94%B5%E9%98%BB%EF%BC%88Series-Termination%EF%BC%89"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">源端串联电阻（Series Termination）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E4%BD%95%E6%97%B6%E9%9C%80%E8%A6%81%E6%B7%BB%E5%8A%A0%E4%B8%B2%E8%81%94%E7%94%B5%E9%98%BB%EF%BC%9F"><span class="toc-number">1.2.3.2.</span> <span class="toc-text">判断何时需要添加串联电阻？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E8%AE%A1%E7%AE%97%E5%AE%9E%E4%BE%8B-1"><span class="toc-number">1.2.3.3.</span> <span class="toc-text">工作原理与计算实例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E6%AE%8A%E6%83%85%E5%86%B5%EF%BC%9A%E7%94%B5%E5%B9%B3%E8%BD%AC%E6%8D%A2"><span class="toc-number">1.2.3.4.</span> <span class="toc-text">特殊情况：电平转换</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%EF%BC%89%E5%8F%8D%E9%A6%88%E7%94%B5%E9%98%BB"><span class="toc-number">1.2.4.</span> <span class="toc-text">4）反馈电阻</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E8%AE%A1%E7%AE%97%E5%AE%9E%E4%BE%8B-2"><span class="toc-number">1.2.4.1.</span> <span class="toc-text">工作原理与计算实例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%B5%E6%BA%90%E5%8F%8D%E9%A6%88%E7%94%B5%E9%98%BB%EF%BC%88Voltage-Divider%EF%BC%89"><span class="toc-number">1.2.4.2.</span> <span class="toc-text">电源反馈电阻（Voltage Divider）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5%EF%BC%89RC%E6%BB%A4%E6%B3%A2%E7%94%B5%E9%98%BB"><span class="toc-number">1.2.4.3.</span> <span class="toc-text">5）RC滤波电阻</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E8%AE%A1%E7%AE%97%E5%AE%9E%E4%BE%8B-3"><span class="toc-number">1.2.4.4.</span> <span class="toc-text">工作原理与计算实例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%9A%E7%BA%A7%E6%BB%A4%E6%B3%A2%E7%AD%96%E7%95%A5"><span class="toc-number">1.2.4.5.</span> <span class="toc-text">多级滤波策略</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.2.5.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="toc-number">1.3.</span> <span class="toc-text">参考文献</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

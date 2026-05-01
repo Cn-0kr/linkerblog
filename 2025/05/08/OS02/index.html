@@ -1,0 +1,452 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>OS02 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="本篇讲解计算机存储结构与CPU缓存相关内容。  了解了CPU的基本工作原理后，我们需要研究计算机如何存储和管理数据。为什么计算机需要多种不同的存储设备？为什么不直接使用一种快速的存储介质？这是因为在速度、容量和成本之间存在权衡，理解这种权衡对于理解计算机系统至关重要。  1. 存储器的层次结构计算机的存储层次结构从上到下依次为：  寄存器：CPU内部，速度最快，容量最小 CPU缓存（L1、L2、L">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OS02">
+<meta property="og:url" content="https://0kr.xin/2025/05/08/OS02/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="本篇讲解计算机存储结构与CPU缓存相关内容。  了解了CPU的基本工作原理后，我们需要研究计算机如何存储和管理数据。为什么计算机需要多种不同的存储设备？为什么不直接使用一种快速的存储介质？这是因为在速度、容量和成本之间存在权衡，理解这种权衡对于理解计算机系统至关重要。  1. 存储器的层次结构计算机的存储层次结构从上到下依次为：  寄存器：CPU内部，速度最快，容量最小 CPU缓存（L1、L2、L">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape001.jpg">
+<meta property="article:published_time" content="2025-05-08T02:05:56.000Z">
+<meta property="article:modified_time" content="2025-05-21T11:40:41.996Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape001.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2025/05/08/OS02/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'OS02',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-05-21 19:40:41'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape001.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">OS02</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">OS02</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-05-08T02:05:56.000Z" title="发表于 2025-05-08 10:05:56">2025-05-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-21T11:40:41.996Z" title="更新于 2025-05-21 19:40:41">2025-05-21</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>10分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>本篇讲解计算机存储结构与CPU缓存相关内容。</p>
+<blockquote>
+<p>了解了CPU的基本工作原理后，我们需要研究计算机如何存储和管理数据。为什么计算机需要多种不同的存储设备？为什么不直接使用一种快速的存储介质？这是因为在速度、容量和成本之间存在权衡，理解这种权衡对于理解计算机系统至关重要。</p>
+</blockquote>
+<h3 id="1-存储器的层次结构"><a href="#1-存储器的层次结构" class="headerlink" title="1. 存储器的层次结构"></a>1. 存储器的层次结构</h3><p>计算机的存储层次结构从上到下依次为：</p>
+<ul>
+<li>寄存器：CPU内部，速度最快，容量最小</li>
+<li>CPU缓存（L1、L2、L3缓存）：CPU内部或附近，速度快，容量较小</li>
+<li>内存（RAM）：主板上，速度较快，容量中等</li>
+<li>固态硬盘（SSD）：速度中等，容量较大</li>
+<li>机械硬盘（HDD）：速度慢，容量大</li>
+<li>网络存储&#x2F;磁带&#x2F;光盘等：速度最慢，容量最大</li>
+</ul>
+<h3 id="2-存储器之间的实际价格和性能差距"><a href="#2-存储器之间的实际价格和性能差距" class="headerlink" title="2. 存储器之间的实际价格和性能差距"></a>2. 存储器之间的实际价格和性能差距</h3><p>磁盘比内存慢几万倍？ 是的，从访问速度来看：</p>
+<ul>
+<li>寄存器访问时间：&lt;1纳秒</li>
+<li>L1缓存访问时间：约1-2纳秒</li>
+<li>L2缓存访问时间：约3-10纳秒</li>
+<li>L3缓存访问时间：约10-20纳秒</li>
+<li>内存访问时间：约60-100纳秒</li>
+<li>SSD访问时间：约25-100微秒（是内存的250-1000倍）</li>
+<li>HDD访问时间：约5-10毫秒（是内存的50,000-100,000倍）</li>
+</ul>
+<p>从价格角度看，层次越高，每GB的成本越高：</p>
+<ul>
+<li>CPU缓存：数百美元&#x2F;GB</li>
+<li>内存：约5-10美元&#x2F;GB</li>
+<li>SSD：约0.1-0.3美元&#x2F;GB</li>
+<li>HDD：约0.02-0.05美元&#x2F;GB</li>
+</ul>
+<h3 id="3-CPU访问存储器、CPU缓存、内存、磁盘的速度差异"><a href="#3-CPU访问存储器、CPU缓存、内存、磁盘的速度差异" class="headerlink" title="3. CPU访问存储器、CPU缓存、内存、磁盘的速度差异"></a>3. CPU访问存储器、CPU缓存、内存、磁盘的速度差异</h3><p>CPU访问不同存储介质的速度差异主要体现在：</p>
+<ul>
+<li>访问寄存器：几个时钟周期</li>
+<li>访问L1缓存：约3-4个时钟周期</li>
+<li>访问L2缓存：约10-12个时钟周期</li>
+<li>访问L3缓存：约30-40个时钟周期</li>
+<li>访问内存：约100-300个时钟周期</li>
+<li>访问SSD：约25,000个时钟周期</li>
+<li>访问HDD：约1,000,000个时钟周期</li>
+</ul>
+<p>这就是为什么缓存对CPU性能至关重要，因为它极大地减少了CPU等待数据的时间。</p>
+<h2 id="四、CPU缓存"><a href="#四、CPU缓存" class="headerlink" title="四、CPU缓存"></a>四、CPU缓存</h2><blockquote>
+<p>我们已经看到CPU和内存之间存在巨大的速度差距，这个差距还在不断扩大。为什么我们需要CPU缓存？因为如果CPU每次都直接从内存读取数据，将会浪费大量时间在等待上，使得CPU的计算能力无法充分发挥。CPU缓存就是为了解决这一”存储器墙”（Memory Wall）问题而设计的。</p>
+</blockquote>
+<h3 id="1-CPU缓存的作用"><a href="#1-CPU缓存的作用" class="headerlink" title="1. CPU缓存的作用"></a>1. CPU缓存的作用</h3><p>CPU缓存的作用：</p>
+<ul>
+<li>缩小CPU与内存之间的速度差距</li>
+<li>提高数据访问速度</li>
+<li>减少内存访问次数</li>
+<li>提高处理器利用率</li>
+</ul>
+<h3 id="2-CPU-Cache有多快？"><a href="#2-CPU-Cache有多快？" class="headerlink" title="2. CPU Cache有多快？"></a>2. CPU Cache有多快？</h3><p>CPU缓存的速度体现在：</p>
+<ul>
+<li>L1缓存：约1-2纳秒，带宽约700-1500GB&#x2F;s</li>
+<li>L2缓存：约3-10纳秒，带宽约200-500GB&#x2F;s</li>
+<li>L3缓存：约10-20纳秒，带宽约100-200GB&#x2F;s</li>
+</ul>
+<p>相比之下，内存访问时间约60-100纳秒，带宽约20-60GB&#x2F;s。</p>
+<h3 id="3-CPU缓存的数据结构和读取过程"><a href="#3-CPU缓存的数据结构和读取过程" class="headerlink" title="3. CPU缓存的数据结构和读取过程"></a>3. CPU缓存的数据结构和读取过程</h3><p>CPU缓存的数据结构和读取过程是怎样的？</p>
+<ul>
+<li>缓存由多个缓存行（Cache Line）组成，每行通常为64字节</li>
+<li>缓存通常采用组相联（Set-associative）结构</li>
+<li>当CPU需要访问内存时，会先检查数据是否在缓存中</li>
+<li>如果在缓存中（缓存命中），直接从缓存获取数据</li>
+<li>如果不在缓存中（缓存未命中），则从内存加载数据到缓存，同时返回给CPU</li>
+<li>缓存使用特定的替换策略（如LRU、FIFO等）决定哪些数据在缓存满时被替换出去</li>
+</ul>
+<h3 id="4-如何写出让CPU跑得更快的代码？"><a href="#4-如何写出让CPU跑得更快的代码？" class="headerlink" title="4. 如何写出让CPU跑得更快的代码？"></a>4. 如何写出让CPU跑得更快的代码？</h3><blockquote>
+<p>既然CPU缓存对性能如此重要，作为程序员，我们如何编写代码来充分利用缓存机制呢？以下是一些优化原则，它们可以显著提高程序的运行效率。</p>
+</blockquote>
+<p>编写高效代码的原则：</p>
+<ol>
+<li><p><strong>空间局部性优化</strong>：将相关数据放在一起</p>
+</li>
+<li><p><strong>时间局部性优化</strong>：重复使用最近访问的数据</p>
+</li>
+<li><p>避免缓存抖动</p>
+<p>：</p>
+<ul>
+<li>遍历数组时按内存布局顺序访问</li>
+<li>避免在热点代码中频繁跨越大内存</li>
+</ul>
+</li>
+<li><p>减少内存访问</p>
+<p>：</p>
+<ul>
+<li>使用局部变量</li>
+<li>避免不必要的指针间接访问</li>
+</ul>
+</li>
+<li><p><strong>数据对齐</strong>：按照缓存行大小对齐数据结构</p>
+</li>
+<li><p>循环优化</p>
+<p>：</p>
+<ul>
+<li>循环展开</li>
+<li>循环分块（Loop Tiling）</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>这些优化技术为什么有效？因为它们都基于一个共同目标：提高缓存命中率，减少CPU等待数据的时间。</p>
+</blockquote>
+<h3 id="5-如何提升数据缓存的命中率？"><a href="#5-如何提升数据缓存的命中率？" class="headerlink" title="5. 如何提升数据缓存的命中率？"></a>5. 如何提升数据缓存的命中率？</h3><blockquote>
+<p>为什么提高缓存命中率如此重要？每当发生缓存未命中，CPU必须等待数据从更慢的内存中加载，这会导致数百个时钟周期的延迟。在性能关键的应用中，这可能成为主要瓶颈。以下是提高数据缓存命中率的方法：</p>
+</blockquote>
+<p>提高数据缓存命中率的方法：</p>
+<ol>
+<li>合理组织数据结构：<ul>
+<li>使用连续的内存布局</li>
+<li>避免过度使用指针</li>
+</ul>
+</li>
+<li>数据预取：<ul>
+<li>使用预取指令</li>
+<li>在数据需要之前将其加载到缓存</li>
+</ul>
+</li>
+<li>避免缓存行共享：<ul>
+<li>防止不同线程频繁修改同一缓存行中的数据</li>
+</ul>
+</li>
+<li>分块处理：<ul>
+<li>将大型数据集分解为适合缓存大小的块</li>
+</ul>
+</li>
+<li>优化访问模式：<ul>
+<li>按照内存中的存储顺序访问数据</li>
+<li>避免随机访问大型数据结构</li>
+</ul>
+</li>
+</ol>
+<h3 id="6-如何提升指令缓存的命中率？"><a href="#6-如何提升指令缓存的命中率？" class="headerlink" title="6. 如何提升指令缓存的命中率？"></a>6. 如何提升指令缓存的命中率？</h3><p>提高指令缓存命中率的方法：</p>
+<ol>
+<li>函数排列优化：<ul>
+<li>将相关函数放在一起</li>
+<li>使用链接器属性控制函数的排列顺序</li>
+</ul>
+</li>
+<li>避免过度使用虚函数和间接调用</li>
+<li>内联小函数减少函数调用开销</li>
+<li>减少代码分支和条件判断</li>
+<li>优化热点函数的大小，使其适合指令缓存</li>
+</ol>
+<h3 id="7-如何提升多核CPU的缓存命中率？"><a href="#7-如何提升多核CPU的缓存命中率？" class="headerlink" title="7. 如何提升多核CPU的缓存命中率？"></a>7. 如何提升多核CPU的缓存命中率？</h3><p>提高多核CPU缓存命中率的方法：</p>
+<ol>
+<li>避免伪共享（False Sharing）：<ul>
+<li>确保线程私有数据在不同的缓存行</li>
+<li>使用缓存行填充（padding）分隔频繁访问的变量</li>
+</ul>
+</li>
+<li>数据分区：<ul>
+<li>为每个核心分配独立的数据区域</li>
+</ul>
+</li>
+<li>亲和性调度：<ul>
+<li>将相关任务调度到同一核心或同一处理器</li>
+</ul>
+</li>
+<li>减少线程间通信和同步</li>
+<li>使用适当的锁粒度，避免全局锁</li>
+</ol>
+<h2 id="五、CPU缓存一致性"><a href="#五、CPU缓存一致性" class="headerlink" title="五、CPU缓存一致性"></a>五、CPU缓存一致性</h2><blockquote>
+<p>随着多核处理器的普及，出现了新的挑战：如何确保多个核心的缓存中的数据保持一致？为什么这是一个问题？因为当多个核心同时缓存同一块内存数据，并且其中一个核心修改了数据，其他核心可能仍在使用旧数据，导致程序错误。这就是缓存一致性问题，下面我们将探讨它的原因和解决方案。</p>
+</blockquote>
+<h3 id="1-CPU缓存一致性"><a href="#1-CPU缓存一致性" class="headerlink" title="1. CPU缓存一致性"></a>1. CPU缓存一致性</h3><p>缓存一致性是指在多处理器系统中，确保多个处理器缓存中对应同一内存位置的数据保持一致的机制。</p>
+<h3 id="2-缓存一致性问题的产生"><a href="#2-缓存一致性问题的产生" class="headerlink" title="2. 缓存一致性问题的产生"></a>2. 缓存一致性问题的产生</h3><p>在多核CPU环境中，当多个核心同时拥有同一内存地址的缓存副本时，如果其中一个核心修改了缓存数据，其他核心的缓存副本将变得无效，造成数据不一致。</p>
+<h3 id="3-MESI协议是什么？"><a href="#3-MESI协议是什么？" class="headerlink" title="3. MESI协议是什么？"></a>3. MESI协议是什么？</h3><p>MESI协议是什么？ MESI协议是一种广泛使用的缓存一致性协议，名称来源于缓存行可能的四种状态的首字母：</p>
+<ul>
+<li>**M (Modified)**：缓存行已被修改，与内存不一致，其他处理器缓存中没有该行的副本</li>
+<li>**E (Exclusive)**：缓存行未被修改，与内存一致，其他处理器缓存中没有该行的副本</li>
+<li>**S (Shared)**：缓存行未被修改，与内存一致，其他处理器缓存中可能有该行的副本</li>
+<li>**I (Invalid)**：缓存行无效，必须从内存或其他处理器的缓存获取最新数据</li>
+</ul>
+<h3 id="4-如何解决多核CPU场景下的缓存一致性问题？"><a href="#4-如何解决多核CPU场景下的缓存一致性问题？" class="headerlink" title="4. 如何解决多核CPU场景下的缓存一致性问题？"></a>4. 如何解决多核CPU场景下的缓存一致性问题？</h3><p>解决多核CPU缓存一致性问题的方法：</p>
+<ol>
+<li>使用缓存一致性协议（如MESI协议）</li>
+<li>总线嗅探（Bus Snooping）：<ul>
+<li>每个处理器监听总线上的内存操作</li>
+<li>当检测到其他处理器修改了自己缓存中的数据时，将该缓存行标记为无效</li>
+</ul>
+</li>
+<li>目录协议（Directory Protocol）：<ul>
+<li>在大型多处理器系统中使用</li>
+<li>使用中央目录跟踪每个缓存行的状态和位置</li>
+</ul>
+</li>
+<li>软件层面的解决方案：<ul>
+<li>内存屏障（Memory Barrier）</li>
+<li>原子操作</li>
+<li>锁机制</li>
+</ul>
+</li>
+</ol>
+<h2 id="六、CPU任务执行与共享"><a href="#六、CPU任务执行与共享" class="headerlink" title="六、CPU任务执行与共享"></a>六、CPU任务执行与共享</h2><blockquote>
+<p>理解了CPU的基本工作原理和缓存机制后，我们需要思考：在现代多任务操作系统中，CPU如何在多个程序之间切换？多个程序如何共享CPU资源？这些问题关系到操作系统的核心功能：进程管理和调度。</p>
+</blockquote>
+<h3 id="1-CPU是如何执行任务的？"><a href="#1-CPU是如何执行任务的？" class="headerlink" title="1. CPU是如何执行任务的？"></a>1. CPU是如何执行任务的？</h3><p>CPU执行任务的机制：</p>
+<ol>
+<li>时间片轮转：操作系统将CPU时间分割成小片段（时间片），轮流分配给不同进程</li>
+<li>进程调度：操作系统基于优先级、等待时间等因素，决定哪个进程获得CPU资源</li>
+<li>中断处理：CPU通过中断机制响应外部事件，临时挂起当前任务</li>
+<li>上下文切换：保存当前任务的状态，恢复另一个任务的状态</li>
+</ol>
+<h3 id="2-什么是CPU共享的问题？"><a href="#2-什么是CPU共享的问题？" class="headerlink" title="2. 什么是CPU共享的问题？"></a>2. 什么是CPU共享的问题？</h3><p>CPU共享的主要问题包括：</p>
+<ul>
+<li>资源竞争：多个进程&#x2F;线程争用CPU资源</li>
+<li>优先级反转：低优先级任务占用高优先级任务所需的资源</li>
+<li>饥饿：某些进程&#x2F;线程长时间无法获取CPU资源</li>
+<li>死锁：两个或多个进程互相等待对方持有的资源</li>
+<li>缓存一致性问题：多核环境下缓存数据的同步开销</li>
+</ul>
+<h3 id="3-如何解决CPU共享的问题？"><a href="#3-如何解决CPU共享的问题？" class="headerlink" title="3. 如何解决CPU共享的问题？"></a>3. 如何解决CPU共享的问题？</h3><p>解决CPU共享问题的方法：</p>
+<ol>
+<li>优化调度算法：<ul>
+<li>多级反馈队列</li>
+<li>公平调度</li>
+<li>实时调度</li>
+</ul>
+</li>
+<li>进程优先级管理</li>
+<li>使用适当的同步原语：<ul>
+<li>互斥锁（Mutex）</li>
+<li>读写锁（Read-Write Lock）</li>
+<li>无锁数据结构</li>
+</ul>
+</li>
+<li>减少上下文切换：<ul>
+<li>批处理相关任务</li>
+<li>使用协程或用户级线程</li>
+</ul>
+</li>
+<li>进程&#x2F;线程亲和性：将相关任务绑定到同一CPU核心</li>
+</ol>
+<h3 id="4-实际案例分析"><a href="#4-实际案例分析" class="headerlink" title="4. 实际案例分析"></a>4. 实际案例分析</h3><p>示例：多线程程序中的计数器问题</p>
+<p>问题：多个线程同时增加一个共享计数器的值</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 不安全的实现</span></span><br><span class="line"><span class="type">int</span> counter = <span class="number">0</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">increment</span><span class="params">()</span> &#123;</span><br><span class="line">    counter++; <span class="comment">// 这实际上是读取-修改-写入操作，在多线程环境中不是原子的</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 安全的实现</span></span><br><span class="line"><span class="type">int</span> counter = <span class="number">0</span>;</span><br><span class="line"><span class="type">pthread_mutex_t</span> mutex = PTHREAD_MUTEX_INITIALIZER;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">safe_increment</span><span class="params">()</span> &#123;</span><br><span class="line">    pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    counter++;</span><br><span class="line">    pthread_mutex_unlock(&amp;mutex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 更高效的实现（使用原子操作）</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdatomic.h&gt;</span></span></span><br><span class="line"><span class="type">atomic_int</span> counter = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">atomic_increment</span><span class="params">()</span> &#123;</span><br><span class="line">    atomic_fetch_add(&amp;counter, <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个例子展示了如何通过互斥锁和原子操作解决多线程环境中的共享资源访问问题。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<p>让我们回顾一下今天学习的内容。我们从CPU的基本概念出发，探索了程序执行的过程，研究了计算机的存储层次结构，深入理解了CPU缓存的工作原理，讨论了多核环境下的缓存一致性问题，最后分析了CPU如何执行和共享任务。</p>
+</blockquote>
+<p>本课程介绍了CPU的基本工作原理、计算机存储结构、CPU缓存系统以及多核环境下的一致性问题。通过理解这些概念，我们可以：</p>
+<ol>
+<li>更好地理解操作系统如何管理和调度CPU资源</li>
+<li>编写更高效的代码，充分利用CPU缓存机制</li>
+<li>设计并实现更安全、更高效的多线程程序</li>
+<li>理解现代计算机系统中的性能瓶颈及其解决方案</li>
+</ol>
+<blockquote>
+<p>这些硬件基础知识不仅对理论学习重要，对实际工作也有直接的指导意义。在未来的学习中，我们将基于这些知识，进一步探索操作系统如何管理进程、内存、文件系统等资源。记住，理解硬件是理解软件的基础，特别是操作系统这样直接与硬件交互的系统软件。</p>
+</blockquote>
+<p>通过深入理解这些硬件基础知识，我们能够开发出更高效、更稳定的软件系统。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2025/05/08/OS02/">https://0kr.xin/2025/05/08/OS02/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape001.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related  no-desc" href="/2025/05/08/OS03/" title="OS03"><img class="cover" src="/statics/landscape004.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">OS03</div></div></div></a><a class="pagination-related" href="/2025/05/08/OS01/" title="OS01"><img class="cover" src="/statics/landscape002.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">OS01</div></div><div class="info-2"><div class="info-item-1">本篇讲述操作系统的硬件结构相关知识。 一、基础概念 在开始探讨复杂的计算机系统之前，我们需要先了解一些基础概念，包括冯诺依曼模型以及系统的基本组成。这些概念是我们理解后续内容的基础。  1. 冯诺依曼模型介绍冯诺依曼模型是现代计算机体系结构的基础，包含五个基本部件：运算器、控制器、存储器、输入设备和输出设备。该模型的核心思想是”存储程序”，即程序和数据都存储在同一个存储器中。 冯诺依曼模型有哪些组成？    中央处理器（运算器和控制器） 内存（存储器，图中为存储单元） 总线（连接各部件） 输入、输出设备 其他存储设备（图中未显示）  运算器、控制器是在中央处理器里的，存储器就我们常见的内存，输入输出设备则是计算机外接的设备比如键盘就是输入设备，显示器就是输出设备。 存储单元和输入输出设备要与中央处理器打交道的话，离不开总线。所以，它们之间的关系如下图：   接下来，分别介绍内存、中央处理器、总线、输入输出设备。 内存我们的程序和数据都是存储在内存，存储的区域是线性的。 在计算机数据存储中，存储数据的基本单位是字节（byte），1字节等于8位（8...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">1. 存储器的层次结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%AD%98%E5%82%A8%E5%99%A8%E4%B9%8B%E9%97%B4%E7%9A%84%E5%AE%9E%E9%99%85%E4%BB%B7%E6%A0%BC%E5%92%8C%E6%80%A7%E8%83%BD%E5%B7%AE%E8%B7%9D"><span class="toc-number">2.</span> <span class="toc-text">2. 存储器之间的实际价格和性能差距</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-CPU%E8%AE%BF%E9%97%AE%E5%AD%98%E5%82%A8%E5%99%A8%E3%80%81CPU%E7%BC%93%E5%AD%98%E3%80%81%E5%86%85%E5%AD%98%E3%80%81%E7%A3%81%E7%9B%98%E7%9A%84%E9%80%9F%E5%BA%A6%E5%B7%AE%E5%BC%82"><span class="toc-number">3.</span> <span class="toc-text">3. CPU访问存储器、CPU缓存、内存、磁盘的速度差异</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81CPU%E7%BC%93%E5%AD%98"><span class="toc-number"></span> <span class="toc-text">四、CPU缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-CPU%E7%BC%93%E5%AD%98%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.</span> <span class="toc-text">1. CPU缓存的作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-CPU-Cache%E6%9C%89%E5%A4%9A%E5%BF%AB%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">2. CPU Cache有多快？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-CPU%E7%BC%93%E5%AD%98%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E8%AF%BB%E5%8F%96%E8%BF%87%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">3. CPU缓存的数据结构和读取过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E8%AE%A9CPU%E8%B7%91%E5%BE%97%E6%9B%B4%E5%BF%AB%E7%9A%84%E4%BB%A3%E7%A0%81%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">4. 如何写出让CPU跑得更快的代码？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%A6%82%E4%BD%95%E6%8F%90%E5%8D%87%E6%95%B0%E6%8D%AE%E7%BC%93%E5%AD%98%E7%9A%84%E5%91%BD%E4%B8%AD%E7%8E%87%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">5. 如何提升数据缓存的命中率？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E5%A6%82%E4%BD%95%E6%8F%90%E5%8D%87%E6%8C%87%E4%BB%A4%E7%BC%93%E5%AD%98%E7%9A%84%E5%91%BD%E4%B8%AD%E7%8E%87%EF%BC%9F"><span class="toc-number">6.</span> <span class="toc-text">6. 如何提升指令缓存的命中率？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E5%A6%82%E4%BD%95%E6%8F%90%E5%8D%87%E5%A4%9A%E6%A0%B8CPU%E7%9A%84%E7%BC%93%E5%AD%98%E5%91%BD%E4%B8%AD%E7%8E%87%EF%BC%9F"><span class="toc-number">7.</span> <span class="toc-text">7. 如何提升多核CPU的缓存命中率？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81CPU%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7"><span class="toc-number"></span> <span class="toc-text">五、CPU缓存一致性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-CPU%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7"><span class="toc-number">1.</span> <span class="toc-text">1. CPU缓存一致性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98%E7%9A%84%E4%BA%A7%E7%94%9F"><span class="toc-number">2.</span> <span class="toc-text">2. 缓存一致性问题的产生</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-MESI%E5%8D%8F%E8%AE%AE%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">3. MESI协议是什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%A4%9A%E6%A0%B8CPU%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">4. 如何解决多核CPU场景下的缓存一致性问题？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81CPU%E4%BB%BB%E5%8A%A1%E6%89%A7%E8%A1%8C%E4%B8%8E%E5%85%B1%E4%BA%AB"><span class="toc-number"></span> <span class="toc-text">六、CPU任务执行与共享</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-CPU%E6%98%AF%E5%A6%82%E4%BD%95%E6%89%A7%E8%A1%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">1. CPU是如何执行任务的？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BB%80%E4%B9%88%E6%98%AFCPU%E5%85%B1%E4%BA%AB%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">2. 什么是CPU共享的问题？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3CPU%E5%85%B1%E4%BA%AB%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">3. 如何解决CPU共享的问题？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%AE%9E%E9%99%85%E6%A1%88%E4%BE%8B%E5%88%86%E6%9E%90"><span class="toc-number">4.</span> <span class="toc-text">4. 实际案例分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number"></span> <span class="toc-text">总结</span></a></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

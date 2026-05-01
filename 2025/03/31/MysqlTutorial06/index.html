@@ -1,0 +1,480 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>MysqlTutorial06 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="慢查询解决慢SQL的路径：   MySQL 有一个慢查询日志，会帮我们记录执行耗时超过n秒的 SQL 语句，可以通过这个慢查询日志，发现慢SQL. 慢查询日志默认是关闭状态，可以通过以下命令查看慢查询日志的开关状态和慢查询日志路径：   可以将参数设置为on，或者修改配置文件my.cnf来开启慢查询日志，如： 1234[mysqld]slow_query_log&#x3D; ON #开启慢查询日志的开关sl">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MysqlTutorial06">
+<meta property="og:url" content="https://0kr.xin/2025/03/31/MysqlTutorial06/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="慢查询解决慢SQL的路径：   MySQL 有一个慢查询日志，会帮我们记录执行耗时超过n秒的 SQL 语句，可以通过这个慢查询日志，发现慢SQL. 慢查询日志默认是关闭状态，可以通过以下命令查看慢查询日志的开关状态和慢查询日志路径：   可以将参数设置为on，或者修改配置文件my.cnf来开启慢查询日志，如： 1234[mysqld]slow_query_log&#x3D; ON #开启慢查询日志的开关sl">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape003.jpg">
+<meta property="article:published_time" content="2025-03-31T00:24:58.000Z">
+<meta property="article:modified_time" content="2025-03-31T04:59:06.514Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape003.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2025/03/31/MysqlTutorial06/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MysqlTutorial06',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-03-31 12:59:06'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape003.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">MysqlTutorial06</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">MysqlTutorial06</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-03-31T00:24:58.000Z" title="发表于 2025-03-31 08:24:58">2025-03-31</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-03-31T04:59:06.514Z" title="更新于 2025-03-31 12:59:06">2025-03-31</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">6.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>19分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="慢查询"><a href="#慢查询" class="headerlink" title="慢查询"></a>慢查询</h1><p>解决慢SQL的路径：</p>
+<img src="/2025/03/31/MysqlTutorial06/image-20250331083928476.png" class>
+
+<p>MySQL 有一个慢查询日志，会帮我们记录执行耗时超过n秒的 SQL 语句，可以通过这个慢查询日志，发现慢SQL.</p>
+<p>慢查询日志默认是关闭状态，可以通过以下命令查看慢查询日志的开关状态和慢查询日志路径：</p>
+<img src="/2025/03/31/MysqlTutorial06/image-20250331084037341.png" class>
+
+<p>可以将参数设置为on，或者修改配置文件my.cnf来开启慢查询日志，如：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">slow_query_log<span class="operator">=</span> <span class="keyword">ON</span> #开启慢查询日志的开关</span><br><span class="line">slow_query_log_file<span class="operator">=</span><span class="operator">/</span>var<span class="operator">/</span>lib<span class="operator">/</span>mysql<span class="operator">/</span>my<span class="operator">-</span>slow.log  #慢查询日志的目录和文件名信息</span><br><span class="line">long_query_time<span class="operator">=</span><span class="number">2</span> #设置慢査询的阈值为<span class="number">2</span>秒，超出此设定值的<span class="keyword">SQL</span>即被记录到慢查询日志</span><br></pre></td></tr></table></figure>
+
+<p>在我们想排查接口响应慢的原因的时候，可以考虑把慢査询日志打开，看下接口响应慢的原因是不是慢SQL导致的，如果是的话，就可以针对日志中SQL进行分析和调优了。</p>
+<p>接下来，为了分析查询执行慢的原因，需要使用explain来查看执行计划。</p>
+<img src="/2025/03/31/MysqlTutorial06/image-20250331084515040.png" class>
+
+<p>逐列解释：</p>
+<p><strong>table</strong></p>
+<p>table 显示的是这一行的数据是关于哪张表的，上述内容中显示的表名就是 user。</p>
+<p><strong>type</strong></p>
+<p>这是重要的列，显示查询扫描方式使用了何种类型，类型还是蛮多的，常见扫描类型的执行效率从高到低的顺序为：</p>
+<ul>
+<li>const (结果只有一条的主键或唯一索引扫描)：使用了主键或者唯一索引与常量值进行比较，比如 select name from product where id&#x3D;1。</li>
+<li>eq_ref (唯一索引扫描)：使用主键或唯一索引时产生的访问方式，通常使用在多表联查中。比如，对两张表进行联查，关联条件是两张表的 user_id 相等，且 user_id 是唯一索引，那么使用 EXPLAIN 进行执行计划查看的时候，type 就会显示 eq_ref。</li>
+<li>ref (非唯一索引扫描)：表示采用了非唯一索引，或者是唯一索引的非唯一性前缀，返回数据返回可能是多条。因为虽然使用了索引，但该索引列的值并不唯一，有重复。这样即使使用索引快速查找到了第一条数据，仍然不能停止，要进行目标值附近的小范围扫描。但它的好处是它并不需要扫全表，因为索引是有序的，即便有重复值，也是在一个非常小的范围内扫描。</li>
+<li>range (索引范围扫描)：表示采用了索引范围扫描，一般在 where 子句中使用 &lt;、&gt;、in、between 等关键词，只检索给定范围的行，属于范围查找。从这一级别开始，索引的作用会越来越明显，因此我们需要尽量让 SQL 查询可以使用到 range 这一级别及以上的 type 访问方式。</li>
+<li>index (全索引扫描)：对二级索引进行全扫描，性能跟全表扫描差不多。</li>
+<li>All (全表扫描)：全表数据扫描，性能最差，应该尽量避免，上面的示例就进行了全表扫描。</li>
+</ul>
+<p><strong>key</strong></p>
+<p>key 表示实际使用的索引。如果为 Null，则没有使用索引，这种情况也是尤其需要注意的。</p>
+<p><strong>rows</strong></p>
+<p>rows 表明 SQL 返回请求数据的行数，这一行非常重要，返回的内容中 SQL 遍历了 9975686 行，其实也证明了这条 SQL 遍历了一张表。</p>
+<p><strong>extra</strong></p>
+<p>关于 extra，我列两个需要注意的状态，因为这样的状态是会对性能产生不良的影响，意味着查询需要优化了。</p>
+<ul>
+<li>Using filesort: 表示SQL 需要进行额外的步骤来发现如何对返回的行排序。它会根据连接类型、存储排序键值和匹配条件的全部行记录进行排序。</li>
+<li>Using temporary: 表示MySQL 需要创建一个临时表来存储结果，非常消耗性能。</li>
+</ul>
+<p>还可以使用 <code>mysqldumpslow</code> 这种自带的解析工具进行对慢查询的各种操作，比如：</p>
+<ul>
+<li>-s ORDER : 按照指定的方式排序结果<ul>
+<li><code>t</code>: 按查询时间排序</li>
+<li><code>l</code>: 按锁定时间排序</li>
+<li><code>r</code>: 按返回的行数排序</li>
+<li><code>c</code>: 按执行次数排序</li>
+<li><code>at</code>: 按平均查询时间排序</li>
+<li><code>al</code>: 按平均锁定时间排序</li>
+<li><code>ar</code>: 按平均返回行数排序</li>
+</ul>
+</li>
+<li><code>-t N</code>: 只显示前 N 条查询</li>
+<li><code>-g PATTERN</code>: 只显示包含特定模式的查询</li>
+<li><code>-a</code>: 不要将数字抽象为 N，字符串抽象为 S</li>
+<li><code>-n N</code>: 抽象数字，保留小数点后 N 位</li>
+<li><code>-r</code>: 反转排序顺序（默认是降序，使用 -r 变为升序）</li>
+</ul>
+<p>例如说，显示执行时间最长的 10 条查询就是这样的：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldumpslow <span class="operator">-</span>s t <span class="operator">-</span>t <span class="number">10</span> <span class="operator">/</span>var<span class="operator">/</span>log<span class="operator">/</span>mysql<span class="operator">/</span>slow<span class="operator">-</span>query.log</span><br></pre></td></tr></table></figure>
+
+<p>至于如何优化sql，那就要放到优化篇去讲了。</p>
+<h1 id="undolog"><a href="#undolog" class="headerlink" title="undolog"></a>undolog</h1><ul>
+<li>事务回滚</li>
+<li>ReadView + undo log 实现 MVCC（多版本并发控制）</li>
+</ul>
+<p>在进行增删改操作时，MySQL会隐式开启事务执行这些语句。因此，如果我们每次在事务执行过程中记录下回滚时需要的信息到一个日志里，那么在事务执行中途发生了MySQL 崩溃后，就不用担心无法回滚到事务之前的数据，我们可以通过这个日志回滚到事务之前的数据。实现这一机制就是 <strong>undo log（回滚日志）</strong>，它保证了事务的 ACID 特性中的<strong>原子性（Atomicity）</strong>。</p>
+<p>undo log 是一种用于撤销回退的日志。在事务没提交之前，MySQL 会先记录更新前的数据到 undo log 日志文件里面，当事务回滚时，可以利用 undo log 来进行回滚。如下图:</p>
+<img src="/2025/03/31/MysqlTutorial06/image-20250331090627858.png" class>
+
+<p>回滚具体如何操作呢？也很简单，把插入回滚成删除，删除回滚成插入，更新回滚为更新为旧值即可。</p>
+<p>然而，针对 delete 操作和 update 操作会有一些特殊的处理：</p>
+<ul>
+<li><p>delete操作实际上不会立即直接删除，而是将delete对象打上delete flag，标记为删除，最终的删除操作是purge线程完成的。</p>
+</li>
+<li><p>update分为两种情况:update的列是否是主键列：</p>
+</li>
+</ul>
+<p>​	·如果不是主键列，在undo log中直接反向记录是如何update的。即update是直接进行的。</p>
+<p>​	·如果是主键列，update分两部执行:先删除该行，再插入一行目标行。</p>
+<p>另外，undo log 还有一个作用，通过 ReadView+ undo log 实现 MVCC(多版本并发控制)。</p>
+<img src="/2025/03/31/MysqlTutorial06/image-20250331091237967.png" class>
+
+<p>一条记录的每一次更新操作产生的 undo log 格式都有一个 roll_pointer 指针和一个 trx_id 事务id:</p>
+<ul>
+<li>通过 trx_id 可以知道该记录是被哪个事务修改的;</li>
+<li>通过 roll_pointer 指针可以将这些 undo log 串成一个链表，这个链表就被称为版本链;</li>
+</ul>
+<p>对于「读提交」和「可重复读」隔离级别的事务来说，它们的快照读(普通 select 语句)是通过 ReadView + undo log 来实现的，它们的区别在于创建 Read View 的时机不同:</p>
+<ul>
+<li>[读提交」隔离级别是在每个 select 都会生成一个新的 Read View，也意味着，事务期间的多次读取同-条数据，前后两次读的数据可能会出现不一致，因为可能这期间另外一个事务修改了该记录，并提交了事务。</li>
+<li>[可重复读|隔离级别是启动事务时生成一个 Read View，然后整个事务期间都在用这个 Read View，这样就保证了在事务期间读到的数据都是事务启动前的记录。</li>
+</ul>
+<p>这两个隔离级别实现是通过「事务的 Read View 里的字段」和「记录中的两个隐藏列(trx_id 和roll_pointer)」的比对，如果不满足可见性，就会顺着 undo log 版本链里找到满足其可见性的记录，从而控制并发事务访问同一个记录时的行为，这就叫 MVCC(多版本并发控制)。</p>
+<h1 id="redolog"><a href="#redolog" class="headerlink" title="redolog"></a>redolog</h1><h2 id="Why-redolog？"><a href="#Why-redolog？" class="headerlink" title="Why redolog？"></a>Why redolog？</h2><ul>
+<li>crash-safe</li>
+<li><strong>将写操作从「随机写」变成了「顺序写」</strong>，提升 MySQL 写入磁盘的性能</li>
+</ul>
+<p>我们知道为了提高数据库的IO性能，在存储引擎层有Buffer Pool这么个玩意儿作为缓存：</p>
+<img src="/2025/03/31/MysqlTutorial06/image-20250331091823880.png" class>
+
+<p>它的作用是：</p>
+<ul>
+<li>当读取数据时，如果数据存在于 Buffer Pool 中，客户端就会直接读取 Buffer Pool中的数据，否则再去磁盘中读取。</li>
+<li>当修改数据时，如果数据存在于 Buffer Pool 中，那直接修改 Buffer Pool 中数据所在的页，然后将其页设置为脏页(该页的内存数据和磁盘上的数据已经不一致)，为了减少磁盘I&#x2F;0，不会立即将脏页写入磁盘，后续由后台线程选择一个合适的时机将脏页写入到磁盘。</li>
+</ul>
+<p>Buffer Pool缓存页存储的内容有哪些呢？</p>
+<img src="/2025/03/31/MysqlTutorial06/image-20250331092033863.png" class>
+
+<p>开启事务后，InnoDB 层更新记录前，首先要记录相应的 undo log，如果是更新操作，需要把被更新的列的旧值记下来，也就是要生成一条 undo log，undo log 会写入 Buffer Pool 中的 Undo 页面。</p>
+<p>那么问题来了，Buffer Pool 是基于内存的，而内存总是不可靠。万一断电重启，还没来得及落盘的脏页数据就会丢失，包括undo页。因此，buffer pool 中对 undo 页的修改也都会记录到 redo log。redo log 会每秒刷盘，提交事务时也会刷盘，数据页和 undo 页都是靠这个机制<strong>保证持久化</strong>的。</p>
+<p>于是当有一条记录需要更新的时候，InnoDB 引擎就会先更新内存(同时标记为脏页)，然后将本次对这个页的修改以redo log 的形式记录下来，这个时候更新就算完成了；</p>
+<p>后续，InnoDB 引擎会在适当的时候，由后台线程将缓存在 Buffer Pool的脏页刷新到磁盘里，这就是<strong>WAL(Write-Ahead Logging)技术：MySQL的写操作并不是立刻写到磁盘上，而是先写日志，然后在合适的时间再写到磁盘上。</strong></p>
+<img src="/2025/03/31/MysqlTutorial06/image-20250331092719230.png" class title="WAL过程图">
+
+<blockquote>
+<p>什么是redo log？</p>
+<p>redo log 是物理日志，记录了某个数据页做了什么修改，比如对 XXX 表空间中的 Y 数据页 ZZZ 偏移量的地方做了AAA 更新，每当执行一个事务就会产生这样的一条或者多条物理日志。</p>
+<p>在事务提交时，只要先将 redo log 持久化到磁盘即可，可以不需要等到将缓存在 Buffer Pool 里的脏页数据持久化到磁盘，节省时间和性能。</p>
+<p>当系统崩溃时，虽然脏页数据没有持久化，但是 redo log 已经持久化，接着 MySQL 重启后，可以根据redo log 的内容，将所有数据恢复到最新的状态。</p>
+</blockquote>
+<p>redo log还有一个关于写入性能提升的优势：</p>
+<img src="/2025/03/31/MysqlTutorial06/image-20250331093519527.png" class>
+
+<h2 id="Redo-vs-Undo"><a href="#Redo-vs-Undo" class="headerlink" title="Redo vs Undo"></a>Redo vs Undo</h2><p>这两种日志是属于 InnoDB 存储引擎的日志，它们的区别在于：</p>
+<ul>
+<li>redo log 记录了此次事务「修改后」的数据状态，记录的是更新之后的值，主要用于事务崩溃恢复，保证事务的持久性。</li>
+<li>undo log 记录了此次事务「修改前」的数据状态，记录的是更新之前的值，:主要用于事务回滚，保证事务的原子性。</li>
+</ul>
+<p>事务提交之前发生了崩溃(这里的崩溃不是宕机崩溃，而是事务执行错误)，重启后会通过 undo log 回滚事务。</p>
+<p>事务提交之后发生了崩溃(这里的崩溃是宕机崩溃)，重启后会通过 redo log 恢复事务，如下图：</p>
+<img src="/2025/03/31/MysqlTutorial06/image-20250331093214569.png" class>
+
+<h2 id="How-redo-log？"><a href="#How-redo-log？" class="headerlink" title="How redo log？"></a>How redo log？</h2><p><strong>redolog是直接写入磁盘的嘛？</strong>不是的，实际上还是要先写入到自己的缓存redo log buffer，后续再进行持久化。</p>
+<p>那么，<strong>redo log 什么时候进行刷盘呢？</strong></p>
+<p>主要有下面几个时机:</p>
+<ul>
+<li>MySQL正常关闭时;</li>
+<li>当 redo log buffer 中记录的写入量大于其内存空间的一半时，会触发落盘；</li>
+<li>InnoDB 的后台线程每隔 1秒，将redo log buffer 持久化到磁盘。</li>
+<li>每次事务提交时都将缓存在 redo log buffer 里的 redo log 直接持久化到磁盘(这个策略可由<code>innodb_flush_log_at_trx_commit </code>参数控制)</li>
+</ul>
+<blockquote>
+<p><code>innodb_flush_log_at_trx_commit </code>？</p>
+<p>单独执行一个更新语句的时候，InnoDB 引擎会自己启动一个事务，在执行更新语句的过程中，生成的redo log 先写入到 redo log bufer 中，然后等事务提交的时候，再将缓存在 redo log buffer 中的 redolog 按组的方式「顺序写」到磁盘。</p>
+<p>上面这种 redo log 刷盘时机是在事务提交的时候，这个默认的行为。</p>
+<p>除此之外，InnoDB 还提供了另外两种策略，由参数<code>innodb_flush_log_at_trx_commit </code> 参数控制，可取的值有:0、1、2，默认值为 1，这三个值分别代表的策略如下:</p>
+<ul>
+<li>当设置该参数为0时，表示每次事务提交时，还是将redo log 留在 redo log buffer 中 ，该模式下在事务提交时不会主动触发写入磁盘的操作。</li>
+<li>当设置该参数为1时，表示每次事务提交时，都将缓存在 redo log buffer 里的 redo log 直接持久化到磁盘，这样可以保证 MySQL异常重启之后数据不会丢失。</li>
+<li>当设置该参数为2 时，表示每次事务提交时，都只是缓存在 redo log buffer 里的 redo log 写到 redolog 文件，注意写入到「redo log 文件」并不意味着写入到了磁盘，因为操作系统的文件系统中有个Page Cache(如果你想了解 Page Cache，可以看这篇区)，Page Cache 是专门用来缓存文件数据的，所以写入 「redo log文件」意味着写入到了操作系统的文件缓存。</li>
+</ul>
+<img src="/2025/03/31/MysqlTutorial06/image-20250331100710467.png" class>
+
+<p>那么0和2的持久化时机是什么？</p>
+<ul>
+<li>针对参数0:会把缓存在 redo log buffer 中的 redo log ，通过调用 <code>write()</code>写到操作系统的 PageCache，然后调用<code> fsync()</code>持久化到磁盘。所以参数为0的策略，MySQL 进程的崩溃会导致上一秒钟所有事务数据的丢失；</li>
+<li>针对参数 2:调用<code> fsync</code>，将缓存在操作系统中 Page Cache 里的 redo log 持久化到磁盘。所以参数为2 的策略，较取值为0情况下更安全，因为 MySQL 进程的崩溃并不会丢失数据，只有在操作系统崩溃或者系统断电的情况下，上一秒钟所有事务数据才可能丢失。</li>
+</ul>
+<p>说白了就是，012三个人跑步，路线是redo log buffer—-操作系统的pagecache—-磁盘。1直接一步到位速通，2要顿一下再到终点，0一开始直接不动。</p>
+<p>因此从安全性上讲，1&gt;2&gt;0;</p>
+<p>从性能上讲，0&gt;2&gt;1.</p>
+</blockquote>
+<p><strong>redo log写满了怎么办？</strong></p>
+<img src="/2025/03/31/MysqlTutorial06/image-20250331101720229.png" class>
+
+<p>redo log实际上由重做日志文件组组成，采用循环写的方法记录操作。</p>
+<p>我们知道 redo log 是为了防止 Buffer Pool 中的脏页丢失而设计的，那么如果随着系统运行，Buffer Poo的脏页刷新到了磁盘中，那么 redo log 对应的记录也就没用了，这时候我们擦除这些旧记录，以腾出空间记录新的更新操作。</p>
+<p>redo log 是循环写的方式，相当于一个环形，InnoDB 用 write pos 表示 redo log 当前记录写到的位置用 checkpoint 表示当前要擦除的位置，如下图:</p>
+<img src="/2025/03/31/MysqlTutorial06/image-20250331101822708.png" class title="就像生物里的质粒一样">
+
+<p>图中的:</p>
+<ul>
+<li>write pos 和 checkpoint 的移动都是顺时针方向;</li>
+<li>write pos ~ checkpoint 之间的部分(图中的红色部分)，用来记录新的更新操作;</li>
+<li>check point ~ write pos 之间的部分(图中蓝色部分):待落盘的脏数据页记录;</li>
+</ul>
+<p>如果 write pos 追上了 checkpoint，就意味着 redo log 文件满了，这时 MySQL不能再执行新的更新操也就是说 <strong>MySQL 会被阻塞</strong>(<em>因此针对并发量大的系统，适当设置redo log 的文件大小非常重要</em>)，此时会停下来将 Buffer Pool 中的脏页刷新到磁盘中，然后标记redo log 哪些记录可以被擦除，接着对旧的 redo log 记录进行擦除，等擦除完旧记录腾出了空间，checkpoint 就会往后移动(图中顺时针)，然后 MySQL恢复正常运行继续执行新的更新操作。</p>
+<p>所以，一次 checkpoint 的过程就是脏页刷新到磁盘中变成干净页，然后标记 redo log 哪些记录可以被覆盖的过程。</p>
+<blockquote>
+<p>1、顺序写代表，redolog 刷盘是用顺序 io 刷盘的</p>
+<p>2、循环写，是说 redolog 有 2个文件，2个文件满了，会从第一个文件开始写，循环一直写</p>
+</blockquote>
+<h1 id="binlog"><a href="#binlog" class="headerlink" title="binlog"></a>binlog</h1><p>不同于 undo 和 redo，binlog由Server层生成。<strong>binlog 文件是记录了所有数据库表结构变更和表数据修改的日志</strong>，不会记录查询类的操作，比如 SELECT和 SHOW 操作。</p>
+<h2 id="三种格式"><a href="#三种格式" class="headerlink" title="三种格式"></a>三种格式</h2><p>binlog 有 3种格式类型，分别是 STATEMENT(默认格式)、ROW、MIXED，区别如下：</p>
+<ul>
+<li>STATEMENT:每一条修改数据的 SQL 都会被记录到 binlog 中，主从复制中 slave 端再根据 SQL 语句重现。</li>
+</ul>
+<p>​	缺陷:STATEMENT 有动态函数的问题，比如用了 uuid 或者 now 这些函数，在主库上执行的结果并不是你在从库执行的结果，这种随时在变的函数会导致复制的数据不一致。</p>
+<ul>
+<li>ROW:记录行数据最终被修改成什么样了，不会出现 STATEMENT 下动态函数的问题。</li>
+</ul>
+<p>​	缺陷:但 ROW 的缺点是每行数据的变化结果都会被记录，比如执行批量 update 语句，更新多少行数据就会产生多少条记录，使binlog 文件过大，而在 STATEMENT 格式下只会记录一个 update 语句。</p>
+<img src="/2025/03/31/MysqlTutorial06/image-20250331105938962.png" class>
+
+<ul>
+<li>MIXED:包含了 STATEMENT 和 ROW 模式，它会根据不同的情况自动使用 ROW 模式和 STATEMENT 模式。</li>
+</ul>
+<h3 id="Redo-vs-Bin"><a href="#Redo-vs-Bin" class="headerlink" title="Redo vs Bin"></a>Redo vs Bin</h3><ul>
+<li>binlog 是追加写，写满一个文件，就创建一个新的文件继续写，不会覆盖以前的日志，保存了所有对数据库的更新操作，可以用来恢复数据库某个时刻的数据或者全量恢复数据库数据。</li>
+<li>redo log 是循环写，日志空间大小是固定，全部写满就从头开始，保存的是 Innodb 存储引擎对数据页所做的修改操作，用来恢复因中途 MySQL 断电丢失的脏页数据。</li>
+</ul>
+<p>崩溃恢复时就使用redo log，因为其可以在innodb层中记录哪些脏页没有被刷盘，相比于binlog粒度更细不用重新执行sql；</p>
+<p>重建数据库时使用binlog，因为redo log采用的是循环写的方式，会覆盖以前的日志，而binlog不会。</p>
+<h1 id="两阶段提交"><a href="#两阶段提交" class="headerlink" title="两阶段提交"></a>两阶段提交</h1><h2 id="为什么需要两阶段提交？"><a href="#为什么需要两阶段提交？" class="headerlink" title="为什么需要两阶段提交？"></a>为什么需要两阶段提交？</h2><p>两阶段提交是为了保证 redo log 和 binlog 逻辑一致，从而保证主从复制的时候不会出现数据不一致的问题。</p>
+<p>事务提交后，redo log 和 binlog 都要持久化到磁盘，但是这两个是独立的逻辑，可能出现半成功的状态，比如在主从复制的场景下，如果在将 redo log 刷入到磁盘之后， MySQL 突然宕机了，而 binlog 还没有来得及写入磁盘，这时候主库是最新的数据，而从库是旧数据，这样就造成两份日志之间的逻辑不一致。</p>
+<blockquote>
+<p>Binlog 是在最后事务提交阶段才写入的，是一次性的。而 redo log 是在事务过程中不断写。redo log 写磁盘是在 binlog 写入磁盘之前完成的。也就是说，当 binlog 写磁盘时，已完成 redo log 写。</p>
+</blockquote>
+<h2 id="两阶段提交过程？"><a href="#两阶段提交过程？" class="headerlink" title="两阶段提交过程？"></a>两阶段提交过程？</h2><img src="/2025/03/31/MysqlTutorial06/image-20250331103444633.png" class>
+
+<p>两阶段提交把事务的提交拆分成了2个阶段，分别是准备阶段和提交阶段。</p>
+<ul>
+<li>准备阶段会将 redo log 状态设置为 prepare 状态，然后将 redo log 刷入磁盘（参数1）;</li>
+<li>提交阶段会将 binlog 刷入磁盘，然后设置 redo log 设置为 commit 状态，到这里两阶段就已经完成了。</li>
+</ul>
+<p><strong>在两阶段提交中，是以 binlog 刷入磁盘时机作为事务提交成功的标志的:</strong></p>
+<ul>
+<li>如果 binlog 还没刷入磁盘的时候，MySQL 就发生了崩溃，MySQL 重启的时候就需要回滚事务;</li>
+<li>如果 binlog 刷入磁盘，即使 redo log 没有设置 commit 状态，MySQL 就发生了崩溃，MySQL 重启的时候就会提交事务。</li>
+</ul>
+<h1 id="数据库备份"><a href="#数据库备份" class="headerlink" title="数据库备份"></a>数据库备份</h1><h2 id="为什么需要备份"><a href="#为什么需要备份" class="headerlink" title="为什么需要备份"></a>为什么需要备份</h2><p>备份是防范灾难的重要手段，无论是恶意删库、员工误操作、还是系统故障，一个完善的备份系统能够确保数据安全。高可用设计保证业务连续性，而备份则是最后的数据安全保障线。</p>
+<h2 id="全量备份"><a href="#全量备份" class="headerlink" title="全量备份"></a>全量备份</h2><p>全量备份是指备份当前时间点数据库中的所有数据，作为恢复数据的基础。根据不同需求，可以选择以下两种方式：</p>
+<h3 id="1-逻辑备份"><a href="#1-逻辑备份" class="headerlink" title="1. 逻辑备份"></a>1. 逻辑备份</h3><p>逻辑备份将数据库内容转换为SQL语句形式保存，适合以下场景：</p>
+<ul>
+<li>需要恢复特定表或数据时</li>
+<li>在不同版本的MySQL之间迁移数据</li>
+<li>需要对备份内容进行检查或修改时</li>
+</ul>
+<p>工具选择：</p>
+<ul>
+<li><p><strong>mysqldump</strong>：单线程备份，简单易用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -A --single-transaction &gt; backup.sql</span><br></pre></td></tr></table></figure>
+
+<p>必须使用<code>--single-transaction</code>参数确保一致性备份，否则备份文件可能不一致，失去意义。</p>
+</li>
+<li><p><strong>mysqlpump</strong>：当备份速度成为瓶颈时可考虑，但需注意：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqlpump -A --single-transaction --default-parallelism=8 &gt; backup.sql</span><br></pre></td></tr></table></figure>
+
+<p>多线程时无法保证一致性，且对单个大表仍是单线程处理。</p>
+</li>
+<li><p><strong>mydumper</strong>（推荐）：当数据库规模较大且需要高效备份时的首选</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mydumper -o /bak -r 100000 --trx-consistency-only -t 8</span><br></pre></td></tr></table></figure>
+
+<p>同时支持一致性备份、记录级分片和多线程操作，备份恢复灵活性高。</p>
+</li>
+</ul>
+<h3 id="2-物理备份"><a href="#2-物理备份" class="headerlink" title="2. 物理备份"></a>2. 物理备份</h3><p>当逻辑备份速度无法满足要求时，物理备份是更高效的选择：</p>
+<ul>
+<li>直接复制数据文件，速度比逻辑备份快很多</li>
+<li>适合大型数据库的备份与恢复</li>
+<li>恢复速度更快，减少业务中断时间</li>
+</ul>
+<p>工具选择：</p>
+<ul>
+<li><p><strong>Clone Plugin</strong>（MySQL 8.0.17+）：官方认证，可靠性高</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CLONE LOCAL DATA DIRECTORY = &#x27;/path/to/clone_dir&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>适合MySQL 8.0以上版本，支持本地和远程备份。</p>
+</li>
+<li><p><strong>Xtrabackup</strong>：当使用MySQL 8.0之前版本时的替代选择</p>
+</li>
+</ul>
+<p>物理备份的局限性在于只能整个实例恢复，不能像逻辑备份那样选择性恢复特定表。</p>
+<h2 id="增量备份"><a href="#增量备份" class="headerlink" title="增量备份"></a>增量备份</h2><p>全量备份虽然全面，但频繁执行会消耗大量资源。因此需要增量备份：</p>
+<ul>
+<li>只备份自上次全量备份后变化的数据（二进制日志）</li>
+<li>占用空间小，可频繁执行</li>
+<li>与全量备份结合，实现任意时间点恢复能力</li>
+</ul>
+<p>工具：<strong>mysqlbinlog</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqlbinlog --read-from-remote-server --host=host_name --raw --stop-never binlog.000001</span><br></pre></td></tr></table></figure>
+
+<p>增量备份的价值在于可以跟踪数据库的每次变更，当发生灾难（如误删数据）时，可以精确恢复到事故发生前的状态，最大限度减少数据损失。</p>
+<h2 id="完整备份策略"><a href="#完整备份策略" class="headerlink" title="完整备份策略"></a>完整备份策略</h2><p>一个完善的备份策略需要合理结合全量和增量备份：</p>
+<ol>
+<li><strong>全量备份频率</strong>：每周一次，减少系统资源消耗</li>
+<li><strong>增量备份</strong>：实时进行，确保数据变更被及时捕获</li>
+<li><strong>备份文件存储</strong>：至少存储在2个不同机房的服务器上，防止单点故障</li>
+<li><strong>保存周期</strong>：根据业务需求和合规要求确定（通常至少3个月）</li>
+<li><strong>备份校验</strong>：定期恢复测试并与线上数据核对，确保备份可用性</li>
+</ol>
+<p>最关键的是，备份文件必须定期验证其有效性。未经验证的备份可能在真正需要时无法使用，这比没有备份更危险，因为它会带来虚假的安全感。</p>
+<p>通过这套系统，即使遭遇最严重的数据丢失事件，也能将损失控制在可接受范围内，保障业务的连续性和数据的安全性。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2025/03/31/MysqlTutorial06/">https://0kr.xin/2025/03/31/MysqlTutorial06/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape003.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/03/31/MysqlTutorial07/" title="MysqlTutorial07"><img class="cover" src="/statics/landscape004.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">MysqlTutorial07</div></div><div class="info-2"><div class="info-item-1">Mysql单机性能 https://support.huaweicloud.com/pwp-rds/rds_swp_mysql_09.html    对于4c8g 服务器，mysql 可承载：  500 TPS(数据库每秒执行的事务数，以COMMIT 成功次数为准) 10000 QPS(数据库每秒执行的 SQL 数)  explain执行计划 注：本节最重要的目的是根据type、key、extra三个字段判断查询是否走了索引    在执行计划中，参数有：  possible_keys 字段表示可能用到的索引； key 字段表示实际用的索引，如果这一项为 NULL，说明没有使用索引； key_len 表示索引的长度； rows 表示扫描的数据行数。 type 表示数据扫描类型，我们需要重点看这个。  type 字段就是描述了找到所需数据时使用的扫描方式是什么，常见扫描类型的执行效率从低到高的顺序为：  All（全表扫描）：在这些情况里，all 是最坏的情况，因为采用了全表扫描的方式。 index（全索引扫描）：index 和 all 差不多，只不过 index...</div></div></div></a><a class="pagination-related  no-desc" href="/2025/03/21/DataCleaning04/" title="DataCleaning04"><img class="cover" src="/statics/landscape001.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">DataCleaning04</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%85%A2%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.</span> <span class="toc-text">慢查询</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#undolog"><span class="toc-number">2.</span> <span class="toc-text">undolog</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#redolog"><span class="toc-number">3.</span> <span class="toc-text">redolog</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-redolog%EF%BC%9F"><span class="toc-number">3.1.</span> <span class="toc-text">Why redolog？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redo-vs-Undo"><span class="toc-number">3.2.</span> <span class="toc-text">Redo vs Undo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#How-redo-log%EF%BC%9F"><span class="toc-number">3.3.</span> <span class="toc-text">How redo log？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#binlog"><span class="toc-number">4.</span> <span class="toc-text">binlog</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E6%A0%BC%E5%BC%8F"><span class="toc-number">4.1.</span> <span class="toc-text">三种格式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Redo-vs-Bin"><span class="toc-number">4.1.1.</span> <span class="toc-text">Redo vs Bin</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4"><span class="toc-number">5.</span> <span class="toc-text">两阶段提交</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%EF%BC%9F"><span class="toc-number">5.1.</span> <span class="toc-text">为什么需要两阶段提交？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E8%BF%87%E7%A8%8B%EF%BC%9F"><span class="toc-number">5.2.</span> <span class="toc-text">两阶段提交过程？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD"><span class="toc-number">6.</span> <span class="toc-text">数据库备份</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E5%A4%87%E4%BB%BD"><span class="toc-number">6.1.</span> <span class="toc-text">为什么需要备份</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A8%E9%87%8F%E5%A4%87%E4%BB%BD"><span class="toc-number">6.2.</span> <span class="toc-text">全量备份</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%80%BB%E8%BE%91%E5%A4%87%E4%BB%BD"><span class="toc-number">6.2.1.</span> <span class="toc-text">1. 逻辑备份</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%89%A9%E7%90%86%E5%A4%87%E4%BB%BD"><span class="toc-number">6.2.2.</span> <span class="toc-text">2. 物理备份</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A2%9E%E9%87%8F%E5%A4%87%E4%BB%BD"><span class="toc-number">6.3.</span> <span class="toc-text">增量备份</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5"><span class="toc-number">6.4.</span> <span class="toc-text">完整备份策略</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

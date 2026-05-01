@@ -1,0 +1,674 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>HardWareDesign06 | 0kr's Blog</title><meta name="author" content="Chn_0kr"><meta name="copyright" content="Chn_0kr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="1.前言❶ 运放关键参数解析需要掌握的参数及其物理含义：    参数 英文缩写 含义 典型值范围 为什么重要    增益带宽积 GBW &#x2F; GBP 开环增益×带宽&#x3D;常数，决定在某个增益下电路能工作的最高频率 1MHz～数GHz 放大高频信号时，GBW不够会导致增益衰减   转换速率 SR (Slew Rate) 输出电压最快能变化多快（V&#x2F;μs），大信号下的速度极限">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HardWareDesign06">
+<meta property="og:url" content="https://0kr.xin/2026/04/09/HardWareDesign06/index.html">
+<meta property="og:site_name" content="0kr&#39;s Blog">
+<meta property="og:description" content="1.前言❶ 运放关键参数解析需要掌握的参数及其物理含义：    参数 英文缩写 含义 典型值范围 为什么重要    增益带宽积 GBW &#x2F; GBP 开环增益×带宽&#x3D;常数，决定在某个增益下电路能工作的最高频率 1MHz～数GHz 放大高频信号时，GBW不够会导致增益衰减   转换速率 SR (Slew Rate) 输出电压最快能变化多快（V&#x2F;μs），大信号下的速度极限">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0kr.xin/statics/landscape002.jpg">
+<meta property="article:published_time" content="2026-04-09T10:29:44.000Z">
+<meta property="article:modified_time" content="2026-04-09T11:15:53.106Z">
+<meta property="article:author" content="Chn_0kr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0kr.xin/statics/landscape002.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://0kr.xin/2026/04/09/HardWareDesign06/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Chn_0kr","link":"链接: ","source":"来源: 0kr's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'HardWareDesign06',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-04-09 19:15:53'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/statics/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/statics/landscape002.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/statics/avatar.png" alt="Logo"><span class="site-name">0kr's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">HardWareDesign06</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa-solid fa-door-open"></i><span> 说说</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa-solid fa-users"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">HardWareDesign06</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-09T11:15:53.106Z" title="更新于 2026-04-09 19:15:53">2026-04-09</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="1-前言"><a href="#1-前言" class="headerlink" title="1.前言"></a>1.前言</h1><h3 id="❶-运放关键参数解析"><a href="#❶-运放关键参数解析" class="headerlink" title="❶ 运放关键参数解析"></a>❶ 运放关键参数解析</h3><p><strong>需要掌握的参数及其物理含义：</strong></p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>英文缩写</th>
+<th>含义</th>
+<th>典型值范围</th>
+<th>为什么重要</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>增益带宽积</td>
+<td>GBW &#x2F; GBP</td>
+<td>开环增益×带宽&#x3D;常数，决定在某个增益下电路能工作的最高频率</td>
+<td>1MHz～数GHz</td>
+<td>放大高频信号时，GBW不够会导致增益衰减</td>
+</tr>
+<tr>
+<td>转换速率</td>
+<td>SR (Slew Rate)</td>
+<td>输出电压最快能变化多快（V&#x2F;μs），大信号下的速度极限</td>
+<td>0.5～数千 V&#x2F;μs</td>
+<td>SR不够时方波变三角波，正弦波被削顶</td>
+</tr>
+<tr>
+<td>输入失调电压</td>
+<td>Vos</td>
+<td>两个输入端之间的固有电压差，导致输出有直流偏移</td>
+<td>1μV～10mV</td>
+<td>放大微弱信号（mV级）时，Vos可能比信号还大</td>
+</tr>
+<tr>
+<td>输入偏置电流</td>
+<td>Ib</td>
+<td>输入端需要吸入&#x2F;流出的微小电流</td>
+<td>fA～μA</td>
+<td>高阻源（如光电二极管）驱动时，Ib在电阻上产生误差电压</td>
+</tr>
+<tr>
+<td>共模抑制比</td>
+<td>CMRR</td>
+<td>运放抑制共模干扰的能力（dB）</td>
+<td>60～140 dB</td>
+<td>差分测量中，CMRR不够会把共模噪声混入输出</td>
+</tr>
+<tr>
+<td>电源抑制比</td>
+<td>PSRR</td>
+<td>电源纹波对输出的影响抑制能力</td>
+<td>60～120 dB</td>
+<td>电源噪声大的环境中，低PSRR运放输出会跟着抖</td>
+</tr>
+<tr>
+<td>输入电压范围</td>
+<td>VICR</td>
+<td>输入端允许的电压范围（相对电源轨）</td>
+<td>Rail-to-rail 或有限</td>
+<td>超出范围输出会锁定或反相</td>
+</tr>
+<tr>
+<td>输出摆幅</td>
+<td>Vout swing</td>
+<td>输出能接近电源轨多近</td>
+<td>离轨20mV～1V+</td>
+<td>低压供电时，摆幅不够信号会被截断</td>
+</tr>
+</tbody></table>
+<p><strong>学习动作：</strong></p>
+<ul>
+<li>打开 OPA333（精密）、LM358（通用）、AD8065（高速）三份 Datasheet</li>
+<li>在每份 Datasheet 中找到上述 8 个参数，记录到对比表中</li>
+<li>重点关注参数的测试条件（温度、负载、增益配置），理解”典型值”与”最大值”的区别</li>
+</ul>
+<hr>
+<h3 id="❷-运放非理想参数对电路的影响"><a href="#❷-运放非理想参数对电路的影响" class="headerlink" title="❷ 运放非理想参数对电路的影响"></a>❷ 运放非理想参数对电路的影响</h3><p><strong>逐项分析：</strong></p>
+<p><strong>失调电压的影响：</strong></p>
+<ul>
+<li>在同相放大器中，Vos 被放大 (1+Rf&#x2F;Rg) 倍出现在输出</li>
+<li>例：Vos&#x3D;5mV，增益&#x3D;100，输出直流偏移&#x3D;500mV，可能把后级 ADC 的量程吃掉一半</li>
+<li>对策：选低 Vos 运放（自动归零型如 OPA333，Vos&lt;10μV），或加输出高通滤波</li>
+</ul>
+<p><strong>偏置电流的影响：</strong></p>
+<ul>
+<li>Ib 流过反馈电阻产生等效输入误差电压 &#x3D; Ib × R</li>
+<li>例：Ib&#x3D;100nA，Rf&#x3D;1MΩ → 误差&#x3D;100μV，对精密测量不可忽略</li>
+<li>对策：在同相端加匹配电阻 R&#x3D;Rf&#x2F;&#x2F;Rg，使两端偏置电流产生的误差相互抵消</li>
+</ul>
+<p><strong>有限 GBW 的影响：</strong></p>
+<ul>
+<li>闭环增益不能超过 GBW&#x2F;目标频率</li>
+<li>例：GBW&#x3D;1MHz，需要 10kHz 带宽 → 最大可用增益 &#x3D; 1MHz&#x2F;10kHz &#x3D; 100倍</li>
+<li>超过此增益，高频信号增益急剧下降，相位也会偏移</li>
+</ul>
+<p><strong>有限 SR 的影响：</strong></p>
+<ul>
+<li>大信号输出速率被 SR 限制：最大不失真频率 fmax &#x3D; SR&#x2F;(2π·Vpeak)</li>
+<li>例：SR&#x3D;1V&#x2F;μs，输出 5Vpp → fmax ≈ 63.7kHz，超过此频率波形失真</li>
+</ul>
+<p><strong>练习：</strong> 在 LTspice 中搭建一个增益&#x3D;100的同相放大器，分别用理想运放和 LM358 模型仿真，对比输出的直流偏移和高频衰减。</p>
+<hr>
+<h3 id="❸-四类典型场景对应的选型方向"><a href="#❸-四类典型场景对应的选型方向" class="headerlink" title="❸ 四类典型场景对应的选型方向"></a>❸ 四类典型场景对应的选型方向</h3><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>关键需求</th>
+<th>推荐方向</th>
+<th>代表型号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>传感器信号放大（mV级）</td>
+<td>极低Vos、低噪声、低偏置</td>
+<td>精密&#x2F;自动归零运放</td>
+<td>OPA333, AD8628, ADA4528</td>
+</tr>
+<tr>
+<td>音频&#x2F;视频信号处理</td>
+<td>高GBW、高SR</td>
+<td>高速运放</td>
+<td>AD8065, OPA1612, THS4131</td>
+</tr>
+<tr>
+<td>电池供电便携设备</td>
+<td>低功耗、Rail-to-Rail</td>
+<td>微功耗运放</td>
+<td>MCP6001, OPA347, LPV521</td>
+</tr>
+<tr>
+<td>电源环路&#x2F;驱动负载</td>
+<td>高输出电流、宽摆幅</td>
+<td>功率运放&#x2F;缓冲器</td>
+<td>OPA548, BUF634, LM675</td>
+</tr>
+</tbody></table>
+<h1 id="2-MCP6001"><a href="#2-MCP6001" class="headerlink" title="2.MCP6001"></a>2.MCP6001</h1><p>很好，结合之前咱们讨论过的运放应用场景，用你现在手里这份 MCP6001 datasheet 来走一遍完整的选型验证过程。</p>
+<hr>
+<h2 id="选型场景：1-65V-偏置电压跟随器"><a href="#选型场景：1-65V-偏置电压跟随器" class="headerlink" title="选型场景：1.65V 偏置电压跟随器"></a>选型场景：1.65V 偏置电压跟随器</h2><p><strong>需求回顾：</strong> 3.3V 单电源系统，需要一个稳定的 1.65V（VDD&#x2F;2）低阻抗偏置，用来给 ADC 提供参考中点。</p>
+<hr>
+<h3 id="逐条对照-Datasheet-验证"><a href="#逐条对照-Datasheet-验证" class="headerlink" title="逐条对照 Datasheet 验证"></a>逐条对照 Datasheet 验证</h3><p><strong>① 供电电压匹配</strong></p>
+<blockquote>
+<p>规格书：VDD &#x3D; 1.8V to 6.0V</p>
+</blockquote>
+<p>系统 3.3V，在范围内 ✅</p>
+<p><strong>② Rail-to-Rail 输出</strong></p>
+<blockquote>
+<p>规格书：VOL&#x2F;VOH ≥ VSS+25mV &#x2F; ≤ VDD−25mV（RL&#x3D;10kΩ, VDD&#x3D;5.5V）</p>
+</blockquote>
+<p>输出 1.65V 在正中间，完全不是问题。即使将来偏置需要靠近 GND 或 VDD，rail-to-rail 都撑得住 ✅</p>
+<p><strong>③ 增益带宽积（GBW）</strong></p>
+<blockquote>
+<p>规格书：GBWP &#x3D; 1 MHz（typical）</p>
+</blockquote>
+<p>跟随器增益 &#x3D; 1，所以带宽就是 1 MHz。偏置信号是直流，远远够用 ✅</p>
+<p><strong>④ 静态电流</strong></p>
+<blockquote>
+<p>规格书：IQ &#x3D; 100 µA（typical），最大 170 µA</p>
+</blockquote>
+<p>电池供电场景需要注意，但对一般系统完全可接受 ✅</p>
+<p><strong>⑤ 输入失调电压</strong></p>
+<blockquote>
+<p>规格书：VOS &#x3D; ±4.5 mV（max）</p>
+</blockquote>
+<p>跟随器增益&#x3D;1，失调不会被放大。1.65V ± 4.5mV 的误差通常可以接受 ✅<br> <em>如果是高精度场景（比如仪表放大器的基准），这4.5mV就偏大了，得换精密运放。</em></p>
+<table>
+<thead>
+<tr>
+<th>应用场景</th>
+<th>可接受 VOS</th>
+<th>代表芯片</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>一般偏置&#x2F;缓冲（G≤2）</td>
+<td>&lt;10mV</td>
+<td>MCP6001 ✅</td>
+</tr>
+<tr>
+<td>中等精度放大（G≤20）</td>
+<td>&lt;1mV</td>
+<td>OPA2333 等</td>
+</tr>
+<tr>
+<td>高精度传感器（G≤100）</td>
+<td>&lt;100µV</td>
+<td>精密运放</td>
+</tr>
+<tr>
+<td>应变片&#x2F;热电偶（G&gt;100）</td>
+<td>&lt;10µV</td>
+<td>斩波运放</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>输出误差 &#x3D; VOS × 闭环增益</p>
+<p><strong>场景一：跟随器偏置（增益&#x3D;1）</strong></p>
+<ul>
+<li>输出误差 &#x3D; 4.5mV × 1 &#x3D; <strong>4.5mV</strong></li>
+<li>信号范围 3.3V，误差占比 &#x3D; 4.5&#x2F;3300 ≈ <strong>0.14%</strong></li>
+<li>✅ 合理，几乎所有场景都接受</li>
+</ul>
+<p><strong>场景二：增益&#x3D;10 的信号放大</strong></p>
+<ul>
+<li>输出误差 &#x3D; 4.5mV × 10 &#x3D; <strong>45mV</strong></li>
+<li>如果信号满量程 3.3V，误差占比 ≈ <strong>1.4%</strong></li>
+<li>⚠️ 勉强，取决于你需不需要 1% 以上的精度</li>
+</ul>
+<p><strong>场景三：增益&#x3D;100</strong></p>
+<ul>
+<li>输出误差 &#x3D; 4.5mV × 100 &#x3D; <strong>450mV</strong></li>
+<li>信号范围 3.3V，误差占比 ≈ <strong>14%</strong></li>
+<li>❌ 不合理，ADC 读出来的值误差巨大</li>
+</ul>
+</blockquote>
+<p><strong>⑥ 稳定性 &#x2F; 容性负载</strong></p>
+<blockquote>
+<p>规格书：Phase Margin &#x3D; 90°（G&#x3D;+1），45°（500pF 负载）</p>
+</blockquote>
+<p>90° 相位裕度是非常充裕的，G&#x3D;1 跟随器不会振荡。带容性负载（比如去耦电容）也有保障 ✅</p>
+<hr>
+<h3 id="最终结论"><a href="#最终结论" class="headerlink" title="最终结论"></a>最终结论</h3><table>
+<thead>
+<tr>
+<th>检查项</th>
+<th>要求</th>
+<th>MCP6001</th>
+<th>结论</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>供电</td>
+<td>3.3V</td>
+<td>1.8~6V</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>输出范围</td>
+<td>含 1.65V</td>
+<td>Rail-to-Rail</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>带宽</td>
+<td>直流偏置</td>
+<td>1 MHz</td>
+<td>✅ 远超</td>
+</tr>
+<tr>
+<td>静态功耗</td>
+<td>低功耗优先</td>
+<td>100 µA</td>
+<td>✅ 可接受</td>
+</tr>
+<tr>
+<td>失调精度</td>
+<td>一般精度</td>
+<td>±4.5 mV</td>
+<td>✅（高精度则不够）</td>
+</tr>
+<tr>
+<td>稳定性</td>
+<td>G&#x3D;1 稳定</td>
+<td>PM&#x3D;90°</td>
+<td>✅ 极佳</td>
+</tr>
+</tbody></table>
+<p>MCP6001 对这个场景是合适的。它的核心卖点正是<strong>低功耗（100µA）+ 单电源 Rail-to-Rail + 低价格</strong>，非常适合电池设备的信号调理辅助电路。如果换成高精度仪表信号采集，VOS ±4.5mV 就成了瓶颈，就需要另选了。</p>
+<h1 id="3-OPA333"><a href="#3-OPA333" class="headerlink" title="3.OPA333"></a>3.OPA333</h1><p>选 <strong>图31 热敏电阻测量电路</strong>，结构简单，很适合完整走一遍流程。</p>
+<hr>
+<h2 id="一、电路是什么"><a href="#一、电路是什么" class="headerlink" title="一、电路是什么"></a>一、电路是什么</h2><p>电路结构：NTC热敏电阻 + 固定电阻分压，OPA333 接成<strong>反相放大器</strong>输出电压。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">3V ──┬── 1MΩ ──┬── 60kΩ ──┬─────────────</span><br><span class="line">     │         │           │</span><br><span class="line">    1MΩ       NTC         100kΩ(Rf)</span><br><span class="line">     │         │           │</span><br><span class="line">    GND       GND        OPA333(−) ──→ VOUT</span><br><span class="line">                              (+)接GND</span><br></pre></td></tr></table></figure>
+
+<p>热敏电阻阻值随温度变化 → 分压点电压变化 → 放大器输出跟着变。</p>
+<hr>
+<h2 id="二、为什么选-OPA333？完整选型过程"><a href="#二、为什么选-OPA333？完整选型过程" class="headerlink" title="二、为什么选 OPA333？完整选型过程"></a>二、为什么选 OPA333？完整选型过程</h2><p><strong>需求分析：</strong></p>
+<ul>
+<li>NTC热敏电阻在室温下输出变化量很小，只有几mV量级</li>
+<li>需要增益约100倍才能把信号放大到ADC可读的范围</li>
+<li>电池供电设备，要求低功耗</li>
+<li>温度传感属于直流慢变信号，不需要高带宽</li>
+</ul>
+<p><strong>逐条对照 OPA333 datasheet（第7页）：</strong></p>
+<table>
+<thead>
+<tr>
+<th>需求</th>
+<th>要求</th>
+<th>OPA333</th>
+<th>判断</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>失调电压</td>
+<td>增益×100，VOS必须&lt;0.1mV</td>
+<td><strong>10µV max</strong></td>
+<td>✅ 误差仅1mV</td>
+</tr>
+<tr>
+<td>温漂</td>
+<td>长期稳定</td>
+<td><strong>0.05µV&#x2F;°C</strong></td>
+<td>✅ 极低零漂移</td>
+</tr>
+<tr>
+<td>供电</td>
+<td>单节锂电或3V纽扣电池</td>
+<td>1.8V~5.5V</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>功耗</td>
+<td>电池设备</td>
+<td><strong>17µA典型</strong></td>
+<td>✅ 极低</td>
+</tr>
+<tr>
+<td>带宽</td>
+<td>温度是直流信号</td>
+<td>350kHz（GBW）</td>
+<td>✅ 远超需求</td>
+</tr>
+</tbody></table>
+<p><strong>关键判断点：失调电压</strong></p>
+<p>增益&#x3D;100时，输出误差 &#x3D; VOS × 增益 &#x3D; 10µV × 100 &#x3D; <strong>1mV</strong></p>
+<p>在3.3V满量程下，误差占比 &#x3D; 1&#x2F;3300 ≈ **0.03%**，完全可以接受。</p>
+<hr>
+<h2 id="三、与-MCP6001-的对比"><a href="#三、与-MCP6001-的对比" class="headerlink" title="三、与 MCP6001 的对比"></a>三、与 MCP6001 的对比</h2><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>MCP6001</th>
+<th>OPA333</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>失调电压 VOS</td>
+<td>±4500 µV</td>
+<td><strong>±10 µV</strong></td>
+</tr>
+<tr>
+<td>温漂</td>
+<td>±2 µV&#x2F;°C</td>
+<td><strong>0.05 µV&#x2F;°C</strong></td>
+</tr>
+<tr>
+<td>静态电流 IQ</td>
+<td>100 µA</td>
+<td><strong>17 µA</strong></td>
+</tr>
+<tr>
+<td>GBW</td>
+<td><strong>1 MHz</strong></td>
+<td>350 kHz</td>
+</tr>
+<tr>
+<td>供电范围</td>
+<td>1.8~6V</td>
+<td>1.8~5.5V</td>
+</tr>
+<tr>
+<td>价格</td>
+<td>低</td>
+<td>较高</td>
+</tr>
+</tbody></table>
+<p><strong>如果用 MCP6001 来做这个热敏电阻电路会怎样？</strong></p>
+<p>输出误差 &#x3D; 4500µV × 100 &#x3D; <strong>450mV</strong></p>
+<p>3.3V满量程下误差达 13.6%，相当于温度读数直接偏了十几度，完全不可用。</p>
+<hr>
+<h2 id="四、结论：两者各自的”位置”"><a href="#四、结论：两者各自的”位置”" class="headerlink" title="四、结论：两者各自的”位置”"></a>四、结论：两者各自的”位置”</h2><p>MCP6001 的定位是<strong>通用低功耗缓冲&#x2F;滤波</strong>，4.5mV 的 VOS 在低增益场合根本不是问题，而且 1MHz 带宽更宽、价格更便宜。</p>
+<p>OPA333 是<strong>精密直流测量</strong>专用，用了斩波自动校准技术（datasheet 第12页功能框图里的 CHOP1&#x2F;CHOP2）把失调压低到 10µV，代价是带宽只有 350kHz、价格更高。</p>
+<p><strong>选型的本质就是：找到”够用”的那个，而不是”最好”的那个。</strong></p>
+<h1 id="4-答疑"><a href="#4-答疑" class="headerlink" title="4.答疑"></a>4.答疑</h1><h3 id="1-CMRR-PSRR-失调电压-偏置电流，这些参数分别是什么意思？"><a href="#1-CMRR-PSRR-失调电压-偏置电流，这些参数分别是什么意思？" class="headerlink" title="1.CMRR&#x2F;PSRR&#x2F;失调电压&#x2F;偏置电流，这些参数分别是什么意思？"></a>1.CMRR&#x2F;PSRR&#x2F;失调电压&#x2F;偏置电流，这些参数分别是什么意思？</h3><p><strong>① 失调电压 VOS</strong></p>
+<p>理想运放两输入端完全相同时输出应为0，但实际内部晶体管不完全匹配，导致即使输入差为0，输出也有一个偏差。等效成在输入端串了一个小电压源，这就是失调电压。它会被增益放大后叠加在输出上，是影响直流精度的核心参数。</p>
+<p><strong>② 偏置电流 IB</strong></p>
+<p>理想运放输入端不取电流，但实际CMOS输入级有漏电流（pA量级）。这个电流流过外部反馈电阻时会产生额外压降，同样等效成一个输入误差电压。反馈电阻越大，这个误差越明显。</p>
+<blockquote>
+<p>OPA333 的 IB &#x3D; ±70pA，MCP6001 &#x3D; ±1pA。 若反馈电阻取 100kΩ，产生的误差 &#x3D; 70pA × 100kΩ &#x3D; <strong>7µV</strong>，可以忽略。 若取 10MΩ，误差就变成 700µV，不能忽视了。</p>
+</blockquote>
+<p><strong>③ CMRR（共模抑制比）</strong></p>
+<p>运放理论上只放大两输入端的<strong>差值</strong>，对两端共同的电压（共模信号，比如电源噪声、地线波动）应该完全抑制。CMRR 就是衡量这个抑制能力的，单位 dB，越高越好。</p>
+<blockquote>
+<p>OPA333 的 CMRR &#x3D; 106~130dB，意味着共模信号被压缩了 100万倍以上才能影响输出。</p>
+</blockquote>
+<p><strong>④ PSRR（电源抑制比）</strong></p>
+<p>电源电压不是完美的，会有纹波和噪声。PSRR 衡量运放把电源上的干扰传递到输出的程度，同样越高越好。</p>
+<blockquote>
+<p>OPA333 的 PSRR &#x3D; 1~5µV&#x2F;V，电源波动1V，输出只偏移最多5µV。</p>
+</blockquote>
+<p><strong>CMRR 和 PSRR 的作用是：防止外部干扰把 VOS “变大”。</strong></p>
+<p>运放的实际有效失调电压不只是出厂标注的 VOS，还要加上工作中因共模电压变化、电源波动引起的额外偏移：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VOS_实际 ≈ VOS + ΔV_CM/CMRR + ΔV_供电/PSRR</span><br></pre></td></tr></table></figure>
+
+<p>OPA333 在这道题里：</p>
+<ul>
+<li>电源用稳定的3V，纹波假设 10mV → 额外误差 &#x3D; 10mV × 5µV&#x2F;V &#x3D; <strong>0.05µV</strong>，忽略</li>
+<li>共模电压稳定，CMRR 贡献的误差同样可以忽略</li>
+</ul>
+<p>所以最终有效 VOS ≈ 标称的 10µV，CMRR&#x2F;PSRR 没有改变选型结论，不需要单独提。</p>
+<h3 id="2-什么情况下它们才成为关键判断项？"><a href="#2-什么情况下它们才成为关键判断项？" class="headerlink" title="2.什么情况下它们才成为关键判断项？"></a>2.什么情况下它们才成为关键判断项？</h3><ul>
+<li>电源有大纹波（比如直接用开关电源供电）→ PSRR 很重要</li>
+<li>输入信号骑在高共模电压上（比如差分采样220V电路里的小信号）→ CMRR 很重要</li>
+<li>反馈电阻超过1MΩ → IB 产生的误差不能忽视</li>
+</ul>
+<p>这才是完整的选型思路：<strong>先用 VOS 和增益算出能不能达到精度要求，再根据具体使用环境判断 CMRR&#x2F;PSRR&#x2F;IB 会不会把这个精度破坏掉。</strong> 四个参数共同保证直流精度，只是在多数普通场景里后三个不是瓶颈。</p>
+<h3 id="3-实际失调电压怎么计算？"><a href="#3-实际失调电压怎么计算？" class="headerlink" title="3.实际失调电压怎么计算？"></a>3.实际失调电压怎么计算？</h3><p>以OPA333举一个例子：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>典型值</th>
+<th>最大值</th>
+<th>单位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>输入失调电压 VOS</td>
+<td>2</td>
+<td>10</td>
+<td>µV</td>
+</tr>
+<tr>
+<td>温漂 dVOS&#x2F;dT</td>
+<td>0.02</td>
+<td>0.05</td>
+<td>µV&#x2F;°C</td>
+</tr>
+<tr>
+<td>PSRR</td>
+<td>1</td>
+<td>5</td>
+<td>µV&#x2F;V</td>
+</tr>
+<tr>
+<td>长期稳定性</td>
+<td>约1</td>
+<td>—</td>
+<td>µV</td>
+</tr>
+</tbody></table>
+<p>给一个具体的工作场景：</p>
+<ul>
+<li>工作温度范围：25°C ~ 85°C，变化 <strong>ΔT &#x3D; 60°C</strong></li>
+<li>电源电压 3.3V，纹波 <strong>ΔV &#x3D; 50mV</strong></li>
+<li>使用最大值来计算最坏情况（工程上保守设计的做法）</li>
+</ul>
+<p>计算过程：</p>
+<p><strong>① 出厂失调电压</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VOS_init = 10 µV（最大值）</span><br></pre></td></tr></table></figure>
+
+<p><strong>② 温度漂移</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">VOS_temp = dVOS/dT × ΔT</span><br><span class="line">         = 0.05µV/°C × 60°C</span><br><span class="line">         = 3 µV</span><br></pre></td></tr></table></figure>
+
+<p><strong>③ 电源纹波引起的偏移</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">VOS_psrr = PSRR × ΔV_供电</span><br><span class="line">         = 5µV/V × 0.05V</span><br><span class="line">         = 0.25 µV</span><br></pre></td></tr></table></figure>
+
+<p><strong>④ 长期老化漂移</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VOS_aging ≈ 1 µV（数据手册注脚：150°C下300小时测得）</span><br></pre></td></tr></table></figure>
+
+<p>实际失调电压为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VOS_total = 10 + 3 + 0.25 + 1 ≈ 14.25 µV</span><br></pre></td></tr></table></figure>
+
+<p>换算到输出端误差（增益×100）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Vout_error = VOS_total × 增益</span><br><span class="line">           = 14.25µV × 100</span><br><span class="line">           = 1.425 mV</span><br></pre></td></tr></table></figure>
+
+<p>3.3V 满量程下误差占比 &#x3D; 1.425&#x2F;3300 ≈ **0.043%**，约等于 <strong>12位ADC的半个LSB</strong>，仍然很优秀。</p>
+<p>相比之下，如果换成 MCP6001 同样条件，MCP6001 第3页只给出了：</p>
+<ul>
+<li>VOS &#x3D; ±4500µV</li>
+<li>温漂 &#x3D; ±2µV&#x2F;°C</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">VOS_total ≈ 4500 + 2×60 = 4620 µV</span><br><span class="line">Vout_error = 4620µV × 100 = 462 mV</span><br></pre></td></tr></table></figure>
+
+<p>误差占 3.3V 的 **14%**，读数完全失真。</p>
+<p>结论：实际 VOS 不是一个固定数字，而是<strong>多项误差的叠加</strong>，温漂在宽温度范围使用时往往比出厂 VOS 本身贡献更大。OPA333 能在增益100下仍然好用，核心原因正是它的温漂（0.05µV&#x2F;°C）被斩波电路压得极低，而不只是出厂 VOS 小。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://0kr.xin">Chn_0kr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://0kr.xin/2026/04/09/HardWareDesign06/">https://0kr.xin/2026/04/09/HardWareDesign06/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://0kr.xin" target="_blank">0kr's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/statics/landscape002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related  no-desc" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img class="cover" src="/statics/landscape001.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">HardWareDesign07</div></div></div></a><a class="pagination-related" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img class="cover" src="/statics/landscape003.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">HardWareDesign05</div></div><div class="info-2"><div class="info-item-1">前言在现在的硬件电路设计中，大部分运算放大器都已经被集成进芯片中使用。什么情况下会在自己设计电路时使用运放？  好问题！虽然很多功能确实被集成了，但独立运放在以下场景仍然很常见： 1. 传感器信号调理 这是最经典的场景。传感器输出往往是微弱的模拟信号，需要放大和滤波后才能送给ADC。 例子：热电偶测温。热电偶输出只有几十μV&#x2F;°C，你需要一个高精度仪表放大器（本质是运放组合）把信号放大到ADC可读的0~3.3V范围。集成方案虽然有（如MAX31855），但如果你要自定义量程、滤波特性或多通道复用，就得自己用运放搭。 2. 有源滤波器 当你需要特定截止频率和阶数的模拟滤波器时，用运放+RC网络搭建是标准做法。 例子：音频采集前的抗混叠低通滤波器。假设ADC采样率48kHz，你需要在24kHz处有陡峭衰减。用两级Sallen-Key拓扑（每级一个运放），配合电阻电容就能实现四阶巴特沃斯低通，这比数字滤波更适合在ADC前端做。 3....</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/statics/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Chn_0kr</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Cn-0kr"><i class="fab fa-github"></i><span>Follow</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Cn-0kr" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my Blog!! <br> --Initialized in 2024.11</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">1.前言</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%9D%B6-%E8%BF%90%E6%94%BE%E5%85%B3%E9%94%AE%E5%8F%82%E6%95%B0%E8%A7%A3%E6%9E%90"><span class="toc-number">1.0.1.</span> <span class="toc-text">❶ 运放关键参数解析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%9D%B7-%E8%BF%90%E6%94%BE%E9%9D%9E%E7%90%86%E6%83%B3%E5%8F%82%E6%95%B0%E5%AF%B9%E7%94%B5%E8%B7%AF%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="toc-number">1.0.2.</span> <span class="toc-text">❷ 运放非理想参数对电路的影响</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%9D%B8-%E5%9B%9B%E7%B1%BB%E5%85%B8%E5%9E%8B%E5%9C%BA%E6%99%AF%E5%AF%B9%E5%BA%94%E7%9A%84%E9%80%89%E5%9E%8B%E6%96%B9%E5%90%91"><span class="toc-number">1.0.3.</span> <span class="toc-text">❸ 四类典型场景对应的选型方向</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-MCP6001"><span class="toc-number">2.</span> <span class="toc-text">2.MCP6001</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%89%E5%9E%8B%E5%9C%BA%E6%99%AF%EF%BC%9A1-65V-%E5%81%8F%E7%BD%AE%E7%94%B5%E5%8E%8B%E8%B7%9F%E9%9A%8F%E5%99%A8"><span class="toc-number">2.1.</span> <span class="toc-text">选型场景：1.65V 偏置电压跟随器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%90%E6%9D%A1%E5%AF%B9%E7%85%A7-Datasheet-%E9%AA%8C%E8%AF%81"><span class="toc-number">2.1.1.</span> <span class="toc-text">逐条对照 Datasheet 验证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E7%BB%88%E7%BB%93%E8%AE%BA"><span class="toc-number">2.1.2.</span> <span class="toc-text">最终结论</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-OPA333"><span class="toc-number">3.</span> <span class="toc-text">3.OPA333</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%94%B5%E8%B7%AF%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">3.1.</span> <span class="toc-text">一、电路是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89-OPA333%EF%BC%9F%E5%AE%8C%E6%95%B4%E9%80%89%E5%9E%8B%E8%BF%87%E7%A8%8B"><span class="toc-number">3.2.</span> <span class="toc-text">二、为什么选 OPA333？完整选型过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%B8%8E-MCP6001-%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="toc-number">3.3.</span> <span class="toc-text">三、与 MCP6001 的对比</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E7%BB%93%E8%AE%BA%EF%BC%9A%E4%B8%A4%E8%80%85%E5%90%84%E8%87%AA%E7%9A%84%E2%80%9D%E4%BD%8D%E7%BD%AE%E2%80%9D"><span class="toc-number">3.4.</span> <span class="toc-text">四、结论：两者各自的”位置”</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-%E7%AD%94%E7%96%91"><span class="toc-number">4.</span> <span class="toc-text">4.答疑</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-CMRR-PSRR-%E5%A4%B1%E8%B0%83%E7%94%B5%E5%8E%8B-%E5%81%8F%E7%BD%AE%E7%94%B5%E6%B5%81%EF%BC%8C%E8%BF%99%E4%BA%9B%E5%8F%82%E6%95%B0%E5%88%86%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D%EF%BC%9F"><span class="toc-number">4.0.1.</span> <span class="toc-text">1.CMRR&#x2F;PSRR&#x2F;失调电压&#x2F;偏置电流，这些参数分别是什么意思？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BB%80%E4%B9%88%E6%83%85%E5%86%B5%E4%B8%8B%E5%AE%83%E4%BB%AC%E6%89%8D%E6%88%90%E4%B8%BA%E5%85%B3%E9%94%AE%E5%88%A4%E6%96%AD%E9%A1%B9%EF%BC%9F"><span class="toc-number">4.0.2.</span> <span class="toc-text">2.什么情况下它们才成为关键判断项？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%AE%9E%E9%99%85%E5%A4%B1%E8%B0%83%E7%94%B5%E5%8E%8B%E6%80%8E%E4%B9%88%E8%AE%A1%E7%AE%97%EF%BC%9F"><span class="toc-number">4.0.3.</span> <span class="toc-text">3.实际失调电压怎么计算？</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign08"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign08/" title="HardWareDesign08">HardWareDesign08</a><time datetime="2026-04-09T10:29:53.000Z" title="发表于 2026-04-09 18:29:53">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07"><img src="/statics/landscape001.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign07"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign07/" title="HardWareDesign07">HardWareDesign07</a><time datetime="2026-04-09T10:29:48.000Z" title="发表于 2026-04-09 18:29:48">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06"><img src="/statics/landscape002.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign06"/></a><div class="content"><a class="title" href="/2026/04/09/HardWareDesign06/" title="HardWareDesign06">HardWareDesign06</a><time datetime="2026-04-09T10:29:44.000Z" title="发表于 2026-04-09 18:29:44">2026-04-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign05"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign05/" title="HardWareDesign05">HardWareDesign05</a><time datetime="2026-04-06T06:51:02.000Z" title="发表于 2026-04-06 14:51:02">2026-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04"><img src="/statics/landscape003.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HardWareDesign04"/></a><div class="content"><a class="title" href="/2026/04/06/HardWareDesign04/" title="HardWareDesign04">HardWareDesign04</a><time datetime="2026-04-06T06:50:59.000Z" title="发表于 2026-04-06 14:50:59">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/statics/landscape002.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2026 By Chn_0kr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(()=>{
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const loadGiscus = () => {
+    const config = Object.assign({
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Cn-0kr/commentsInGiscus',
+      'data-repo-id': 'R_kgDONInfCQ',
+      'data-category-id': 'DIC_kwDONInfCc4Cj3Xz',
+      'data-mapping': 'pathname',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true
+    },null)
+
+    const ele = document.createElement('script')
+    for (let key in config) {
+      ele.setAttribute(key, config[key])
+    }
+    document.getElementById('giscus-wrap').appendChild(ele)
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment= loadGiscus
+  }
+})()</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
